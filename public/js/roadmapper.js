@@ -2,13 +2,14 @@
     angular.module('roadmapper', []).
         config(function ($routeProvider) {
             $routeProvider.
-                when('/signup', {controller: SignupCtrl, templateUrl: 'assets/templates/signup.html'}).
-                when('/login', {controller: LoginCtrl, templateUrl: 'assets/templates/login.html'}).
-                when('/dashboard', {controller: DashboardCtrl, templateUrl: 'assets/templates/dashboard.html'}).
+                when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
+                when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
+                when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
                 otherwise({redirectTo: '/login'});
         })
         .directive("navbar", function () {
             return {
+
                 controller: function ($scope, $location, $rootScope) {
                     $scope.login = function () {
                         $location.path("/login");
@@ -27,7 +28,7 @@
                         $location.path("/");
                     };
                 },
-                templateUrl: "assets/templates/navbar.html"
+                templateUrl: "templates/navbar.html"
             }
         });
 

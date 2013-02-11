@@ -2,6 +2,7 @@ package controllers;
 
 import models.User;
 import org.codehaus.jackson.JsonNode;
+import play.Routes;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -42,5 +43,16 @@ public class Application extends Controller {
     public static Result home() {
         return ok(index.render());
     }
+
+    public static Result javascriptRoutes() {
+        response().setContentType("text/javascript");
+        return ok(
+                Routes.javascriptRouter("jsRoutes",
+                        controllers.routes.javascript.Application.createUser(),
+                        controllers.routes.javascript.Application.authenticate()
+                )
+        );
+    }
+
 
 }

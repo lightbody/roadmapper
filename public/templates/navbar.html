@@ -1,8 +1,22 @@
-<ul ng-show="user == null">
-    <li ng-click="login()">Login</li>
-    <li ng-click="signup()">Signup</li>
-</ul>
-<ul ng-show="user != null">
-    <li ng-click="dashboard()">Dashboard</li>
-    <li ng-click="logout()">Logout</li>
-</ul>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" ng-click="dashboard()">Roadmapper</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active"><a ng-click="dashboard()">Dashboard</a></li>
+                    <li><a ng-click="dashboard()">About</a></li>
+                    <li ng-show="user == null"><a ng-click="login()">Login</a></li>
+                    <li ng-show="user == null"><a ng-click="signup()">Signup</a></li>
+                    <li ng-show="user != null"><a ng-click="dashboard()">Dashboard</a></li>
+                    <li ng-show="user != null"><a ng-click="logout()">Logout</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
