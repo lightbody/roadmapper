@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.home()
 POST    /authenticate               controllers.Application.authenticate()
 POST    /user                       controllers.Application.createUser()
+GET     /session/:id                controllers.Application.getSession(id)
 
 GET     /js/routes.js               controllers.Application.javascriptRoutes()
 

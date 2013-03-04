@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Session;
 import models.User;
 import org.codehaus.jackson.JsonNode;
 import play.Routes;
@@ -9,6 +10,15 @@ import play.mvc.Result;
 import views.html.index;
 
 public class Application extends Controller {
+    public static Result getSession(String id) {
+        Session session = Session.find.byId(id);
+        if (session == null) {
+            return notFound();
+        } else {
+            return ok(Json.toJson(session));
+        }
+    }
+
     public static Result createUser() {
         JsonNode json = request().body().asJson();
         User user = Json.fromJson(json, User.class);
@@ -35,9 +45,13 @@ public class Application extends Controller {
         User user = User.authenticate(email, password);
         if (user == null) {
             return unauthorized("Bad email/password combo");
-        } else {
-            return ok(Json.toJson(user));
         }
+
+        // now create a session for the user
+        Session session = new Session(user, 30);
+        session.save();
+
+        return ok(Json.toJson(session));
     }
 
     public static Result home() {

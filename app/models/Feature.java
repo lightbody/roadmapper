@@ -1,6 +1,7 @@
 package models;
 
 import play.data.validation.Constraints;
+import play.db.ebean.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,7 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Entity
-public class Feature {
+public class Feature extends Model {
     @Id
     public Long id;
 

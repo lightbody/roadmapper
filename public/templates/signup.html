@@ -1,5 +1,9 @@
-Email: <input type="text" ng-model="user.email"/><br/>
-Name: <input type="text" ng-model="user.name"/><br/>
-Password: <input type="text" ng-model="user.password"/><br/>
+<form class="form-big-inputs">
+    <h2>Sign up</h2>
+    <input type="text" class="input-block-level" ng-model="user.email" placeholder="Email address">
+    <input type="text" class="input-block-level" ng-model="user.name" placeholder="First and Last Name">
+    <input type="password" class="input-block-level" ng-model="user.password" placeholder="Password">
+    <button class="btn btn-large btn-primary" ng-click="submit(user)" type="submit">Sign up</button>
+</form>
 
-<button ng-click="submit(user)">Sign up</button>
+<span class="error" ng-show="error == null">{{error}}</span>

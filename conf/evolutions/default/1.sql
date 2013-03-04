@@ -33,6 +33,14 @@ create table problem (
   constraint pk_problem primary key (id))
 ;
 
+create table session (
+  id                        varchar(255) not null,
+  user_email                varchar(255),
+  created                   timestamp,
+  expires                   timestamp,
+  constraint pk_session primary key (id))
+;
+
 create table team (
   id                        bigint not null,
   name                      varchar(255),
@@ -50,6 +58,8 @@ create sequence feature_seq;
 
 create sequence problem_seq;
 
+create sequence session_seq;
+
 create sequence team_seq;
 
 create sequence users_seq;
@@ -58,6 +68,8 @@ alter table problem add constraint fk_problem_reporter_1 foreign key (reporter_e
 create index ix_problem_reporter_1 on problem (reporter_email);
 alter table problem add constraint fk_problem_feature_2 foreign key (feature_id) references feature (id) on delete restrict on update restrict;
 create index ix_problem_feature_2 on problem (feature_id);
+alter table session add constraint fk_session_user_3 foreign key (user_email) references users (email) on delete restrict on update restrict;
+create index ix_session_user_3 on session (user_email);
 
 
 
@@ -69,6 +81,8 @@ drop table if exists feature;
 
 drop table if exists problem;
 
+drop table if exists session;
+
 drop table if exists team;
 
 drop table if exists users;
@@ -78,6 +92,8 @@ SET REFERENTIAL_INTEGRITY TRUE;
 drop sequence if exists feature_seq;
 
 drop sequence if exists problem_seq;
+
+drop sequence if exists session_seq;
 
 drop sequence if exists team_seq;
 

@@ -1,5 +1,5 @@
 (function () {
-    angular.module('roadmapper', []).
+    angular.module('roadmapper', ["ngCookies"]).
         config(function ($routeProvider) {
             $routeProvider.
                 when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
@@ -37,11 +37,29 @@
             $http.post('/user', user)
                 .success(function () {
                     $location.path('/login')
+                })
+                .error(function() {
+                    debugger;
                 });
         }
     }
 
-    function LoginCtrl($location, $scope, $rootScope, $http) {
+    function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
+        var loginSuccess = function (data) {
+            $cookieStore.put("session.id", data.id);
+            $rootScope.user = data.user;
+            $location.path('/dashboard')
+        };
+
+        // check if there is already a session?
+        var sessionId = $cookieStore.get("session.id");
+        if (sessionId != null) {
+            $http.get("/session/" + sessionId).success(loginSuccess).error(function() {
+                // remove the cookie, since it's dead
+                $cookieStore.remove("session.id");
+            });
+        }
+
         $scope.unauthorized = $rootScope.user == null;
 
         $scope.$watch("user.email", function (value) {
@@ -50,11 +68,8 @@
 
         $scope.submit = function (user) {
             $http.post('/authenticate', user)
-                .success(function (data) {
-                    $rootScope.user = data;
-                    $location.path('/dashboard')
-                })
-                .error(function() {
+                .success(loginSuccess)
+                .error(function () {
                     $scope.unauthorized = true;
                 });
         }
