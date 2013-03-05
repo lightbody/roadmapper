@@ -4,7 +4,7 @@
         <input type="text" ng-model="user.email" class="input-block-level" placeholder="Email address">
         <input type="password" ng-model="user.password" class="input-block-level" placeholder="Password">
         <label class="checkbox">
-            <input type="checkbox" value="remember-me"> Remember me
+            <input type="checkbox" value="remember-me" ng-model="remember"> Remember me
         </label>
         <button class="btn btn-large btn-primary" ng-click="submit(user)" type="submit">Log in</button>
         <span class="error" ng-show="unauthorized">Boo!</span>

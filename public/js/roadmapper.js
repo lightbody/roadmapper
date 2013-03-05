@@ -10,7 +10,7 @@
         .directive("navbar", function () {
             return {
 
-                controller: function ($scope, $location, $rootScope) {
+                controller: function ($scope, $location, $rootScope, $cookieStore) {
                     $scope.login = function () {
                         $location.path("/login");
                     };
@@ -24,6 +24,8 @@
                     };
 
                     $scope.logout = function () {
+                        $cookieStore.remove("session.id");
+                        window.localStorage.removeItem("session.id");
                         $rootScope.user = null;
                         $location.path("/");
                     };
@@ -47,16 +49,24 @@
     function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
         var loginSuccess = function (data) {
             $cookieStore.put("session.id", data.id);
+            if ($scope.remember) {
+                window.localStorage["session.id"] =  data.id;
+            }
+
             $rootScope.user = data.user;
             $location.path('/dashboard')
         };
 
         // check if there is already a session?
-        var sessionId = $cookieStore.get("session.id");
+        var sessionId = window.localStorage["session.id"];
+        if (sessionId == null) {
+            sessionId = $cookieStore.get("session.id");
+        }
         if (sessionId != null) {
             $http.get("/session/" + sessionId).success(loginSuccess).error(function() {
                 // remove the cookie, since it's dead
                 $cookieStore.remove("session.id");
+                window.localStorage.removeItem("session.id");
             });
         }
 
