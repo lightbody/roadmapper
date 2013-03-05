@@ -9,6 +9,8 @@ import java.util.Map;
 
 @Entity
 public class Team extends Model {
+    public static Model.Finder<Long, Team> find = new Model.Finder<>(Long.class, Team.class);
+
     @Id
     public Long id;
 

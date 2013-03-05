@@ -29,6 +29,7 @@ create table problem (
   reporter_email            varchar(255),
   account_id                bigint,
   annual_revenue            integer,
+  url                       varchar(255),
   feature_id                bigint,
   constraint pk_problem primary key (id))
 ;

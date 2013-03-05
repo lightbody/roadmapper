@@ -1,0 +1,20 @@
+<a ng-click="newProblem()">Create new problem</a>
+
+<hr/>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Problem</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="problem in problems">
+        <td>{{problem.id}}</td>
+        <td>{{problem.description}}</td>
+        <td>{{problem.date | date}}</td>
+    </tr>
+    </tbody>
+</table>

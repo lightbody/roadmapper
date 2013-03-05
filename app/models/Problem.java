@@ -27,6 +27,8 @@ public class Problem extends Model {
 
     public Integer annualRevenue;
 
+    public String url;
+
     @ManyToOne
     public Feature feature;
 

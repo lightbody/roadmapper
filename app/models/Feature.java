@@ -10,6 +10,8 @@ import javax.persistence.Id;
 
 @Entity
 public class Feature extends Model {
+    public static Model.Finder<Long, Feature> find = new Model.Finder<>(Long.class, Feature.class);
+
     @Id
     public Long id;
 

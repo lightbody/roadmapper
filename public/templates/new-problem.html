@@ -1,0 +1,10 @@
+<form class="form-big-inputs">
+    <h2>New Problem</h2>
+    <input type="text" class="input-block-level" ng-model="problem.description" placeholder="Problem Description">
+    <input type="text" class="input-block-level" ng-model="problem.accountId" placeholder="Account ID (if known)">
+    <input type="text" class="input-block-level" ng-model="problem.annualRevenue" placeholder="Account ARR / Opportunity Size">
+    <input type="text" class="input-block-level" ng-model="problem.url" placeholder="URL (Optional)">
+    <button class="btn btn-large btn-primary" ng-click="submit(problem)" type="submit">Create</button>
+</form>
+
+<span class="error" ng-show="error == null">{{error}}</span>
