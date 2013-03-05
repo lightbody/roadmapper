@@ -22,8 +22,6 @@ public class Application extends Controller {
     public static Result createUser() {
         JsonNode json = request().body().asJson();
         User user = Json.fromJson(json, User.class);
-        System.out.println("email --> " + user.email);
-        System.out.println("password --> " + user.password);
         user.save();
 
         return ok();
