@@ -7,14 +7,14 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th ng-repeat="quarter in quarters">{{quarter}}</th>
+        <th ng-repeat="quarter in enumQuarters">{{quarter}}</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="team in teams">
         <td>{{team.id}}</td>
         <td>{{team.name}}</td>
-        <td ng-repeat="quarter in quarters">
+        <td ng-repeat="quarter in enumQuarters">
             .
         </td>
 

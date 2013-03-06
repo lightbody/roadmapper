@@ -1,6 +1,3 @@
-# --- Created by Ebean DDL
-# To stop Ebean DDL generation, remove this comment and start using Evolutions
-
 # --- !Ups
 
 create table feature (
@@ -65,30 +62,26 @@ create sequence team_seq;
 
 create sequence users_seq;
 
-alter table problem add constraint fk_problem_reporter_1 foreign key (reporter_email) references users (email) on delete restrict on update restrict;
+alter table problem add constraint fk_problem_reporter_1 foreign key (reporter_email) references users (email);
 create index ix_problem_reporter_1 on problem (reporter_email);
-alter table problem add constraint fk_problem_feature_2 foreign key (feature_id) references feature (id) on delete restrict on update restrict;
+alter table problem add constraint fk_problem_feature_2 foreign key (feature_id) references feature (id);
 create index ix_problem_feature_2 on problem (feature_id);
-alter table session add constraint fk_session_user_3 foreign key (user_email) references users (email) on delete restrict on update restrict;
+alter table session add constraint fk_session_user_3 foreign key (user_email) references users (email);
 create index ix_session_user_3 on session (user_email);
 
 
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+drop table if exists feature cascade;
 
-drop table if exists feature;
+drop table if exists problem cascade;
 
-drop table if exists problem;
+drop table if exists session cascade;
 
-drop table if exists session;
+drop table if exists team cascade;
 
-drop table if exists team;
-
-drop table if exists users;
-
-SET REFERENTIAL_INTEGRITY TRUE;
+drop table if exists users cascade;
 
 drop sequence if exists feature_seq;
 

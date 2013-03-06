@@ -6,7 +6,9 @@
     <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="/css/main.css" rel="stylesheet" media="screen">
     <script type="text/javascript">
-        var quarters = ["@Html(Quarter.values().mkString("\",\""))"];
+        var enumQuarters = ["@Html(Quarter.values().mkString("\",\""))"];
+        var enumSizes = ["@Html(Size.values().mkString("\",\""))"];
+        var enumProblemStates = ["@Html(ProblemState.values().mkString("\",\""))"];
     </script>
 </head>
 <body>

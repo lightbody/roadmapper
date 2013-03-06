@@ -5,17 +5,18 @@
 # Authentication
 GET     /                           controllers.Application.home()
 POST    /authenticate               controllers.Application.authenticate()
-POST    /user                       controllers.Application.createUser()
-GET     /session/:id                controllers.Application.getSession(id)
+POST    /users                      controllers.Application.createUser()
+GET     /sessions/:id               controllers.Application.getSession(id)
 
-GET     /problem                    controllers.ProblemController.getAll()
-POST    /problem                    controllers.ProblemController.create()
+GET     /problems                   controllers.ProblemController.find()
+GET     /problems/open              controllers.ProblemController.findOpen()
+POST    /problems                   controllers.ProblemController.create()
 
-GET     /feature                    controllers.FeatureController.getAll()
-POST    /feature                    controllers.FeatureController.create()
+GET     /features                   controllers.FeatureController.getAll()
+POST    /features                   controllers.FeatureController.create()
 
-GET     /team                       controllers.TeamController.getAll()
-POST    /team                       controllers.TeamController.create()
+GET     /teams                      controllers.TeamController.getAll()
+POST    /teams                      controllers.TeamController.create()
 
 GET     /js/routes.js               controllers.Application.javascriptRoutes()
 

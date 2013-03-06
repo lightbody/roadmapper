@@ -3,15 +3,16 @@ package models;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Problem extends Model {
     @Id
     public Long id;
+
+    @Enumerated(EnumType.STRING)
+    public ProblemState state;
 
     @Constraints.Required
     public Date date;

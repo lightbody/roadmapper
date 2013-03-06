@@ -1,0 +1,20 @@
+<a ng-click="newFeature()">Create new feature</a>
+
+<hr/>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Feature</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="feature in features">
+        <td>{{feature.id}}</td>
+        <td>{{feature.description}}</td>
+        <td>{{feature.date | date}}</td>
+    </tr>
+    </tbody>
+</table>

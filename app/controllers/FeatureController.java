@@ -9,14 +9,13 @@ import play.mvc.Security;
 
 import java.util.List;
 
+@Security.Authenticated(Secured.class)
 public class FeatureController extends Controller {
-    @Security.Authenticated(Secured.class)
     public static Result getAll() {
         List<Feature> features = Feature.find.all();
         return ok(Json.toJson(features));
     }
 
-    @Security.Authenticated(Secured.class)
     public static Result create() {
         JsonNode json = request().body().asJson();
 

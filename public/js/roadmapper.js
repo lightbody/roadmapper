@@ -6,9 +6,11 @@
                 when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
                 when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
                 when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
-                when('/new-problem', {controller: NewProblemCtrl, templateUrl: 'templates/new-problem.html'}).
+                when('/problems/new', {controller: NewProblemCtrl, templateUrl: 'templates/new-problem.html'}).
+                when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
+                when('/features/new', {controller: NewFeatureCtrl, templateUrl: 'templates/new-feature.html'}).
                 when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
-                when('/new-team', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
+                when('/teams/new', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
                 otherwise({redirectTo: '/login'});
         })
         .directive("navbar", function () {
@@ -31,6 +33,10 @@
                         $location.path("/problems");
                     };
 
+                    $scope.features = function () {
+                        $location.path("/features");
+                    };
+
                     $scope.teams = function () {
                         $location.path("/teams");
                     };
@@ -44,16 +50,46 @@
                 },
                 templateUrl: "templates/navbar.html"
             }
+        })
+        .run(function($rootScope, $http, $cookieStore, $location) {
+            // wire up shared enums
+            $rootScope.enumQuarters = enumQuarters;
+            $rootScope.enumSizes = enumSizes;
+            $rootScope.enumProblemStates = enumProblemStates;
+
+            // check if there is already a session?
+            var sessionId = window.localStorage["session.id"];
+            if (sessionId == null) {
+                sessionId = $cookieStore.get("session.id");
+            }
+
+            if (sessionId != null) {
+                $http.get("/sessions/" + sessionId)
+                    .success(function (data) {
+                        $http.defaults.headers.common['X-Session-ID'] = data.id;
+                        $cookieStore.put("session.id", data.id);
+
+                        $rootScope.user = data.user;
+                    })
+                    .error(function () {
+                        // remove the cookie, since it's dead
+                        $cookieStore.remove("session.id");
+                        window.localStorage.removeItem("session.id");
+                        $location.path("/login");
+                    });
+            } else {
+                if ($location.path() != "/login" && $location.path() != "/signup") {
+                    $location.path("/login");
+                }
+            }
         });
 
     function TeamsCtrl($scope, $http, $location) {
-        $scope.quarters = quarters;
-
         $scope.newTeam = function () {
-            $location.path("/new-team");
+            $location.path("/teams/new");
         };
 
-        $http.get('/team')
+        $http.get('/teams')
             .success(function (teams) {
                 $scope.teams = teams;
             });
@@ -61,7 +97,7 @@
 
     function NewTeamCtrl($scope, $http, $location) {
         $scope.submit = function (team) {
-            $http.post('/team', team)
+            $http.post('/teams', team)
                 .success(function () {
                     $location.path('/teams')
                 })
@@ -73,10 +109,10 @@
 
     function ProblemsCtrl($scope, $http, $location) {
         $scope.newProblem = function () {
-            $location.path("/new-problem");
+            $location.path("/problems/new");
         };
 
-        $http.get('/problem')
+        $http.get('/problems/open')
             .success(function (problems) {
                 $scope.problems = problems;
             });
@@ -84,7 +120,7 @@
 
     function NewProblemCtrl($scope, $http, $location) {
         $scope.submit = function (problem) {
-            $http.post('/problem', problem)
+            $http.post('/problems', problem)
                 .success(function () {
                     $location.path('/problems')
                 })
@@ -94,9 +130,38 @@
         }
     }
 
+    function FeaturesCtrl($scope, $http, $location) {
+        $scope.newFeature = function () {
+            $location.path("/features/new");
+        };
+
+        $http.get('/features')
+            .success(function (features) {
+                $scope.features = features;
+            });
+    }
+
+    function NewFeatureCtrl($scope, $http, $location) {
+        $http.get("/teams")
+            .success(function (teams) {
+                $scope.teams = teams;
+            });
+
+        $scope.submit = function (feature) {
+            debugger;
+            $http.post('/features', feature)
+                .success(function () {
+                    $location.path('/features')
+                })
+                .error(function () {
+                    debugger;
+                });
+        }
+    }
+
     function SignupCtrl($scope, $http, $location) {
         $scope.submit = function (user) {
-            $http.post('/user', user)
+            $http.post('/users', user)
                 .success(function () {
                     $location.path('/login')
                 });
@@ -121,7 +186,7 @@
             sessionId = $cookieStore.get("session.id");
         }
         if (sessionId != null) {
-            $http.get("/session/" + sessionId).success(loginSuccess).error(function() {
+            $http.get("/sessions/" + sessionId).success(loginSuccess).error(function() {
                 // remove the cookie, since it's dead
                 $cookieStore.remove("session.id");
                 window.localStorage.removeItem("session.id");
