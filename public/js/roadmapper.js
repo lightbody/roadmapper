@@ -1,3 +1,10 @@
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+};
+
 (function () {
     angular.module('roadmapper', ["ngCookies"]).
         config(function ($routeProvider) {
@@ -9,6 +16,7 @@
                 when('/problems/new', {controller: NewProblemCtrl, templateUrl: 'templates/new-problem.html'}).
                 when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/features/new', {controller: NewFeatureCtrl, templateUrl: 'templates/new-feature.html'}).
+                when('/categories', {controller: CategoriesCtrl, templateUrl: 'templates/categories.html'}).
                 when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
                 when('/teams/new', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
                 otherwise({redirectTo: '/login'});
@@ -35,6 +43,10 @@
 
                     $scope.features = function () {
                         $location.path("/features");
+                    };
+
+                    $scope.categories = function () {
+                        $location.path("/categories");
                     };
 
                     $scope.teams = function () {
@@ -83,6 +95,37 @@
                 }
             }
         });
+
+    function CategoriesCtrl($scope, $http, $location) {
+        $scope.newCategory = function (category) {
+            $http.post('/categories', category)
+                .success(function (returnedCategory) {
+                    $scope.category = null;
+                    $scope.categories.push(returnedCategory);
+                })
+                .error(function () {
+                    debugger;
+                });
+        };
+
+        $scope.deleteCategory = function(category) {
+            $http.delete('/categories/' + category.id)
+                .success(function () {
+                    $scope.categories.remove($scope.categories.indexOf(category));
+                })
+                .error(function () {
+                    debugger;
+                });
+        };
+
+        $http.get('/categories')
+            .success(function (categories) {
+                $scope.categories = categories;
+            });
+    }
+
+    function NewCategoryCtrl($scope, $http, $location) {
+    }
 
     function TeamsCtrl($scope, $http, $location) {
         $scope.newTeam = function () {

@@ -3,7 +3,7 @@ package models;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
-import util.TeamJsonDeserializer;
+import util.CategoryJsonDeserializer;
 
 import javax.persistence.*;
 
@@ -34,9 +34,9 @@ public class Feature extends Model {
 
     public Integer score;
 
-    @JsonDeserialize(using = TeamJsonDeserializer.class)
+    @JsonDeserialize(using = CategoryJsonDeserializer.class)
     @ManyToOne
-    public Team team;
+    public Category category;
 
     public Quarter quarter;
 }
