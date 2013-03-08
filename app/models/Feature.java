@@ -1,12 +1,11 @@
 package models;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
+import util.TeamJsonDeserializer;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Feature extends Model {
@@ -35,6 +34,8 @@ public class Feature extends Model {
 
     public Integer score;
 
+    @JsonDeserialize(using = TeamJsonDeserializer.class)
+    @ManyToOne
     public Team team;
 
     public Quarter quarter;
