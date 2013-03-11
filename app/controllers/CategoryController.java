@@ -25,7 +25,11 @@ public class CategoryController extends Controller {
         return ok(Json.toJson(category));
     }
 
-    public static Result delete(long id) {
+    public static Result delete(Long id, Long replacementCategory) {
+        if (replacementCategory != null) {
+            System.out.printf("TODO - Replace %d with %d\n", id, replacementCategory);
+        }
+
         Category.find.byId(id).delete();
 
         return ok();

@@ -18,9 +18,9 @@ POST    /features                   controllers.FeatureController.create()
 GET     /teams                      controllers.TeamController.getAll()
 POST    /teams                      controllers.TeamController.create()
 
+DELETE  /categories/:id             controllers.CategoryController.delete(id: Long, replacementCategory: Long ?= -1)
 GET     /categories                 controllers.CategoryController.getAll()
 POST    /categories                 controllers.CategoryController.create()
-DELETE  /categories/{<[0-9]+>id}    controllers.CategoryController.delete(id)
 
 GET     /js/routes.js               controllers.Application.javascriptRoutes()
 

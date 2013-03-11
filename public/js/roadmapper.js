@@ -1,12 +1,12 @@
 // Array Remove - By John Resig (MIT Licensed)
-Array.prototype.remove = function(from, to) {
+Array.prototype.remove = function (from, to) {
     var rest = this.slice((to || from) + 1 || this.length);
     this.length = from < 0 ? this.length + from : from;
     return this.push.apply(this, rest);
 };
 
 (function () {
-    angular.module('roadmapper', ["ngCookies"]).
+    angular.module('roadmapper', ["ngCookies", "modal"]).
         config(function ($routeProvider) {
             $routeProvider.
                 when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
@@ -63,7 +63,7 @@ Array.prototype.remove = function(from, to) {
                 templateUrl: "templates/navbar.html"
             }
         })
-        .run(function($rootScope, $http, $cookieStore, $location) {
+        .run(function ($rootScope, $http, $cookieStore, $location) {
             // wire up shared enums
             $rootScope.enumQuarters = enumQuarters;
             $rootScope.enumSizes = enumSizes;
@@ -108,12 +108,22 @@ Array.prototype.remove = function(from, to) {
                 });
         };
 
-        $scope.deleteCategory = function(category) {
-            $http.delete('/categories/' + category.id)
-                .success(function () {
+        $scope.confirmSelection = function (category) {
+            $scope.selectedCategory = category;
+        };
+
+        $scope.deleteCategory = function (category) {
+            var params = {};
+            if ($scope.replacementCategory != null) {
+                params.replacementCategory = $scope.replacementCategory;
+            }
+
+            $http.delete('/categories/' + category.id, {
+                params: params
+            }).success(function () {
+                    $scope.replacementCategory = null;
                     $scope.categories.remove($scope.categories.indexOf(category));
-                })
-                .error(function () {
+                }).error(function () {
                     debugger;
                 });
         };
@@ -122,9 +132,6 @@ Array.prototype.remove = function(from, to) {
             .success(function (categories) {
                 $scope.categories = categories;
             });
-    }
-
-    function NewCategoryCtrl($scope, $http, $location) {
     }
 
     function TeamsCtrl($scope, $http, $location) {
@@ -216,7 +223,7 @@ Array.prototype.remove = function(from, to) {
             $http.defaults.headers.common['X-Session-ID'] = data.id;
             $cookieStore.put("session.id", data.id);
             if ($scope.remember) {
-                window.localStorage["session.id"] =  data.id;
+                window.localStorage["session.id"] = data.id;
             }
 
             $rootScope.user = data.user;
@@ -229,7 +236,7 @@ Array.prototype.remove = function(from, to) {
             sessionId = $cookieStore.get("session.id");
         }
         if (sessionId != null) {
-            $http.get("/sessions/" + sessionId).success(loginSuccess).error(function() {
+            $http.get("/sessions/" + sessionId).success(loginSuccess).error(function () {
                 // remove the cookie, since it's dead
                 $cookieStore.remove("session.id");
                 window.localStorage.removeItem("session.id");
