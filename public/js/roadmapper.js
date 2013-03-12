@@ -6,7 +6,7 @@ Array.prototype.remove = function (from, to) {
 };
 
 (function () {
-    angular.module('roadmapper', ["ngCookies", "modal"]).
+    angular.module('roadmapper', ["ngCookies", "$strap"]).
         config(function ($routeProvider) {
             $routeProvider.
                 when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
@@ -112,10 +112,10 @@ Array.prototype.remove = function (from, to) {
             $scope.selectedCategory = category;
         };
 
-        $scope.deleteCategory = function (category) {
+        $scope.deleteCategory = function (category, replacementCategory) {
             var params = {};
-            if ($scope.replacementCategory != null) {
-                params.replacementCategory = $scope.replacementCategory;
+            if (replacementCategory != null) {
+                params.replacementCategory = replacementCategory;
             }
 
             $http.delete('/categories/' + category.id, {
