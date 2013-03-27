@@ -22,6 +22,8 @@ DELETE  /categories/:id             controllers.CategoryController.delete(id: Lo
 GET     /categories                 controllers.CategoryController.getAll()
 POST    /categories                 controllers.CategoryController.create()
 
+GET     /tags                       controllers.TagController.search(query: String)
+
 GET     /js/routes.js               controllers.Application.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path

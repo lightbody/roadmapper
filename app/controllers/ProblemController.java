@@ -35,8 +35,9 @@ public class ProblemController extends Controller {
         Problem problem = Json.fromJson(json, Problem.class);
         problem.date = new Date();
         problem.reporter = User.findByEmail(request().username());
+        problem.state = ProblemState.OPEN;
         problem.save();
 
-        return ok();
+        return ok(Json.toJson(problem));
     }
 }

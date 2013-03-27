@@ -13,7 +13,6 @@ Array.prototype.remove = function (from, to) {
                 when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
                 when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
                 when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
-                when('/problems/new', {controller: NewProblemCtrl, templateUrl: 'templates/new-problem.html'}).
                 when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/features/new', {controller: NewFeatureCtrl, templateUrl: 'templates/new-feature.html'}).
                 when('/categories', {controller: CategoriesCtrl, templateUrl: 'templates/categories.html'}).
@@ -62,6 +61,50 @@ Array.prototype.remove = function (from, to) {
                 },
                 templateUrl: "templates/navbar.html"
             }
+        })
+        .directive('tagInput', function($http){
+            return {
+                template: '<input type="hidden" style="width:300px" placeholder="placeholder...">',
+                replace: true,
+                require: '?ngModel',
+                link: function ( scope, element, attrs, ngModel ){
+
+                    var drivenByModel = false;
+
+                    $(element).select2({
+                        tags: [],
+                        tokenSeparators: [",", " "],
+                        query: function (query) {
+                            $http.get("/tags?query=" + query.term)
+                                .success(function (tags) {
+                                    var results = [{text: query.term}];
+                                    tags.map(function(tag) {results.push({text: tag.tag})});
+                                    query.callback({
+                                        results: results
+                                    });
+                                })
+                                .error(function () {
+                                    debugger;
+                                });
+                        },
+                        formatNoMatches: function(){ return '';}
+                    }).on('change', function(e){
+                            if (!drivenByModel) {
+                                ngModel.$setViewValue(e.val);
+                                scope.$apply();
+                            } else {
+                            }
+                            drivenByModel = false;
+                        });
+
+
+                    ngModel.$render = function(){
+                        drivenByModel = true;
+                        var data = ngModel.$viewValue;
+                        $(element).val(data).trigger('change');
+                    };
+                }
+            };
         })
         .run(function ($rootScope, $http, $cookieStore, $location) {
             // wire up shared enums
@@ -158,26 +201,20 @@ Array.prototype.remove = function (from, to) {
     }
 
     function ProblemsCtrl($scope, $http, $location) {
-        $scope.newProblem = function () {
-            $location.path("/problems/new");
+        $scope.submit = function (problem) {
+            $http.post('/problems', problem)
+                .success(function (returnedProblem) {
+                    $scope.problems.push(returnedProblem);
+                })
+                .error(function () {
+                    debugger;
+                });
         };
 
         $http.get('/problems/open')
             .success(function (problems) {
                 $scope.problems = problems;
             });
-    }
-
-    function NewProblemCtrl($scope, $http, $location) {
-        $scope.submit = function (problem) {
-            $http.post('/problems', problem)
-                .success(function () {
-                    $location.path('/problems')
-                })
-                .error(function () {
-                    debugger;
-                });
-        }
     }
 
     function FeaturesCtrl($scope, $http, $location) {

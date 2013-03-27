@@ -1,10 +1,20 @@
-<form class="form-big-inputs">
-    <h2>New Problem</h2>
-    <input type="text" class="input-block-level" ng-model="problem.description" autofocus="true" placeholder="Problem Description">
-    <input type="text" class="input-block-level" ng-model="problem.accountId" placeholder="Account ID (if known)">
-    <input type="text" class="input-block-level" ng-model="problem.annualRevenue" placeholder="Account ARR / Opportunity Size">
-    <input type="text" class="input-block-level" ng-model="problem.url" placeholder="URL (Optional)">
-    <button class="btn btn-large btn-primary" ng-click="submit(problem)" type="submit">Create</button>
-</form>
+<div class="modal-header">
+    <button class="close" modal-close="myModal">×</button>
+    <h3>Are you sure?</h3>
+</div>
+<div class="modal-body">
+    <form class="form-big-inputs">
+        <h2>New Problem</h2>
+        <input type="text" class="input-block-level" ng-model="problem.description" autofocus="true" placeholder="Problem Description">
+        <input type="text" class="input-block-level" ng-model="problem.accountId" placeholder="Account ID (if known)">
+        <input type="text" class="input-block-level" ng-model="problem.annualRevenue" placeholder="Account ARR / Opportunity Size">
+        <input type="text" class="input-block-level" ng-model="problem.url" placeholder="URL (Optional)">
+        <input type="text" tag-input ng-model="problem.tags"/>
+    </form>
 
-<span class="error" ng-show="error == null">{{error}}</span>
+    <span class="error" ng-show="error == null">{{error}}</span>
+</div>
+<div class="modal-footer">
+    <a class="btn" ng-click="dismiss()">Close</a>
+    <a class="btn btn-primary" ng-click="submit(problem); dismiss()">Confirm</a>
+</div>
