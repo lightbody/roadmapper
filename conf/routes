@@ -11,6 +11,8 @@ GET     /sessions/:id               controllers.Application.getSession(id)
 GET     /problems                   controllers.ProblemController.find()
 GET     /problems/open              controllers.ProblemController.findOpen()
 POST    /problems                   controllers.ProblemController.create()
+GET     /problems/:id               controllers.ProblemController.getProblem(id: Long)
+PUT     /problems/:id               controllers.ProblemController.updateProblem(id: Long)
 
 GET     /features                   controllers.FeatureController.getAll()
 POST    /features                   controllers.FeatureController.create()

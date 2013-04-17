@@ -2,19 +2,23 @@
 
 <hr/>
 
+<h1>Open Problems</h1>
+
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Problem</th>
+        <th>Reporter</th>
+        <th>Company</th>
         <th>Date</th>
+        <th>Description</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="problem in problems">
-        <td>{{problem.id}}</td>
-        <td>{{problem.description}}</td>
+    <tr ng-repeat="problem in openProblems">
+        <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
+        <td>{{problem.customerCompany}}</td>
         <td>{{problem.date | date}}</td>
+        <td><a ng-click="editProblem(problem)" bs-modal="'templates/view-problem.html'">{{problem.description | truncate:30}}</a></td>
     </tr>
     </tbody>
 </table>

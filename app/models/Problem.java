@@ -5,6 +5,7 @@ import play.db.ebean.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Problem extends Model {
@@ -24,6 +25,14 @@ public class Problem extends Model {
     @ManyToOne
     public User reporter;
 
+    @Constraints.Required
+    public String customerName;
+
+    @Constraints.Required
+    public String customerEmail;
+
+    public String customerCompany;
+
     public Long accountId;
 
     public Integer annualRevenue;
@@ -32,6 +41,8 @@ public class Problem extends Model {
 
     @ManyToOne
     public Feature feature;
+
+    public Set<String> tags;
 
     public static Model.Finder<Long, Problem> find = new Model.Finder<>(Long.class, Problem.class);
 
@@ -42,5 +53,4 @@ public class Problem extends Model {
     public static void delete(Long id) {
         find.ref(id).delete(id);
     }
-
 }

@@ -63,22 +63,33 @@ Array.prototype.remove = function (from, to) {
             }
         })
         .directive('tagInput', function($http){
+            console.log("in directive function");
             return {
                 template: '<input type="hidden" style="width:300px" placeholder="placeholder...">',
                 replace: true,
                 require: '?ngModel',
                 link: function ( scope, element, attrs, ngModel ){
+                    console.log("in link function");
 
                     var drivenByModel = false;
 
                     $(element).select2({
+                        multiple: true,
+                        createSearchChoice: function(val) {
+                            if (val.length>0) {
+                                return {id: val, text: val};
+                            } else {
+                                return null;
+                            }
+                        },
                         tags: [],
                         tokenSeparators: [",", " "],
                         query: function (query) {
+                            console.log("in query function");
                             $http.get("/tags?query=" + query.term)
                                 .success(function (tags) {
-                                    var results = [{text: query.term}];
-                                    tags.map(function(tag) {results.push({text: tag.tag})});
+                                    var results = [];
+                                    tags.map(function(tag) {results.push({id: tag, text: tag})});
                                     query.callback({
                                         results: results
                                     });
@@ -87,8 +98,9 @@ Array.prototype.remove = function (from, to) {
                                     debugger;
                                 });
                         },
-                        formatNoMatches: function(){ return '';}
+                        formatNoMatches: function(){ return 'empty';}
                     }).on('change', function(e){
+                            console.log("in change function");
                             if (!drivenByModel) {
                                 ngModel.$setViewValue(e.val);
                                 scope.$apply();
@@ -99,12 +111,22 @@ Array.prototype.remove = function (from, to) {
 
 
                     ngModel.$render = function(){
+                        console.log("in render function");
                         drivenByModel = true;
                         var data = ngModel.$viewValue;
                         $(element).val(data).trigger('change');
                     };
                 }
             };
+        })
+        .filter('truncate', function() {
+            return function(input, length) {
+                if (input.length + 4 < length) {
+                    return input;
+                } else {
+                    return input.substring(0, length) + " ...";
+                }
+            }
         })
         .run(function ($rootScope, $http, $cookieStore, $location) {
             // wire up shared enums
@@ -211,9 +233,27 @@ Array.prototype.remove = function (from, to) {
                 });
         };
 
+        $scope.editProblem = function(problem) {
+            $scope.selectedProblem = problem;
+            $http.get('/problems/' + problem.id)
+                .success(function(problemWithTags) {
+                    $scope.selectedProblem = problemWithTags;
+                });
+        };
+
+        $scope.saveProblem = function(problem) {
+            $http.put('/problems/' + problem.id, problem)
+                .success(function() {
+                    //todo
+                })
+                .error(function() {
+                    debugger;
+                })
+        };
+
         $http.get('/problems/open')
             .success(function (problems) {
-                $scope.problems = problems;
+                $scope.openProblems = problems;
             });
     }
 
