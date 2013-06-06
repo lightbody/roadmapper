@@ -5,12 +5,13 @@
 <div class="modal-body">
     <form class="form-big-inputs">
         <h2>New Problem</h2>
-        <input type="text" class="input-block-level" ng-model="problem.description" autofocus="true" placeholder="Problem Description">
-        <input type="text" class="input-block-level" ng-model="problem.customerName" placeholder="Customer Name">
-        <input type="text" class="input-block-level" ng-model="problem.customerEmail" placeholder="Customer Email">
-        <input type="text" class="input-block-level" ng-model="problem.accountId" placeholder="Account ID (if known)">
-        <input type="text" class="input-block-level" ng-model="problem.annualRevenue" placeholder="Account ARR / Opportunity Size">
-        <input type="text" class="input-block-level" ng-model="problem.url" placeholder="URL (Optional)">
+        <input type="text" class="input-block-level" ng-model="problem.description" autofocus="true" placeholder="Problem Description" required>
+        <input type="text" class="input-block-level" ng-model="problem.customerName" placeholder="Customer Name" required>
+        <input type="email" class="input-block-level" ng-model="problem.customerEmail" placeholder="Customer Email" required>
+        <input type="text" class="input-block-level" ng-model="problem.customerCompany" placeholder="Customer Company" required>
+        <input type="number" class="input-block-level" ng-model="problem.accountId" placeholder="Account ID (if known)" integer>
+        <input type="number" class="input-block-level" ng-model="problem.annualRevenue" placeholder="Account ARR / Opportunity Size" integer>
+        <input type="url" class="input-block-level" ng-model="problem.url" placeholder="URL (Optional)">
         <input type="text" tag-input ng-model="problem.tags"/>
     </form>
 
@@ -18,5 +19,5 @@
 </div>
 <div class="modal-footer">
     <a class="btn" ng-click="dismiss()">Close</a>
-    <a class="btn btn-primary" ng-click="submit(problem); dismiss()">Confirm</a>
+    <a class="btn btn-primary" ng-click="submit(problem, dismiss)">Confirm</a>
 </div>

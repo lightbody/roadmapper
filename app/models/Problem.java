@@ -31,6 +31,7 @@ public class Problem extends Model {
     @Constraints.Required
     public String customerEmail;
 
+    @Constraints.Required
     public String customerCompany;
 
     public Long accountId;

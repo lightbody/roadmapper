@@ -8,6 +8,10 @@ body {
     max-height: 600px;
 }
 
+input.ng-dirty.ng-invalid {
+    border: 1px solid red !important;
+}
+
 .form-big-inputs {
     max-width: 300px;
     padding: 19px 29px 29px;

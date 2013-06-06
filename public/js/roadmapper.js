@@ -20,6 +20,25 @@ Array.prototype.remove = function (from, to) {
                 when('/teams/new', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
                 otherwise({redirectTo: '/login'});
         })
+        .directive('integer', function() {
+            return {
+                require: 'ngModel',
+                link: function(scope, elm, attrs, ctrl) {
+                    ctrl.$parsers.unshift(function(viewValue) {
+                        debugger;
+                        if (/^\-?\d*$/.test(viewValue)) {
+                            // it is valid
+                            ctrl.$setValidity('integer', true);
+                            return viewValue;
+                        } else {
+                            // it is invalid, return undefined (no model update)
+                            ctrl.$setValidity('integer', false);
+                            return undefined;
+                        }
+                    });
+                }
+            };
+        })
         .directive("navbar", function () {
             return {
 
@@ -223,10 +242,12 @@ Array.prototype.remove = function (from, to) {
     }
 
     function ProblemsCtrl($scope, $http, $location) {
-        $scope.submit = function (problem) {
+        $scope.submit = function (problem, modalDismiss) {
             $http.post('/problems', problem)
                 .success(function (returnedProblem) {
-                    $scope.problems.push(returnedProblem);
+                    $scope.openProblems.push(returnedProblem);
+
+                    modalDismiss();
                 })
                 .error(function () {
                     debugger;
