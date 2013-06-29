@@ -82,14 +82,11 @@ Array.prototype.remove = function (from, to) {
             }
         })
         .directive('tagInput', function($http){
-            console.log("in directive function");
             return {
                 template: '<input type="hidden" style="width:300px" placeholder="placeholder...">',
                 replace: true,
                 require: '?ngModel',
                 link: function ( scope, element, attrs, ngModel ){
-                    console.log("in link function");
-
                     var drivenByModel = false;
 
                     $(element).select2({
@@ -160,11 +157,10 @@ Array.prototype.remove = function (from, to) {
             }
 
             if (sessionId != null) {
+                $http.defaults.headers.common['X-Session-ID'] = sessionId;
+                $cookieStore.put("session.id", sessionId);
                 $http.get("/sessions/" + sessionId)
                     .success(function (data) {
-                        $http.defaults.headers.common['X-Session-ID'] = data.id;
-                        $cookieStore.put("session.id", data.id);
-
                         $rootScope.user = data.user;
                     })
                     .error(function () {
@@ -239,43 +235,6 @@ Array.prototype.remove = function (from, to) {
                     debugger;
                 });
         }
-    }
-
-    function ProblemsCtrl($scope, $http, $location) {
-        $scope.submit = function (problem, modalDismiss) {
-            $http.post('/problems', problem)
-                .success(function (returnedProblem) {
-                    $scope.openProblems.push(returnedProblem);
-
-                    modalDismiss();
-                })
-                .error(function () {
-                    debugger;
-                });
-        };
-
-        $scope.editProblem = function(problem) {
-            $scope.selectedProblem = problem;
-            $http.get('/problems/' + problem.id)
-                .success(function(problemWithTags) {
-                    $scope.selectedProblem = problemWithTags;
-                });
-        };
-
-        $scope.saveProblem = function(problem) {
-            $http.put('/problems/' + problem.id, problem)
-                .success(function() {
-                    //todo
-                })
-                .error(function() {
-                    debugger;
-                })
-        };
-
-        $http.get('/problems/open')
-            .success(function (problems) {
-                $scope.openProblems = problems;
-            });
     }
 
     function FeaturesCtrl($scope, $http, $location) {
