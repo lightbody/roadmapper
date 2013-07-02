@@ -6,7 +6,7 @@ Array.prototype.remove = function (from, to) {
 };
 
 (function () {
-    angular.module('roadmapper', ["ngCookies", "$strap", "ui.select2"]).
+    angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         config(function ($routeProvider) {
             $routeProvider.
                 when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).

@@ -1,24 +1,11 @@
 console.log("problems.js loading");
 
-function ProblemsCtrl($scope, $http, $location, $modal, $q) {
-    // Create modal (returns a promise since it may have to perform an http request)
-    var newProblemModalPromise = $modal({
-        template: 'templates/new-problem.html',
-        persist: true,
-        show: false,
-        backdrop: 'static',
-        scope: $scope
-    });
-
-    // Toggle modal
+function ProblemsCtrl($scope, $http) {
     $scope.showNewProblemModal = function() {
-        $q.when(newProblemModalPromise).then(function(modalEl) {
-            modalEl.modal('show');
-        });
+        $scope.showNewProblem = true;
     };
 
-
-    $scope.createProblem = function (problem, modalDismiss) {
+    $scope.createProblem = function (problem) {
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
         copy.tags = [];
@@ -28,22 +15,22 @@ function ProblemsCtrl($scope, $http, $location, $modal, $q) {
             .success(function (returnedProblem) {
                 $scope.openProblems.push(returnedProblem);
 
-                modalDismiss();
+                $scope.showNewProblem = false;
             })
             .error(function () {
                 debugger;
             });
     };
 
-    // Create modal (returns a promise since it may have to perform an http request)
-    var viewProblemModalPromise = $modal({
-        template: 'templates/view-problem.html',
-        persist: true,
-        show: false,
-        backdrop: 'static',
-        scope: $scope
-    });
+    $scope.closeNewProblem = function() {
+        $scope.newProblem = null;
+        $scope.showNewProblem = false;
+    };
 
+    $scope.modalOptions = {
+        backdropFade: true,
+        dialogFade:true
+    };
 
     $scope.editProblem = function(problem) {
         $scope.selectedProblem = problem;
@@ -55,9 +42,7 @@ function ProblemsCtrl($scope, $http, $location, $modal, $q) {
                 rawTags.map(function(tag) {problemWithTags.tags.push({id: tag, text: tag})});
 
                 $scope.selectedProblem = problemWithTags;
-                $q.when(viewProblemModalPromise).then(function(modalEl) {
-                    modalEl.modal('show');
-                });
+                $scope.showViewProblem = true;
             });
     };
 
@@ -70,10 +55,16 @@ function ProblemsCtrl($scope, $http, $location, $modal, $q) {
         $http.put('/problems/' + problem.id, copy)
             .success(function() {
                 //todo
+                $scope.showViewProblem = false;
             })
             .error(function() {
                 debugger;
             })
+    };
+
+    $scope.closeViewProblem = function() {
+
+        $scope.showViewProblem = false;
     };
 
     $scope.select2Options = {
