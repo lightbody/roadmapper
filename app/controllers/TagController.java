@@ -15,7 +15,7 @@ import java.util.Set;
 @Security.Authenticated(Secured.class)
 public class TagController extends Controller {
     public static Result search(String query) {
-        SqlQuery q = Ebean.createSqlQuery("select distinct tag from (select tag from problem_tags where tag like :like union select tag from feature_tags where tag like :like) t");
+        SqlQuery q = Ebean.createSqlQuery("select distinct tag from (select tag from problem_tags where tag like :like union select tag from feature_tags where tag like :like) t order by tag");
         q.setParameter("like", "%" + query + "%");
         List<SqlRow> rows = q.findList();
         Set<String> tags = new HashSet<>();

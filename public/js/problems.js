@@ -29,7 +29,8 @@ function ProblemsCtrl($scope, $http) {
 
     $scope.modalOptions = {
         backdropFade: true,
-        dialogFade:true
+        dialogFade: true,
+        dialogClass: 'modal modal-problem'
     };
 
     $scope.editProblem = function(problem) {

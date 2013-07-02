@@ -29,16 +29,38 @@
     </div>
     <div class="modal-body">
 
-        <form class="form-big-inputs">
-            <h2>New Problem</h2>
-            <input type="text" class="input-block-level" ng-model="newProblem.description" autofocus="true" placeholder="Problem Description" required>
-            <input type="text" class="input-block-level" ng-model="newProblem.customerName" placeholder="Customer Name" required>
-            <input type="email" class="input-block-level" ng-model="newProblem.customerEmail" placeholder="Customer Email" required>
-            <input type="text" class="input-block-level" ng-model="newProblem.customerCompany" placeholder="Customer Company" required>
-            <input type="number" class="input-block-level" ng-model="newProblem.accountId" placeholder="Account ID (if known)" integer>
-            <input type="number" class="input-block-level" ng-model="newProblem.annualRevenue" placeholder="Account ARR / Opportunity Size" integer>
-            <input type="url" class="input-block-level" ng-model="newProblem.url" placeholder="URL (Optional)">
-            <input type="text" ui-select2="select2Options" ng-model="newProblem.tags" style="width:300px"/>
+        <form>
+
+            <div class="controls">
+                <textarea class="span7" rows="10" ng-model="newProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span3" ng-model="newProblem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="newProblem.customerCompany" placeholder="Customer Company" required>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span3" ng-model="newProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="text" class="span2" ng-model="newProblem.accountId" placeholder="Account ID (if known)" integer>
+
+                <input type="text" class="span2" ng-model="newProblem.annualRevenue" placeholder="ARR" integer>
+
+                <!--<div class="span2 controls input-prepend input-append">-->
+                <!--<span class="add-on">$</span>-->
+                <!--<input type="text" ng-model="newProblem.annualRevenue" placeholder="ARR">-->
+                <!--<span class="add-on">.00</span>-->
+                <!--</div>-->
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span7" ng-model="newProblem.url" placeholder="URL (Optional)">
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span7" ui-select2="select2Options" ng-model="newProblem.tags"/>
+            </div>
+
         </form>
 
         <span class="error" ng-show="error == null">{{error}}</span>
@@ -56,15 +78,36 @@
     </div>
     <div class="modal-body">
 
-        <form class="form-big-inputs">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.description" autofocus="true" placeholder="Problem Description">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.customerName" placeholder="Customer Name">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.customerEmail" placeholder="Customer Email">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.customerCompany" placeholder="Customer Company">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.annualRevenue" placeholder="Account ARR / Opportunity Size">
-            <input type="text" class="input-block-level" ng-model="selectedProblem.url" placeholder="URL (Optional)">
-            <input type="text" ui-select2="select2Options" ng-model="selectedProblem.tags" style="width:300px"/>
+        <form>
+            <div class="controls">
+                <textarea class="span7" rows="10" ng-model="selectedProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span3" ng-model="selectedProblem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="selectedProblem.customerCompany" placeholder="Customer Company" required>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
+
+                <input type="text" class="span2" ng-model="selectedProblem.annualRevenue" placeholder="ARR" integer>
+
+                <!--<div class="span2 controls input-prepend input-append">-->
+                    <!--<span class="add-on">$</span>-->
+                    <!--<input type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR">-->
+                    <!--<span class="add-on">.00</span>-->
+                <!--</div>-->
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span7" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span7" ui-select2="select2Options" ng-model="selectedProblem.tags"/>
+            </div>
         </form>
 
         <span class="error" ng-show="error == null">{{error}}</span>
