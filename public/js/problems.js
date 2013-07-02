@@ -1,6 +1,23 @@
 console.log("problems.js loading");
 
-function ProblemsCtrl($scope, $http, $location) {
+function ProblemsCtrl($scope, $http, $location, $modal, $q) {
+    // Create modal (returns a promise since it may have to perform an http request)
+    var newProblemModalPromise = $modal({
+        template: 'templates/new-problem.html',
+        persist: true,
+        show: false,
+        backdrop: 'static',
+        scope: $scope
+    });
+
+    // Toggle modal
+    $scope.showNewProblemModal = function() {
+        $q.when(newProblemModalPromise).then(function(modalEl) {
+            modalEl.modal('show');
+        });
+    };
+
+
     $scope.createProblem = function (problem, modalDismiss) {
         $http.post('/problems', problem)
             .success(function (returnedProblem) {
@@ -13,11 +30,24 @@ function ProblemsCtrl($scope, $http, $location) {
             });
     };
 
+    // Create modal (returns a promise since it may have to perform an http request)
+    var viewProblemModalPromise = $modal({
+        template: 'templates/view-problem.html',
+        persist: true,
+        show: false,
+        backdrop: 'static',
+        scope: $scope
+    });
+
+
     $scope.editProblem = function(problem) {
         $scope.selectedProblem = problem;
         $http.get('/problems/' + problem.id)
             .success(function(problemWithTags) {
                 $scope.selectedProblem = problemWithTags;
+                $q.when(viewProblemModalPromise).then(function(modalEl) {
+                    modalEl.modal('show');
+                });
             });
     };
 
@@ -30,8 +60,6 @@ function ProblemsCtrl($scope, $http, $location) {
                 debugger;
             })
     };
-
-    console.log("getting /problems/open");
 
     $http.get('/problems/open')
         .success(function (problems) {
