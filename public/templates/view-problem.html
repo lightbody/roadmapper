@@ -11,8 +11,7 @@
         <input type="text" class="input-block-level" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)">
         <input type="text" class="input-block-level" ng-model="selectedProblem.annualRevenue" placeholder="Account ARR / Opportunity Size">
         <input type="text" class="input-block-level" ng-model="selectedProblem.url" placeholder="URL (Optional)">
-        <input type="text" tag-input ng-model="selectedProblem.tags"/>
-        {{selectedProblem.tags}}
+        <input type="text" ui-select2="select2Options" ng-model="selectedProblem.tags" style="width:300px"/>
     </form>
 
     <span class="error" ng-show="error == null">{{error}}</span>

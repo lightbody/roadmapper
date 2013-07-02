@@ -6,7 +6,7 @@ Array.prototype.remove = function (from, to) {
 };
 
 (function () {
-    angular.module('roadmapper', ["ngCookies", "$strap"]).
+    angular.module('roadmapper', ["ngCookies", "$strap", "ui.select2"]).
         config(function ($routeProvider) {
             $routeProvider.
                 when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
@@ -25,7 +25,6 @@ Array.prototype.remove = function (from, to) {
                 require: 'ngModel',
                 link: function(scope, elm, attrs, ctrl) {
                     ctrl.$parsers.unshift(function(viewValue) {
-                        debugger;
                         if (/^\-?\d*$/.test(viewValue)) {
                             // it is valid
                             ctrl.$setValidity('integer', true);
@@ -80,60 +79,6 @@ Array.prototype.remove = function (from, to) {
                 },
                 templateUrl: "templates/navbar.html"
             }
-        })
-        .directive('tagInput', function($http){
-            return {
-                template: '<input type="hidden" style="width:300px" placeholder="placeholder...">',
-                replace: true,
-                require: '?ngModel',
-                link: function ( scope, element, attrs, ngModel ){
-                    var drivenByModel = false;
-
-                    $(element).select2({
-                        multiple: true,
-                        createSearchChoice: function(val) {
-                            if (val.length>0) {
-                                return {id: val, text: val};
-                            } else {
-                                return null;
-                            }
-                        },
-                        tags: [],
-                        tokenSeparators: [",", " "],
-                        query: function (query) {
-                            console.log("in query function");
-                            $http.get("/tags?query=" + query.term)
-                                .success(function (tags) {
-                                    var results = [];
-                                    tags.map(function(tag) {results.push({id: tag, text: tag})});
-                                    query.callback({
-                                        results: results
-                                    });
-                                })
-                                .error(function () {
-                                    debugger;
-                                });
-                        },
-                        formatNoMatches: function(){ return 'empty';}
-                    }).on('change', function(e){
-                            console.log("in change function");
-                            if (!drivenByModel) {
-                                ngModel.$setViewValue(e.val);
-                                scope.$apply();
-                            } else {
-                            }
-                            drivenByModel = false;
-                        });
-
-
-                    ngModel.$render = function(){
-                        console.log("in render function");
-                        drivenByModel = true;
-                        var data = ngModel.$viewValue;
-                        $(element).val(data).trigger('change');
-                    };
-                }
-            };
         })
         .filter('truncate', function() {
             return function(input, length) {
