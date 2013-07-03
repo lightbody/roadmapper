@@ -128,8 +128,10 @@ public class ProblemController extends Controller {
         }
 
         if (tagsSeen > 0) {
+            System.out.println("tagsSeen = " + tagsSeen);
             Set<Long> problemIds = new HashSet<>();
             for (Long problemId : tagMatchCount.keySet()) {
+                System.out.println("problemId  = " + problemId + "; count = " + tagMatchCount.get(problemId).size());
                 if (tagMatchCount.get(problemId).size() == tagsSeen) {
                     problemIds.add(problemId);
                 }
@@ -137,6 +139,9 @@ public class ProblemController extends Controller {
 
             if (!problemIds.isEmpty()) {
                 where.in("id", problemIds);
+            } else {
+                // nothing matched, game over man!
+                return ok();
             }
         }
 
