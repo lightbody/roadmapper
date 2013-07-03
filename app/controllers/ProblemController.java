@@ -54,9 +54,13 @@ public class ProblemController extends Controller {
         JsonNode json = request().body().asJson();
         Problem update = Json.fromJson(json, Problem.class);
         original.description = update.description;
+        original.customerName = update.customerName;
+        original.customerEmail = update.customerEmail;
+        original.customerCompany = update.customerCompany;
         original.accountId = update.accountId;
         original.annualRevenue = update.annualRevenue;
         original.url = update.url;
+        original.state = update.state;
 
         // todo: feature???
         original.save();

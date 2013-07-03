@@ -1,6 +1,6 @@
 console.log("problems.js loading");
 
-function ProblemsCtrl($scope, $http) {
+function ProblemsCtrl($scope, $http, $routeParams) {
     $scope.search = function () {
         $http.get('/problems', {
             params: {
@@ -180,6 +180,13 @@ function ProblemsCtrl($scope, $http) {
 
         $http.put('/problems/' + problem.id, copy)
             .success(function() {
+                for (var i = 0; i < $scope.problems.length; i++) {
+                    if ($scope.problems[i].id == problem.id) {
+                        $scope.problems[i] = problem;
+                        break;
+                    }
+                }
+
                 //todo
                 $scope.showViewProblem = false;
             })
@@ -220,4 +227,9 @@ function ProblemsCtrl($scope, $http) {
         },
         formatNoMatches: function(){ return 'empty';}
     };
+
+    if ($routeParams.problemId) {
+        $scope.editProblem({id: $routeParams.problemId});
+    }
+
 }

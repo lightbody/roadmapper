@@ -18,6 +18,7 @@ window.onerror = function(msg) {
                 when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
                 when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
                 when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
+                when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
                 when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/features/new', {controller: NewFeatureCtrl, templateUrl: 'templates/new-feature.html'}).
                 when('/categories', {controller: CategoriesCtrl, templateUrl: 'templates/categories.html'}).
@@ -85,6 +86,20 @@ window.onerror = function(msg) {
                 templateUrl: "templates/navbar.html"
             }
         })
+        .filter('noFractionCurrency',
+            [ '$filter', '$locale',
+                function (filter, locale) {
+                    var currencyFilter = filter('currency');
+                    var formats = locale.NUMBER_FORMATS;
+                    return function (amount, currencySymbol) {
+                        var value = currencyFilter(amount, currencySymbol);
+                        var sep = value.indexOf(formats.DECIMAL_SEP);
+                        if (amount >= 0) {
+                            return value.substring(0, sep);
+                        }
+                        return value.substring(0, sep) + ')';
+                    };
+                } ])
         .filter('truncate', function() {
             return function(input, length) {
                 if (input.length + 4 < length) {

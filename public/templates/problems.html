@@ -8,21 +8,23 @@
     </div>
 </form>
 
-<table>
+<table id="problem-list" class="table table-striped table-hover">
     <thead>
     <tr>
-        <th>Reporter</th>
-        <th>Company</th>
         <th>Date</th>
         <th>Description</th>
+        <th>Company</th>
+        <th>ARR</th>
+        <th>Reporter</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="problem in problems">
-        <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
-        <td>{{problem.customerCompany}}</td>
         <td>{{problem.date | date}}</td>
         <td><a ng-click="editProblem(problem)">{{problem.description | truncate:30}}</a></td>
+        <td><a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" target="_blank">{{problem.customerCompany}}</a></td>
+        <td style="text-align: right">{{problem.annualRevenue | noFractionCurrency}}</td>
+        <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
     </tr>
     </tbody>
 </table>
@@ -106,11 +108,16 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span7" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+                <input type="text" class="span4" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+                <select class="span3" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
+            </div>
+
+            <div class="controls controls-row" style="padding-bottom: 10px">
+                <input type="text" class="span7" ui-select2="select2Options" ng-model="selectedProblem.tags"/>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span7" ui-select2="select2Options" ng-model="selectedProblem.tags"/>
+
             </div>
         </form>
 
