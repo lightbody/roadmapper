@@ -1,9 +1,8 @@
 package controllers;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.SqlQuery;
-import com.avaje.ebean.SqlRow;
-import com.avaje.ebean.SqlUpdate;
+import com.avaje.ebean.*;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import models.Problem;
 import models.ProblemState;
 import models.User;
@@ -16,6 +15,7 @@ import play.mvc.Security;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Security.Authenticated(Secured.class)
 public class ProblemController extends Controller {
@@ -81,9 +81,66 @@ public class ProblemController extends Controller {
     }
 
     public static Result find() {
-        List<Problem> problems = Problem.find.all();
+        if (!request().queryString().containsKey("query")) {
+            // todo: not sure this is a good idea, might get too large
+            return ok(Json.toJson(Problem.find.all()));
+        }
 
-        return ok(Json.toJson(problems));
+        String query = request().queryString().get("query")[0];
+
+        ExpressionList<Problem> where = Problem.find.where();
+        String[] terms = query.split(",");
+
+        int tagsSeen = 0;
+        Multimap<Long, Boolean> tagMatchCount = LinkedListMultimap.create();
+
+        for (String term : terms) {
+            if (term.startsWith("state:")) {
+                ProblemState state = ProblemState.valueOf(term.substring(6).toUpperCase());
+                where.eq("state", state);
+            } else if (term.startsWith("description:")) {
+                where.ilike("description", "%" + term.substring(12) + "%");
+            } else if (term.startsWith("company:")) {
+                where.ilike("customerCompany", "%" + term.substring(8) + "%");
+            } else if (term.startsWith("email:")) {
+                where.ilike("customerEmail", "%" + term.substring(6) + "%");
+            } else if (term.startsWith("user:")) {
+                where.ilike("customerName", "%" + term.substring(5) + "%");
+            } else if (term.startsWith("accountId:")) {
+                try {
+                    long accountId = Long.parseLong(term.substring(10));
+                    where.eq("accountId", accountId);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            } else {
+                // no prefix? assume a tag then
+                tagsSeen++;
+
+                SqlQuery tagQuery = Ebean.createSqlQuery("select problem_id from problem_tags where tag = :tag");
+                tagQuery.setParameter("tag", term);
+                List<SqlRow> list = tagQuery.findList();
+                for (SqlRow row : list) {
+                    Long problemId = row.getLong("problem_id");
+                    tagMatchCount.put(problemId, true);
+                }
+            }
+        }
+
+        if (tagsSeen > 0) {
+            Set<Long> problemIds = new HashSet<>();
+            for (Long problemId : tagMatchCount.keySet()) {
+                if (tagMatchCount.get(problemId).size() == tagsSeen) {
+                    problemIds.add(problemId);
+                }
+            }
+
+            if (!problemIds.isEmpty()) {
+                where.in("id", problemIds);
+            }
+        }
+
+        return ok(Json.toJson(where.findList()));
     }
 
     public static Result create() {
@@ -92,7 +149,9 @@ public class ProblemController extends Controller {
         Problem problem = Json.fromJson(json, Problem.class);
         problem.date = new Date();
         problem.reporter = User.findByEmail(request().username());
+
         problem.state = ProblemState.OPEN;
+
         problem.save();
         insertTags(problem);
 

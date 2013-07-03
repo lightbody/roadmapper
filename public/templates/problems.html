@@ -2,6 +2,15 @@
 
 <hr/>
 
+<form id="problem-search" class="form-search">
+    <div class="input-append">
+        <input type="text" class="span5 search-query" ng-model="query" ui-select2="querySelect2Options">
+        <button type="submit" class="btn" ng-click="search()">Search</button>
+    </div>
+</form>
+
+{{query}}
+
 <h1>Open Problems</h1>
 
 <table>
@@ -14,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="problem in openProblems">
+    <tr ng-repeat="problem in problems">
         <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
         <td>{{problem.customerCompany}}</td>
         <td>{{problem.date | date}}</td>
@@ -44,13 +53,13 @@
                 <input type="text" class="span3" ng-model="newProblem.customerEmail" placeholder="Customer Email" required>
                 <input type="text" class="span2" ng-model="newProblem.accountId" placeholder="Account ID (if known)" integer>
 
-                <input type="text" class="span2" ng-model="newProblem.annualRevenue" placeholder="ARR" integer>
-
-                <!--<div class="span2 controls input-prepend input-append">-->
-                <!--<span class="add-on">$</span>-->
-                <!--<input type="text" ng-model="newProblem.annualRevenue" placeholder="ARR">-->
-                <!--<span class="add-on">.00</span>-->
-                <!--</div>-->
+                <div class="span2">
+                    <div class="controls input-prepend input-append">
+                        <span class="add-on">$</span>
+                        <input type="text" class="arr-field" ng-model="newProblem.annualRevenue" placeholder="ARR">
+                        <span class="add-on">.00</span>
+                    </div>
+                </div>
             </div>
 
             <div class="controls controls-row">
@@ -92,13 +101,13 @@
                 <input type="text" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
                 <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
 
-                <input type="text" class="span2" ng-model="selectedProblem.annualRevenue" placeholder="ARR" integer>
-
-                <!--<div class="span2 controls input-prepend input-append">-->
-                    <!--<span class="add-on">$</span>-->
-                    <!--<input type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR">-->
-                    <!--<span class="add-on">.00</span>-->
-                <!--</div>-->
+                <div class="span2">
+                    <div class="controls input-prepend input-append">
+                        <span class="add-on">$</span>
+                        <input class="arr-field" type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR">
+                        <span class="add-on">.00</span>
+                    </div>
+                </div>
             </div>
 
             <div class="controls controls-row">
