@@ -90,12 +90,20 @@ function ProblemsCtrl($scope, $http) {
                 results.push({id: "accountId:" + term, text: "<strong>Account ID</strong>: " + term});
             }
 
-            // status matching
-            enumProblemStates.map(function(e) {
-                if (e.match(new RegExp(".*" + term + ".*", "i"))) {
-                    results.push({id: "state:" + e, text: "<strong>State</strong>: " + e});
+            // status matching -- only do it when we haven't already selected a state
+            var hasStateQuery = false;
+            $scope.query.map(function(e) {
+                if (e.id.indexOf("state:") == 0) {
+                    hasStateQuery = true;
                 }
             });
+            if (!hasStateQuery) {
+                enumProblemStates.map(function(e) {
+                    if (e.match(new RegExp(".*" + term + ".*", "i"))) {
+                        results.push({id: "state:" + e, text: "<strong>State</strong>: " + e});
+                    }
+                });
+            }
 
             $http.get("/tags?query=" + term)
                 .success(function (tags) {
@@ -123,8 +131,6 @@ function ProblemsCtrl($scope, $http) {
 
     $scope.createProblem = function (problem) {
 
-        throw "blah blah";
-
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
         copy.tags = [];
@@ -132,7 +138,7 @@ function ProblemsCtrl($scope, $http) {
 
         $http.post('/problems', copy)
             .success(function (returnedProblem) {
-                $scope.openProblems.push(returnedProblem);
+                $scope.problems.push(returnedProblem);
 
                 $scope.showNewProblem = false;
             })
