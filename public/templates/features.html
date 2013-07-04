@@ -16,9 +16,9 @@
         <th>Revenue</th>
         <th>Retention</th>
         <th>Positioning</th>
-        <th>Score</th>
-        <th>Problems</th>
-        <th>ARR</th>
+        <th class="text-right">Score</th>
+        <th class="text-right">Problems</th>
+        <th class="text-right">ARR</th>
         <th>Quarter</th>
         <th>Team</th>
         <th>Last Modified</th>
@@ -32,9 +32,9 @@
         <td>{{feature.revenueBenefit}}</td>
         <td>{{feature.retentionBenefit}}</td>
         <td>{{feature.positioningBenefit}}</td>
-        <td>???</td>
-        <td>???</td>
-        <td>???</td>
+        <td class="text-right">{{feature.score}}</td>
+        <td class="text-right">{{feature.problemCount}}</td>
+        <td class="text-right">{{feature.problemRevenue | noFractionCurrency}}</td>
         <td>{{feature.quarter}}</td>
         <td>{{feature.team.name}}</td>
         <td><a href="mailto:{{feature.lastModifiedBy.email}}">{{feature.lastModifiedBy.name}}</a> on {{feature.lastModified | date}}</td>

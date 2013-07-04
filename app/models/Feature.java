@@ -44,7 +44,14 @@ public class Feature extends Model {
     @Enumerated(EnumType.STRING)
     public Size positioningBenefit;
 
-    public Integer score;
+    @Transient
+    public transient Integer score;
+
+    @Transient
+    public transient Integer problemCount;
+
+    @Transient
+    public transient Integer problemRevenue;
 
     @ManyToOne
     public Team team;

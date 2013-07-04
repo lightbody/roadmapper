@@ -35,6 +35,10 @@ form .select2-container {
     text-align: right;
 }
 
+td.text-right, th.text-right {
+    text-align: right;
+}
+
 /*
 todo: can't do this until figure out how to make the border blend nicely with the suggested values
 #problem-search ul.select2-choices {

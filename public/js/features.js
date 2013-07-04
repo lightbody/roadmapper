@@ -194,10 +194,10 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         feature.tags.map(function(tag) {copy.tags.push(tag.id)});
 
         $http.put('/features/' + feature.id, copy)
-            .success(function() {
+            .success(function(returnedFeature) {
                 for (var i = 0; i < $scope.features.length; i++) {
                     if ($scope.features[i].id == feature.id) {
-                        $scope.features[i] = feature;
+                        $scope.features[i] = returnedFeature;
                         break;
                     }
                 }

@@ -3,9 +3,7 @@ package controllers;
 import com.avaje.ebean.*;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import models.Feature;
-import models.FeatureState;
-import models.User;
+import models.*;
 import org.codehaus.jackson.JsonNode;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -13,12 +11,20 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Security.Authenticated(Secured.class)
 public class FeatureController extends Controller {
+
+    public static final double WEIGHT_ENG_COST = 2;
+    public static final double WEIGHT_REVENUE_BENEFIT = 3;
+    public static final double WEIGHT_RETENTION_BENEFIT = 1.5;
+    public static final double WEIGHT_POSITIONING_BENEFIT = 2.5;
+    public static final double MAX_SCORE = WEIGHT_ENG_COST * Size.NONE.getCostWeight() +
+            WEIGHT_REVENUE_BENEFIT * Size.XLARGE.getBenefitWeight() +
+            WEIGHT_RETENTION_BENEFIT * Size.XLARGE.getBenefitWeight() +
+            WEIGHT_POSITIONING_BENEFIT * Size.XLARGE.getBenefitWeight();
+
     public static Result getFeature(Long id) {
         Feature feature = Feature.find.byId(id);
 
@@ -70,14 +76,14 @@ public class FeatureController extends Controller {
         delete.execute();
         insertTags(update);
 
-        return ok();
+        return ok(Json.toJson(dressFeature(original)));
     }
 
 
     public static Result find() {
         if (!request().queryString().containsKey("query")) {
             // todo: not sure this is a good idea, might get too large
-            return ok(Json.toJson(Feature.find.all()));
+            return ok(Json.toJson(dressFeatures(Feature.find.all())));
         }
 
         String query = request().queryString().get("query")[0];
@@ -132,7 +138,47 @@ public class FeatureController extends Controller {
             }
         }
 
-        return ok(Json.toJson(where.findList()));
+        return ok(Json.toJson(dressFeatures(where.findList())));
+        //return ok(Json.toJson(where.findList()));
+    }
+
+    public static Feature dressFeature(Feature feature) {
+        return dressFeatures(Collections.singletonList(feature)).get(0);
+    }
+
+    public static List<Feature> dressFeatures(List<Feature> features) {
+        // first, get all the feature IDs so we can get all problems in a single query
+        final Map<Long, Feature> featureMap = new HashMap<>();
+        for (Feature feature : features) {
+            featureMap.put(feature.id, feature);
+
+            // also calculate a score
+            double score = 0d;
+            score += WEIGHT_ENG_COST * (feature.engineeringCost == null ? 0 : feature.engineeringCost.getCostWeight());
+            score += WEIGHT_REVENUE_BENEFIT * (feature.revenueBenefit == null ? 0 : feature.revenueBenefit.getBenefitWeight());
+            score += WEIGHT_RETENTION_BENEFIT * (feature.retentionBenefit == null ? 0 : feature.retentionBenefit.getBenefitWeight());
+            score += WEIGHT_POSITIONING_BENEFIT * (feature.positioningBenefit == null ? 0 : feature.positioningBenefit.getBenefitWeight());
+
+            // normalize to max score
+            feature.score = (int) (score / MAX_SCORE * 100);
+        }
+
+        // now query all problems
+        List<Problem> problems = Problem.find.where().in("feature_id", featureMap.keySet()).findList();
+        for (Problem problem : problems) {
+            Feature feature = featureMap.get(problem.feature.id);
+            if (feature.problemCount == null) {
+                feature.problemCount = 0;
+            }
+            if (feature.problemRevenue == null) {
+                feature.problemRevenue = 0;
+            }
+
+            feature.problemCount++;
+            feature.problemRevenue += problem.annualRevenue;
+        }
+
+        return features;
     }
 
     public static Result create() {
@@ -146,7 +192,7 @@ public class FeatureController extends Controller {
         feature.save();
         insertTags(feature);
 
-        return ok(Json.toJson(feature));
+        return ok(Json.toJson(dressFeature(feature)));
     }
 
     private static void insertTags(Feature feature) {
