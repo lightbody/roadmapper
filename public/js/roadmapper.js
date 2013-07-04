@@ -5,11 +5,6 @@ Array.prototype.remove = function (from, to) {
     return this.push.apply(this, rest);
 };
 
-window.onerror = function(msg) {
-    console.log("?");
-    console.log("!" + msg);
-};
-
 (function () {
     angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         config(function ($routeProvider) {

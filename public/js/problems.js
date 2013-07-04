@@ -1,6 +1,14 @@
 console.log("problems.js loading");
 
-function ProblemsCtrl($scope, $http, $routeParams) {
+function ProblemsCtrl($scope, $http, $routeParams, $location, $route) {
+    // this ensures that the modal dialog boxes don't actually cause the route to cause a new controller reload
+    // see http://stackoverflow.com/questions/12422611/angularjs-paging-with-location-path-but-no-ngview-reload and
+    // http://stackoverflow.com/questions/17460179/clean-urls-with-angularjs-and-modal-dialog-boxes
+    var lastRoute = $route.current;
+    $scope.$on('$locationChangeSuccess', function(event) {
+        $route.current = lastRoute;
+    });
+
     $scope.search = function () {
         $http.get('/problems', {
             params: {
@@ -126,6 +134,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
 
 
     $scope.showNewProblemModal = function() {
+        $location.path("/problems/new");
         $scope.showNewProblem = true;
     };
 
@@ -139,8 +148,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
         $http.post('/problems', copy)
             .success(function (returnedProblem) {
                 $scope.problems.push(returnedProblem);
-
-                $scope.showNewProblem = false;
+                $scope.closeNewProblem();
             })
             .error(function () {
                 debugger;
@@ -148,6 +156,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
     };
 
     $scope.closeNewProblem = function() {
+        $location.path("/problems");
         $scope.newProblem = null;
         $scope.showNewProblem = false;
     };
@@ -169,6 +178,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
 
                 $scope.selectedProblem = problemWithTags;
                 $scope.showViewProblem = true;
+                $location.path("/problems/" + problem.id);
             });
     };
 
@@ -187,8 +197,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
                     }
                 }
 
-                //todo
-                $scope.showViewProblem = false;
+                $scope.closeViewProblem();
             })
             .error(function() {
                 debugger;
@@ -196,7 +205,7 @@ function ProblemsCtrl($scope, $http, $routeParams) {
     };
 
     $scope.closeViewProblem = function() {
-
+        $location.path("/problems");
         $scope.showViewProblem = false;
     };
 
@@ -229,7 +238,13 @@ function ProblemsCtrl($scope, $http, $routeParams) {
     };
 
     if ($routeParams.problemId) {
-        $scope.editProblem({id: $routeParams.problemId});
+        if ($routeParams.problemId == "new") {
+            $scope.showNewProblemModal();
+        } else if (/^\-?\d*$/.test($routeParams.problemId)) {
+            $scope.editProblem({id: $routeParams.problemId});
+        } else {
+            $location.path("/problems");
+        }
     }
 
 }
