@@ -33,6 +33,8 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
             return "00000" + tag;
         } else if (tag.indexOf("accountId:") == 0) {
             return "11111" + tag;
+        } else if (tag.indexOf("featureId:") == 0) {
+            return "11112" + tag;
         } else if (tag.indexOf("company:") == 0) {
             return "22222" + tag;
         } else if (tag.indexOf("user:") == 0) {
@@ -99,9 +101,10 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 results.push({id: "email:" + term, text: "<strong>Email</strong>: " + term});
             }
 
-            // if it's a number, match account ID
+            // if it's a number, match account ID and feature ID
             if (/^\-?\d*$/.test(term)) {
                 results.push({id: "accountId:" + term, text: "<strong>Account ID</strong>: " + term});
+                results.push({id: "featureId:" + term, text: "<strong>Feature ID</strong>: " + term});
             }
 
             // status matching -- only do it when we haven't already selected a state
@@ -173,6 +176,10 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         dialogClass: 'modal modal-problem'
     };
 
+    $scope.selectFeature = function(feature) {
+        $location.path("/features/" + feature.id);
+    };
+
     $scope.editProblem = function(problem) {
         $scope.selectedProblem = problem;
         $http.get('/problems/' + problem.id)
@@ -205,10 +212,10 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         }
 
         $http.put('/problems/' + problem.id, copy)
-            .success(function() {
+            .success(function(returnedProblem) {
                 for (var i = 0; i < $scope.problems.length; i++) {
-                    if ($scope.problems[i].id == problem.id) {
-                        $scope.problems[i] = problem;
+                    if ($scope.problems[i].id == returnedProblem.id) {
+                        $scope.problems[i] = returnedProblem;
                         break;
                     }
                 }

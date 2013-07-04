@@ -172,6 +172,11 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         dialogClass: 'modal modal-feature'
     };
 
+    $scope.selectProblems = function(feature) {
+        $rootScope.query = [{id: "featureId:" + feature.id, text: "<strong>Feature</strong>: " + feature.title}]
+        $location.path("/problems");
+    };
+
     $scope.editFeature = function(feature) {
         $scope.selectedFeature = feature;
         $http.get('/features/' + feature.id)

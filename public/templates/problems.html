@@ -15,6 +15,7 @@
         <th>Company</th>
         <th style="text-align: right">ARR</th>
         <th>Customer</th>
+        <th>Feature</th>
         <th>Reporter</th>
         <th>Last Modified</th>
     </tr>
@@ -26,6 +27,7 @@
         <td><a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" target="_blank">{{problem.customerCompany}}</a></td>
         <td style="text-align: right">{{problem.annualRevenue | noFractionCurrency}}</td>
         <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
+        <td><a ng-click="selectFeature(problem.feature)">{{problem.feature.title | truncate:30}}</a></td>
         <td><a href="mailto:{{problem.reporter.email}}">{{problem.reporter.name}}</a></td>
         <td><a href="mailto:{{problem.lastModifiedBy.email}}">{{problem.lastModifiedBy.name}}</a> on {{problem.lastModified | date}}</td>
     </tr>

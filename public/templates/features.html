@@ -33,7 +33,7 @@
         <td>{{feature.retentionBenefit}}</td>
         <td>{{feature.positioningBenefit}}</td>
         <td class="text-right">{{feature.score}}</td>
-        <td class="text-right">{{feature.problemCount}}</td>
+        <td class="text-right"><a ng-click="selectProblems(feature)">{{feature.problemCount}}</a></td>
         <td class="text-right">{{feature.problemRevenue | noFractionCurrency}}</td>
         <td>{{feature.quarter}}</td>
         <td>{{feature.team.name}}</td>

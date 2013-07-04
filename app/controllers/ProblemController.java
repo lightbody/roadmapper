@@ -3,6 +3,7 @@ package controllers;
 import com.avaje.ebean.*;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import models.Feature;
 import models.Problem;
 import models.ProblemState;
 import models.User;
@@ -60,12 +61,12 @@ public class ProblemController extends Controller {
         original.annualRevenue = update.annualRevenue;
         original.url = update.url;
         original.state = update.state;
-        original.feature = update.feature;
-        if (update.feature != null) {
-
+        if (update.feature == null) {
+            original.feature = null;
+        } else {
+            original.feature = Feature.find.byId(update.feature.id);
         }
 
-        // todo: feature???
         original.save();
 
         // delete tag and then re-add
@@ -74,7 +75,7 @@ public class ProblemController extends Controller {
         delete.execute();
         insertTags(update);
 
-        return ok();
+        return ok(Json.toJson(original));
     }
 
     public static Result find() {
@@ -107,6 +108,13 @@ public class ProblemController extends Controller {
                 try {
                     long accountId = Long.parseLong(term.substring(10));
                     where.eq("accountId", accountId);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            } else if (term.startsWith("featureId:")) {
+                try {
+                    long featureId = Long.parseLong(term.substring(10));
+                    where.eq("feature.id", featureId);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
