@@ -1,11 +1,11 @@
 package models;
 
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
-import util.CategoryJsonDeserializer;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 public class Feature extends Model {
@@ -15,13 +15,25 @@ public class Feature extends Model {
     public Long id;
 
     @Constraints.Required
+    public String title;
+
+    @Constraints.Required
     public String description;
+
+    @Constraints.Required
+    @ManyToOne
+    public User creator;
+
+    @Enumerated(EnumType.STRING)
+    public FeatureState state;
+
+    public Timestamp lastModified;
+
+    @ManyToOne
+    public User lastModifiedBy;
 
     @Enumerated(EnumType.STRING)
     public Size engineeringCost;
-
-    @Enumerated(EnumType.STRING)
-    public Size operationalBenefit;
 
     @Enumerated(EnumType.STRING)
     public Size revenueBenefit;
@@ -34,9 +46,11 @@ public class Feature extends Model {
 
     public Integer score;
 
-    @JsonDeserialize(using = CategoryJsonDeserializer.class)
     @ManyToOne
-    public Category category;
+    public Team team;
 
     public Quarter quarter;
+
+    public Set<String> tags;
+
 }

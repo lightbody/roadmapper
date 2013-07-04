@@ -1,5 +1,3 @@
-console.log("problems.js loading");
-
 function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
     // this ensures that the modal dialog boxes don't actually cause the route to cause a new controller reload
     // see http://stackoverflow.com/questions/12422611/angularjs-paging-with-location-path-but-no-ngview-reload and

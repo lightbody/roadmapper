@@ -9,20 +9,17 @@ POST    /users                      controllers.Application.createUser()
 GET     /sessions/:id               controllers.Application.getSession(id)
 
 GET     /problems                   controllers.ProblemController.find()
-GET     /problems/open              controllers.ProblemController.findOpen()
 POST    /problems                   controllers.ProblemController.create()
 GET     /problems/:id               controllers.ProblemController.getProblem(id: Long)
 PUT     /problems/:id               controllers.ProblemController.updateProblem(id: Long)
 
-GET     /features                   controllers.FeatureController.getAll()
+GET     /features                   controllers.FeatureController.find()
 POST    /features                   controllers.FeatureController.create()
+GET     /features/:id               controllers.FeatureController.getFeature(id: Long)
+PUT     /features/:id               controllers.FeatureController.updateFeature(id: Long)
 
 GET     /teams                      controllers.TeamController.getAll()
 POST    /teams                      controllers.TeamController.create()
-
-DELETE  /categories/:id             controllers.CategoryController.delete(id: Long, replacementCategory: Long ?= -1)
-GET     /categories                 controllers.CategoryController.getAll()
-POST    /categories                 controllers.CategoryController.create()
 
 GET     /tags                       controllers.TagController.search(query: String)
 

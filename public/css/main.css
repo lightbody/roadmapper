@@ -19,6 +19,17 @@ form .select2-container {
     max-height: 800px;
 }
 
+.modal-feature {
+    /* new custom width */
+    width: 800px;
+    /* must be half of the width, minus scrollbar on the left (30px) */
+    margin-left: -370px;
+}
+
+.modal-feature .modal-body {
+    max-height: 800px;
+}
+
 .arr-field {
     width: 45%;
     text-align: right;

@@ -21,10 +21,6 @@ import java.util.Set;
 @Security.Authenticated(Secured.class)
 public class ProblemController extends Controller {
 
-    public static Result findOpen() {
-        return findByState(ProblemState.OPEN);
-    }
-
     public static Result getProblem(Long id) {
         Problem problem = Problem.find.byId(id);
 
@@ -68,8 +64,6 @@ public class ProblemController extends Controller {
         // todo: feature???
         original.save();
 
-        System.out.println("!!!!!!!!!!!!!!!!!");
-
         // delete tag and then re-add
         SqlUpdate delete = Ebean.createSqlUpdate("delete from problem_tags where problem_id = :problem_id");
         delete.setParameter("problem_id", id);
@@ -77,14 +71,6 @@ public class ProblemController extends Controller {
         insertTags(update);
 
         return ok();
-    }
-
-    private static Result findByState(ProblemState state) {
-        List<Problem> problems = Problem.find.where()
-                .eq("state", state)
-                .findList();
-
-        return ok(Json.toJson(problems));
     }
 
     public static Result find() {
@@ -155,11 +141,17 @@ public class ProblemController extends Controller {
         return ok(Json.toJson(where.findList()));
     }
 
+    public static Result recommendFeatures(Long id) {
+
+        return ok();
+    }
+
     public static Result create() {
         JsonNode json = request().body().asJson();
 
         Problem problem = Json.fromJson(json, Problem.class);
         problem.date = new Date();
+        problem.lastModified = new Timestamp(problem.date.getTime());
         problem.reporter = problem.lastModifiedBy = User.findByEmail(request().username());
         problem.state = ProblemState.OPEN;
 

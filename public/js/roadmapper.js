@@ -15,8 +15,7 @@ Array.prototype.remove = function (from, to) {
                 when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
                 when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
                 when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
-                when('/features/new', {controller: NewFeatureCtrl, templateUrl: 'templates/new-feature.html'}).
-                when('/categories', {controller: CategoriesCtrl, templateUrl: 'templates/categories.html'}).
+                when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
                 when('/teams/new', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
                 otherwise({redirectTo: '/login'});
@@ -63,10 +62,6 @@ Array.prototype.remove = function (from, to) {
                         $location.path("/features");
                     };
 
-                    $scope.categories = function () {
-                        $location.path("/categories");
-                    };
-
                     $scope.teams = function () {
                         $location.path("/teams");
                     };
@@ -105,8 +100,8 @@ Array.prototype.remove = function (from, to) {
             }
         })
         .run(function ($rootScope, $http, $cookieStore, $location) {
-            console.log("-------------------");
             $rootScope.query = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
+            $rootScope.featureQuery = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
 
             // wire up shared enums
             $rootScope.enumQuarters = enumQuarters;
@@ -139,44 +134,6 @@ Array.prototype.remove = function (from, to) {
             }
         });
 
-    function CategoriesCtrl($scope, $http, $location) {
-        $scope.newCategory = function (category) {
-            $http.post('/categories', category)
-                .success(function (returnedCategory) {
-                    $scope.category = null;
-                    $scope.categories.push(returnedCategory);
-                })
-                .error(function () {
-                    debugger;
-                });
-        };
-
-        $scope.confirmSelection = function (category) {
-            $scope.selectedCategory = category;
-        };
-
-        $scope.deleteCategory = function (category, replacementCategory) {
-            var params = {};
-            if (replacementCategory != null) {
-                params.replacementCategory = replacementCategory;
-            }
-
-            $http.delete('/categories/' + category.id, {
-                params: params
-            }).success(function () {
-                    $scope.replacementCategory = null;
-                    $scope.categories.remove($scope.categories.indexOf(category));
-                }).error(function () {
-                    debugger;
-                });
-        };
-
-        $http.get('/categories')
-            .success(function (categories) {
-                $scope.categories = categories;
-            });
-    }
-
     function TeamsCtrl($scope, $http, $location) {
         $scope.newTeam = function () {
             $location.path("/teams/new");
@@ -193,35 +150,6 @@ Array.prototype.remove = function (from, to) {
             $http.post('/teams', team)
                 .success(function () {
                     $location.path('/teams')
-                })
-                .error(function () {
-                    debugger;
-                });
-        }
-    }
-
-    function FeaturesCtrl($scope, $http, $location) {
-        $scope.newFeature = function () {
-            $location.path("/features/new");
-        };
-
-        $http.get('/features')
-            .success(function (features) {
-                $scope.features = features;
-            });
-    }
-
-    function NewFeatureCtrl($scope, $http, $location) {
-        $http.get("/teams")
-            .success(function (teams) {
-                $scope.teams = teams;
-            });
-
-        $scope.submit = function (feature) {
-            debugger;
-            $http.post('/features', feature)
-                .success(function () {
-                    $location.path('/features')
                 })
                 .error(function () {
                     debugger;
