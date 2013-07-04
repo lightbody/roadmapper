@@ -12,6 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,8 @@ public class ProblemController extends Controller {
 
         JsonNode json = request().body().asJson();
         Problem update = Json.fromJson(json, Problem.class);
+        original.lastModified = new Timestamp(System.currentTimeMillis());
+        original.lastModifiedBy = User.findByEmail(request().username());
         original.description = update.description;
         original.customerName = update.customerName;
         original.customerEmail = update.customerEmail;
@@ -157,8 +160,7 @@ public class ProblemController extends Controller {
 
         Problem problem = Json.fromJson(json, Problem.class);
         problem.date = new Date();
-        problem.reporter = User.findByEmail(request().username());
-
+        problem.reporter = problem.lastModifiedBy = User.findByEmail(request().username());
         problem.state = ProblemState.OPEN;
 
         problem.save();

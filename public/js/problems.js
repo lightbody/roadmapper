@@ -1,25 +1,33 @@
 console.log("problems.js loading");
 
-function ProblemsCtrl($scope, $http, $routeParams, $location, $route) {
+function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
     // this ensures that the modal dialog boxes don't actually cause the route to cause a new controller reload
     // see http://stackoverflow.com/questions/12422611/angularjs-paging-with-location-path-but-no-ngview-reload and
     // http://stackoverflow.com/questions/17460179/clean-urls-with-angularjs-and-modal-dialog-boxes
     var lastRoute = $route.current;
     $scope.$on('$locationChangeSuccess', function(event) {
-        $route.current = lastRoute;
+        if ($location.path().indexOf("/problems") == 0) {
+            $route.current = lastRoute;
+        }
     });
 
+    $scope.queryReturned = true;
     $scope.search = function () {
+        $scope.queryReturned = false;
+
+        // keep a copy of the query on the root scope so we maintain state
+        $rootScope.query = $scope.query;
+
         $http.get('/problems', {
             params: {
                 query: $scope.query.map(function(e) { return e.id } ).join(",")
             }
         }).success(function (problems) {
+                $scope.queryReturned = true;
                 $scope.problems = problems;
             });
     };
 
-    $scope.query = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
     $scope.$watch("query", $scope.search);
 
     var sortHack = function(tag) {

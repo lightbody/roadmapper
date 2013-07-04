@@ -105,6 +105,9 @@ Array.prototype.remove = function (from, to) {
             }
         })
         .run(function ($rootScope, $http, $cookieStore, $location) {
+            console.log("-------------------");
+            $rootScope.query = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
+
             // wire up shared enums
             $rootScope.enumQuarters = enumQuarters;
             $rootScope.enumSizes = enumSizes;

@@ -4,6 +4,7 @@ import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 
@@ -24,6 +25,11 @@ public class Problem extends Model {
     @Constraints.Required
     @ManyToOne
     public User reporter;
+
+    public Timestamp lastModified;
+
+    @ManyToOne
+    public User lastModifiedBy;
 
     @Constraints.Required
     public String customerName;

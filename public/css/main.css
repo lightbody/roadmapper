@@ -15,6 +15,10 @@ form .select2-container {
     margin-left: -375px;
 }
 
+.modal-problem .modal-body {
+    max-height: 800px;
+}
+
 .arr-field {
     width: 45%;
     text-align: right;
