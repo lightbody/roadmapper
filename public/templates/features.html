@@ -10,22 +10,22 @@
 <table id="feature-list" class="table table-striped table-hover" ng-show="queryReturned">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Eng Cost</th>
-        <th>Revenue</th>
-        <th>Retention</th>
-        <th>Positioning</th>
-        <th class="text-right">Score</th>
-        <th class="text-right">Problems</th>
-        <th class="text-right">ARR</th>
-        <th>Quarter</th>
-        <th>Team</th>
-        <th>Last Modified</th>
+        <th><a href="" ng-click="predicate = 'id'; reverse=!reverse">ID</a></th>
+        <th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
+        <th><a href="" ng-click="predicate = 'engineeringCost'; reverse=!reverse">Eng Cost</a></th>
+        <th><a href="" ng-click="predicate = 'revenueBenefit'; reverse=!reverse">Revenue</a></th>
+        <th><a href="" ng-click="predicate = 'retentionBenefit'; reverse=!reverse">Retention</a></th>
+        <th><a href="" ng-click="predicate = 'positioningBenefit'; reverse=!reverse">Positioning</a></th>
+        <th class="text-right"><a href="" ng-click="predicate = 'score'; reverse=!reverse">Score</a></th>
+        <th class="text-right"><a href="" ng-click="predicate = 'problemCount'; reverse=!reverse">Problems</a></th>
+        <th class="text-right"><a href="" ng-click="predicate = 'problemRevenue'; reverse=!reverse">ARR</a></th>
+        <th><a href="" ng-click="predicate = 'quarter'; reverse=!reverse">Quarter</a></th>
+        <th><a href="" ng-click="predicate = 'team.name'; reverse=!reverse">Team</a></th>
+        <th><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Last Modified</a></th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="feature in features">
+    <tr ng-repeat="feature in features | orderBy:predicate:reverse">
         <td>{{feature.id}}</td>
         <td><a ng-click="editFeature(feature)">{{feature.title | truncate:30}}</a></td>
         <td>{{feature.engineeringCost}}</td>

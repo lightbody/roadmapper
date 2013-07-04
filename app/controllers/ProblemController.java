@@ -85,6 +85,10 @@ public class ProblemController extends Controller {
         }
 
         String query = request().queryString().get("query")[0];
+        if (query.equals("")) {
+            // todo: same as above
+            return ok(Json.toJson(Problem.find.all()));
+        }
 
         ExpressionList<Problem> where = Problem.find.where();
         String[] terms = query.split(",");
