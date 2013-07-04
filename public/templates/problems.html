@@ -125,7 +125,10 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span7" ui-select2="select2Options" ng-model="selectedProblem.feature.description"/>
+                <!--<select class="span7">-->
+                    <!--<option value="">Not mapped to a feature</option>-->
+                <!--</select>-->
+                <input type="hidden" class="span7" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
             </div>
         </form>
 

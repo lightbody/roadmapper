@@ -93,7 +93,7 @@ public class FeatureController extends Controller {
                 FeatureState state = FeatureState.valueOf(term.substring(6).toUpperCase());
                 where.eq("state", state);
             } else if (term.startsWith("title:")) {
-                where.ilike("description", "%" + term.substring(6) + "%");
+                where.ilike("title", "%" + term.substring(6) + "%");
             } else if (term.startsWith("description:")) {
                 where.ilike("description", "%" + term.substring(12) + "%");
             } else if (term.startsWith("createdBy:")) {

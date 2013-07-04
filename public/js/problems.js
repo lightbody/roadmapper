@@ -182,6 +182,11 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 problemWithTags.tags = [];
                 rawTags.map(function(tag) {problemWithTags.tags.push({id: tag, text: tag})});
 
+                // map the feature title over to the "text" attribute to make select2 happy
+                if (problemWithTags.feature) {
+                    problemWithTags.feature.text = problemWithTags.feature.title;
+                }
+
                 $scope.selectedProblem = problemWithTags;
                 $scope.showViewProblem = true;
                 $location.path("/problems/" + problem.id);
@@ -193,6 +198,11 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         var copy = angular.copy(problem);
         copy.tags = [];
         problem.tags.map(function(tag) {copy.tags.push(tag.id)});
+
+        // remove the "text" field from the feature that select2 adds so that it will be well-formed
+        if (copy.feature) {
+            delete copy.feature.text;
+        }
 
         $http.put('/problems/' + problem.id, copy)
             .success(function() {
@@ -241,6 +251,23 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 });
         },
         formatNoMatches: function(){ return 'empty';}
+    };
+
+    $scope.featureSelect2Options = {
+        allowClear: true,
+        query: function (query) {
+            $http.get("/features?query=title:" + query.term)
+                .success(function (features) {
+                    var results = [];
+                    features.map(function(feature) {results.push({id: feature.id, text: feature.title})});
+                    query.callback({
+                        results: results
+                    });
+                })
+                .error(function () {
+                    debugger;
+                });
+        }
     };
 
     if ($routeParams.problemId) {

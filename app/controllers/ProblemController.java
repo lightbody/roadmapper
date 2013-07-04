@@ -60,6 +60,10 @@ public class ProblemController extends Controller {
         original.annualRevenue = update.annualRevenue;
         original.url = update.url;
         original.state = update.state;
+        original.feature = update.feature;
+        if (update.feature != null) {
+
+        }
 
         // todo: feature???
         original.save();
@@ -139,11 +143,6 @@ public class ProblemController extends Controller {
         }
 
         return ok(Json.toJson(where.findList()));
-    }
-
-    public static Result recommendFeatures(Long id) {
-
-        return ok();
     }
 
     public static Result create() {
