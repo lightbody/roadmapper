@@ -27,7 +27,7 @@
         <td><a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" target="_blank">{{problem.customerCompany}}</a></td>
         <td style="text-align: right">{{problem.annualRevenue | noFractionCurrency}}</td>
         <td><a href="mailto:{{problem.customerEmail}}">{{problem.customerName}}</a></td>
-        <td><a ng-click="selectFeature(problem.feature)">{{problem.feature.title | truncate:30}}</a></td>
+        <td><a ng-click="selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
         <td><a href="mailto:{{problem.reporter.email}}">{{problem.reporter.name}}</a></td>
         <td><a href="mailto:{{problem.lastModifiedBy.email}}">{{problem.lastModifiedBy.name}}</a> on {{problem.lastModified | date}}</td>
     </tr>
@@ -88,11 +88,6 @@
         <h3>Problem #{{selectedProblem.id}}</h3>
     </div>
     <div class="modal-body">
-
-        <div class="well well-small">
-            Reported by <a href="mailto:{{selectedProblem.reporter.email}}">{{selectedProblem.reporter.name}}</a> on {{selectedProblem.date | date}},
-            last modified by <a href="mailto:{{selectedProblem.lastModifiedBy.email}}">{{selectedProblem.lastModifiedBy.name}}</a> on {{selectedProblem.lastModified | date}}
-        </div>
 
         <form>
             <div class="controls">
