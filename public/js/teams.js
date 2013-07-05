@@ -36,7 +36,7 @@ function TeamsCtrl($scope, $http, $location) {
             });
     };
 
-    $http.get('/teams')
+    $http.get('/teams?detailed=true')
         .success(function (teams) {
             $scope.teams = teams;
         });

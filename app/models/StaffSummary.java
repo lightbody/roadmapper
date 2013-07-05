@@ -26,4 +26,8 @@ public class StaffSummary {
     public void setScheduled(int scheduled) {
         this.scheduled = scheduled;
     }
+
+    public void addScheduledFeature(Size cost) {
+        scheduled += cost.getCostAsPersonWeeks();
+    }
 }

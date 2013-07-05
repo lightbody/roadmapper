@@ -4,9 +4,7 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlQuery;
 import com.avaje.ebean.SqlRow;
 import com.avaje.ebean.SqlUpdate;
-import models.Quarter;
-import models.StaffSummary;
-import models.Team;
+import models.*;
 import org.codehaus.jackson.JsonNode;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -16,32 +14,59 @@ import play.mvc.Security;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Security.Authenticated(Secured.class)
 public class TeamController extends Controller {
+    public static final List<String> QUARTERS_AS_STRINGS;
+
+    static {
+        QUARTERS_AS_STRINGS = new CopyOnWriteArrayList<>();
+        for (Quarter quarter : Quarter.values()) {
+            QUARTERS_AS_STRINGS.add(quarter.toString());
+        }
+    }
+
     public static Result getAll() {
         List<Team> teams = Team.find.all();
 
-        Map<Long, Team> teamMap = new HashMap<>();
+        if (request().queryString().containsKey("detailed")) {
+            Map<Long, Team> teamMap = new HashMap<>();
 
-        // map teams to IDs
-        for (Team team : teams) {
-            teamMap.put(team.id, team);
-            for (Quarter quarter : Quarter.values()) {
-                team.quarterStaffSummary.put(quarter, new StaffSummary());
+            // map teams to IDs
+            for (Team team : teams) {
+                teamMap.put(team.id, team);
+                for (Quarter quarter : Quarter.values()) {
+                    team.quarterStaffSummary.put(quarter, new StaffSummary());
+                }
+            }
+
+            // look up staff levels
+            SqlQuery query = Ebean.createSqlQuery("select team_id, quarter, count from team_staff_levels");
+            List<SqlRow> list = query.findList();
+            for (SqlRow row : list) {
+                Team team = teamMap.get(row.getLong("team_id"));
+                Quarter quarter = Quarter.valueOf(row.getString("quarter"));
+                team.quarterStaffSummary.get(quarter).setStaffed(row.getInteger("count"));
+            }
+
+            query = Ebean.createSqlQuery("select team_id, quarter, engineering_cost from feature where state != :released_state " +
+                    "and engineering_cost is not null and quarter in (:quarters) and team_id is not null");
+            query.setParameter("released_state", FeatureState.RELEASED);
+            query.setParameter("quarters", QUARTERS_AS_STRINGS);
+            list = query.findList();
+            for (SqlRow row : list) {
+                Long teamId = row.getLong("team_id");
+                Quarter quarter = Quarter.valueOf(row.getString("quarter"));
+                Size cost = Size.valueOf(row.getString("engineering_cost"));
+
+                StaffSummary summary = teamMap.get(teamId).quarterStaffSummary.get(quarter);
+                // could be an old quarter we don't care about anymore
+                if (summary != null) {
+                    summary.addScheduledFeature(cost);
+                }
             }
         }
-
-        // look up staff levels
-        SqlQuery query = Ebean.createSqlQuery("select team_id, quarter, count from team_staff_levels");
-        List<SqlRow> list = query.findList();
-        for (SqlRow row : list) {
-            Team team = teamMap.get(row.getLong("team_id"));
-            Quarter quarter = Quarter.valueOf(row.getString("quarter"));
-            team.quarterStaffSummary.get(quarter).setStaffed(row.getInteger("count"));
-        }
-
-        // todo: look up scheduled data!
 
         return ok(Json.toJson(teams));
     }

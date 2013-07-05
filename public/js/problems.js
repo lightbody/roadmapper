@@ -148,7 +148,6 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.createProblem = function (problem) {
-
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
         copy.tags = [];

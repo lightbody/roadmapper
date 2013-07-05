@@ -67,7 +67,7 @@
             </div>
 
             <div class="controls controls-row">
-                <select class="span3" ng-model="newFeature.team"></select>
+                <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="newFeature.team" placeholder="Not mapped to a team"/>
                 <select class="span2" ng-model="newFeature.quarter" ng-options="e for e in enumQuarters"></select>
                 <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates"></select>
             </div>
@@ -111,7 +111,7 @@
             </div>
 
             <div class="controls controls-row">
-                <select class="span3" ng-model="selectedFeature.team"></select>
+                <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
                 <select class="span2" ng-model="selectedFeature.quarter" ng-options="e for e in enumQuarters"></select>
                 <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates"></select>
             </div>

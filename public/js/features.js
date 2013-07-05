@@ -144,11 +144,15 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.createFeature = function (feature) {
-
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(feature);
         copy.tags = [];
         feature.tags.map(function(tag) {copy.tags.push(tag.id)});
+
+        // remove the "text" field from the team that select2 adds so that it will be well-formed
+        if (copy.team) {
+            delete copy.team.text;
+        }
 
         $http.post('/features', copy)
             .success(function (returnedFeature) {
@@ -186,6 +190,11 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 featureWithTags.tags = [];
                 rawTags.map(function(tag) {featureWithTags.tags.push({id: tag, text: tag})});
 
+                // map the team name over to the "text" attribute to make select2 happy
+                if (featureWithTags.team) {
+                    featureWithTags.team.text = featureWithTags.team.name;
+                }
+
                 $scope.selectedFeature = featureWithTags;
                 $scope.showViewFeature = true;
                 $location.path("/features/" + feature.id);
@@ -197,6 +206,11 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         var copy = angular.copy(feature);
         copy.tags = [];
         feature.tags.map(function(tag) {copy.tags.push(tag.id)});
+
+        // remove the "text" field from the team that select2 adds so that it will be well-formed
+        if (copy.team) {
+            delete copy.team.text;
+        }
 
         $http.put('/features/' + feature.id, copy)
             .success(function(returnedFeature) {
@@ -244,6 +258,23 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 });
         },
         formatNoMatches: function(){ return 'empty';}
+    };
+
+    $scope.teamSelect2Options = {
+        allowClear: true,
+        query: function (query) {
+            $http.get("/teams")
+                .success(function (teams) {
+                    var results = [];
+                    teams.map(function(team) {results.push({id: team.id, text: team.name})});
+                    query.callback({
+                        results: results
+                    });
+                })
+                .error(function () {
+                    debugger;
+                });
+        }
     };
 
     if ($routeParams.featureId) {
