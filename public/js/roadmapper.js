@@ -111,6 +111,7 @@ Array.prototype.remove = function (from, to) {
             $rootScope.enumQuarters = enumQuarters;
             $rootScope.enumSizes = enumSizes;
             $rootScope.enumProblemStates = enumProblemStates;
+            $rootScope.enumFeatureStates = enumFeatureStates;
 
             // check if there is already a session?
             var sessionId = window.localStorage["session.id"];
