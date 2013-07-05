@@ -90,7 +90,14 @@ public class TeamController extends Controller {
         sqlUpdate.setParameter("count", count);
         sqlUpdate.setParameter("team_id", teamId);
         sqlUpdate.setParameter("quarter", quarter);
-        sqlUpdate.execute();
+        if (sqlUpdate.execute() == 0) {
+            // gotta insert it
+            sqlUpdate = Ebean.createSqlUpdate("insert into team_staff_levels (team_id, quarter, count) values (:team_id, :quarter, :count)");
+            sqlUpdate.setParameter("count", count);
+            sqlUpdate.setParameter("team_id", teamId);
+            sqlUpdate.setParameter("quarter", quarter);
+            sqlUpdate.execute();
+        }
 
         // todo: return a populated StaffSummary object
         StaffSummary summary = new StaffSummary(count);

@@ -36,6 +36,23 @@ function TeamsCtrl($scope, $http, $location) {
             });
     };
 
+    $scope.checkStaffing = function(summary) {
+        if (summary.scheduled == 0) {
+            return 0;
+        }
+
+        var pct = summary.scheduled / summary.staffed;
+        if (pct < 0.85) {
+            return 0;
+        }
+
+        if (pct < 1.15) {
+            return 1;
+        }
+
+        return -1;
+    }
+
     $http.get('/teams?detailed=true')
         .success(function (teams) {
             $scope.teams = teams;
