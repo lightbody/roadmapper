@@ -7,6 +7,7 @@ import play.Routes;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.BCrypt;
 import views.html.index;
 
 public class Application extends Controller {
@@ -22,6 +23,7 @@ public class Application extends Controller {
     public static Result createUser() {
         JsonNode json = request().body().asJson();
         User user = Json.fromJson(json, User.class);
+        user.password = BCrypt.hashpw(user.password, BCrypt.gensalt());
         user.save();
 
         return ok();
@@ -37,11 +39,8 @@ public class Application extends Controller {
         String email = json.get("email").getTextValue();
         String password = json.get("password").getTextValue();
 
-        System.out.println("email --> " + email);
-        System.out.println("password --> " + password);
-
-        User user = User.authenticate(email, password);
-        if (user == null) {
+        User user = User.findByEmail(email);
+        if (user == null || !BCrypt.checkpw(password, user.password)) {
             return unauthorized("Bad email/password combo");
         }
 
