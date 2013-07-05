@@ -92,6 +92,10 @@ Array.prototype.remove = function (from, to) {
                 } ])
         .filter('truncate', function() {
             return function(input, length) {
+                if (input == null) {
+                    return "";
+                }
+
                 if (input.length + 4 < length) {
                     return input;
                 } else {
