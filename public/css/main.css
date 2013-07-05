@@ -30,6 +30,22 @@ form .select2-container {
     max-height: 800px;
 }
 
+.modal-team {
+    /* new custom width */
+    width: 300px;
+    /* must be half of the width, minus scrollbar on the left (30px) */
+    margin-left: -150px;
+}
+
+.team-staff-level {
+    padding: 0;
+    margin: 0;
+}
+
+.team-staff-level input {
+    margin: 0;
+}
+
 .arr-field {
     width: 45%;
     text-align: right;

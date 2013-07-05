@@ -5,6 +5,7 @@ import play.db.ebean.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -17,5 +18,5 @@ public class Team extends Model {
     @Constraints.Required
     public String name;
 
-    public Map<Quarter, Integer> peopleCount;
+    public Map<Quarter, StaffSummary> quarterStaffSummary = new HashMap<>();
 }

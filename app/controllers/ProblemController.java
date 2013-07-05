@@ -157,6 +157,7 @@ public class ProblemController extends Controller {
         return ok(Json.toJson(where.findList()));
     }
 
+    @play.db.ebean.Transactional
     public static Result create() {
         JsonNode json = request().body().asJson();
 

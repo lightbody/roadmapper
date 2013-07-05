@@ -17,7 +17,6 @@ Array.prototype.remove = function (from, to) {
                 when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
                 when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
-                when('/teams/new', {controller: NewTeamCtrl, templateUrl: 'templates/new-team.html'}).
                 otherwise({redirectTo: '/login'});
         })
         .directive('integer', function() {
@@ -138,29 +137,6 @@ Array.prototype.remove = function (from, to) {
                 }
             }
         });
-
-    function TeamsCtrl($scope, $http, $location) {
-        $scope.newTeam = function () {
-            $location.path("/teams/new");
-        };
-
-        $http.get('/teams')
-            .success(function (teams) {
-                $scope.teams = teams;
-            });
-    }
-
-    function NewTeamCtrl($scope, $http, $location) {
-        $scope.submit = function (team) {
-            $http.post('/teams', team)
-                .success(function () {
-                    $location.path('/teams')
-                })
-                .error(function () {
-                    debugger;
-                });
-        }
-    }
 
     function SignupCtrl($scope, $http, $location) {
         $scope.submit = function (user) {

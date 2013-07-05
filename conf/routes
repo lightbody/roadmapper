@@ -20,6 +20,7 @@ PUT     /features/:id               controllers.FeatureController.updateFeature(
 
 GET     /teams                      controllers.TeamController.getAll()
 POST    /teams                      controllers.TeamController.create()
+PUT     /teams/:id/:quarter         controllers.TeamController.updateStaffForQuarter(id: Long, quarter: String)
 
 GET     /tags                       controllers.TagController.search(query: String)
 
