@@ -1,0 +1,20 @@
+<div id="profile">
+    <form name="profileForm" class="form-big-inputs" novalidate>
+        <h2>Your Profile</h2>
+
+        <div ng-include="'templates/validation.html'"></div>
+
+        <div style="padding-bottom: 15px;">
+            {{user.email}}
+        </div>
+
+        <input type="text" ng-model="user.name" class="input-block-level" placeholder="Name">
+        <input type="password" ng-model="user.password" class="input-block-level" placeholder="Password (set to change)">
+        <input type="password" ng-model="confirmPassword" class="input-block-level" placeholder="Password (confirm)">
+
+        <button class="btn btn-large btn-primary" ng-click="update(user)" type="submit" ng-disabled="loginForm.$invalid || (user.password != null && confirmPassword != user.password)">Save Profile</button>
+
+        <span ng-show="profileUpdated">Profile saved!</span>
+
+    </form>
+</div>

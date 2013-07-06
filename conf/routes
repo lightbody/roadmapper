@@ -5,8 +5,10 @@
 # Authentication
 GET     /                           controllers.Application.home()
 POST    /authenticate               controllers.Application.authenticate()
+POST    /forgot-password            controllers.Application.forgotPassword()
 POST    /users                      controllers.Application.createUser()
 GET     /sessions/:id               controllers.Application.getSession(id)
+PUT     /profile                    controllers.Application.updateUser()
 
 GET     /problems                   controllers.ProblemController.find()
 POST    /problems                   controllers.ProblemController.create()

@@ -10,7 +10,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         $routeProvider.
             when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
             when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
+            when('/forgot-password/:sessionId', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
             when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
+            when('/profile', {controller: ProfileCtrl, templateUrl: 'templates/profile.html'}).
             when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
             when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
             when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
@@ -62,6 +64,10 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
                 $scope.teams = function () {
                     $location.path("/teams");
+                };
+
+                $scope.profile = function () {
+                    $location.path("/profile");
                 };
 
                 $scope.logout = function () {
@@ -134,7 +140,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                     $location.path("/login");
                 });
         } else {
-            if ($location.path() != "/login" && $location.path() != "/signup") {
+            if ($location.path() != "/login" && $location.path() != "/signup" && $location.path().indexOf("/forgot-password/") != 0) {
                 $location.path("/login");
             }
         }
@@ -166,7 +172,7 @@ function SignupCtrl($scope, $http, $location) {
     }
 }
 
-function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
+function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore, $routeParams) {
     var loginSuccess = function (data) {
         $http.defaults.headers.common['X-Session-ID'] = data.id;
         $cookieStore.put("session.id", data.id);
@@ -175,7 +181,12 @@ function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
         }
 
         $rootScope.user = data.user;
-        $location.path('/dashboard')
+
+        if ($routeParams.sessionId) {
+            $location.path('/profile')
+        } else {
+            $location.path('/dashboard')
+        }
     };
 
     // check if there is already a session?
@@ -183,6 +194,10 @@ function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
     if (sessionId == null) {
         sessionId = $cookieStore.get("session.id");
     }
+    if (sessionId == null) {
+        sessionId = $routeParams.sessionId;
+    }
+
     if (sessionId != null) {
         $http.get("/sessions/" + sessionId).success(loginSuccess).error(function () {
             // remove the cookie, since it's dead
@@ -201,6 +216,34 @@ function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore) {
         $http.post('/authenticate', user)
             .success(loginSuccess)
             .error(FormErrorHandler($scope));
+    };
+
+    $scope.forgotPassword = function(email) {
+        $http.post('/forgot-password', {email: email})
+            .success(function() {
+                $scope.forgotPasswordEmailed = true;
+            })
+            .error(FormErrorHandler($scope));
+    };
+}
+
+function ProfileCtrl($scope, $rootScope, $http) {
+    $rootScope.user.password = null;
+
+    $scope.update = function(user) {
+        var copy = angular.copy(user);
+        $rootScope.user.password = null;
+        $scope.confirmPassword = null;
+
+        $http.put("/profile", copy)
+            .success(function() {
+                $scope.profileUpdated = true;
+                setTimeout(function() {
+                    $scope.$apply(function () {
+                        $scope.profileUpdated = false;
+                    });
+                }, 2000);
+            }).error(FormErrorHandler($scope));
     }
 }
 
