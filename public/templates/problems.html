@@ -40,7 +40,9 @@
     </div>
     <div class="modal-body">
 
-        <form>
+        <form name="newProblemForm" novalidate>
+
+            <div ng-include="'templates/validation.html'"></div>
 
             <div class="controls">
                 <textarea class="span7" rows="10" ng-model="newProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
@@ -52,13 +54,13 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span3" ng-model="newProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="email" class="span3" ng-model="newProblem.customerEmail" placeholder="Customer Email" required>
                 <input type="text" class="span2" ng-model="newProblem.accountId" placeholder="Account ID (if known)" integer>
 
                 <div class="span2">
                     <div class="controls input-prepend input-append">
                         <span class="add-on">$</span>
-                        <input type="text" class="arr-field" ng-model="newProblem.annualRevenue" placeholder="ARR">
+                        <input type="text" class="arr-field" ng-model="newProblem.annualRevenue" placeholder="ARR" integer>
                         <span class="add-on">.00</span>
                     </div>
                 </div>
@@ -74,12 +76,10 @@
 
         </form>
 
-        <span class="error" ng-show="error == null">{{error}}</span>
-
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning cancel" ng-click="closeNewProblem()">Cancel</button>
-        <button class="btn btn-primary" ng-click="createProblem(newProblem)">Confirm</button>
+        <button class="btn btn-primary" ng-click="createProblem(newProblem)" ng-disabled="newProblemForm.$invalid" type="submit">Confirm</button>
     </div>
 </div>
 
@@ -89,7 +89,10 @@
     </div>
     <div class="modal-body">
 
-        <form>
+        <form name="editProblemForm" novalidate>
+
+            <div ng-include="'templates/validation.html'"></div>
+
             <div class="controls">
                 <textarea class="span7" rows="10" ng-model="selectedProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
             </div>
@@ -100,13 +103,13 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="email" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
                 <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
 
                 <div class="span2">
                     <div class="controls input-prepend input-append">
                         <span class="add-on">$</span>
-                        <input class="arr-field" type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR">
+                        <input class="arr-field" type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR" integer>
                         <span class="add-on">.00</span>
                     </div>
                 </div>
@@ -126,11 +129,9 @@
             </div>
         </form>
 
-        <span class="error" ng-show="error == null">{{error}}</span>
-
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning cancel" ng-click="closeViewProblem()">Cancel</button>
-        <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)">Confirm</button>
+        <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)" ng-disabled="editProblemForm.$invalid" type="submit">Confirm</button>
     </div>
 </div>

@@ -128,10 +128,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         },
         formatSelection: function(object, container) {
             return object.text;
@@ -157,14 +154,12 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
             .success(function (returnedProblem) {
                 $scope.problems.push(returnedProblem);
                 $scope.closeNewProblem();
-            })
-            .error(function () {
-                debugger;
-            });
+            }).error(FormErrorHandler($scope));
     };
 
     $scope.closeNewProblem = function() {
         $location.path("/problems");
+        ClearErrors($scope);
         $scope.newProblem = null;
         $scope.showNewProblem = false;
     };
@@ -220,14 +215,12 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 }
 
                 $scope.closeViewProblem();
-            })
-            .error(function() {
-                debugger;
-            })
+            }).error(FormErrorHandler($scope))
     };
 
     $scope.closeViewProblem = function() {
         $location.path("/problems");
+        ClearErrors($scope);
         $scope.showViewProblem = false;
     };
 
@@ -243,7 +236,6 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         tags: [],
         tokenSeparators: [",", " "],
         query: function (query) {
-            console.log("in query function2");
             $http.get("/tags?query=" + query.term)
                 .success(function (tags) {
                     var results = [];
@@ -251,10 +243,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         },
         formatNoMatches: function(){ return 'empty';}
     };
@@ -269,10 +258,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         }
     };
 

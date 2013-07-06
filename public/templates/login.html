@@ -1,12 +1,14 @@
 <div id="signin">
-    <form class="form-big-inputs">
+    <form name="loginForm" class="form-big-inputs" novalidate>
         <h2>Please log in</h2>
-        <input type="text" ng-model="user.email" class="input-block-level" placeholder="Email address">
-        <input type="password" ng-model="user.password" class="input-block-level" placeholder="Password">
+
+        <div ng-include="'templates/validation.html'"></div>
+
+        <input type="email" ng-model="user.email" class="input-block-level" placeholder="Email address" autofocus="autofocus" required>
+        <input type="password" ng-model="user.password" class="input-block-level" placeholder="Password" required>
         <label class="checkbox">
             <input type="checkbox" value="remember-me" ng-model="remember"> Remember me
         </label>
-        <button class="btn btn-large btn-primary" ng-click="submit(user)" type="submit">Log in</button>
-        <span class="error" ng-show="unauthorized">Boo!</span>
+        <button class="btn btn-large btn-primary" ng-click="submit(user)" type="submit" ng-disabled="loginForm.$invalid">Log in</button>
     </form>
 </div>

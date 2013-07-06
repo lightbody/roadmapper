@@ -91,7 +91,8 @@ input.ng-dirty.ng-invalid {
 }
 
 .form-big-inputs input[type="text"],
-.form-big-inputs input[type="password"] {
+.form-big-inputs input[type="password"],
+.form-big-inputs input[type="email"]{
     font-size: 16px;
     height: auto;
     margin-bottom: 15px;

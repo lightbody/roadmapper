@@ -124,10 +124,7 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         },
         formatSelection: function(object, container) {
             return object.text;
@@ -158,14 +155,12 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
             .success(function (returnedFeature) {
                 $scope.features.push(returnedFeature);
                 $scope.closeNewFeature();
-            })
-            .error(function () {
-                debugger;
-            });
+            }).error(FormErrorHandler($scope));
     };
 
     $scope.closeNewFeature = function() {
         $location.path("/features");
+        ClearErrors($scope);
         $scope.newFeature = null;
         $scope.showNewFeature = false;
     };
@@ -222,13 +217,11 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 }
 
                 $scope.closeViewFeature();
-            })
-            .error(function() {
-                debugger;
-            })
+            }).error(FormErrorHandler($scope));
     };
 
     $scope.closeViewFeature = function() {
+        ClearErrors($scope);
         $location.path("/features");
         $scope.showViewFeature = false;
     };
@@ -252,10 +245,7 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         },
         formatNoMatches: function(){ return 'empty';}
     };
@@ -270,10 +260,7 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                     query.callback({
                         results: results
                     });
-                })
-                .error(function () {
-                    debugger;
-                });
+                }).error(LogHandler($scope));
         }
     };
 

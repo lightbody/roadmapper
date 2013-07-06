@@ -23,6 +23,13 @@ public class Application extends Controller {
     public static Result createUser() {
         JsonNode json = request().body().asJson();
         User user = Json.fromJson(json, User.class);
+
+        // check if the user already exists
+        if (User.findByEmail(user.email) != null) {
+            response().setHeader("X-Global-Error", "emailTaken");
+            return internalServerError();
+        }
+
         user.password = BCrypt.hashpw(user.password, BCrypt.gensalt());
         user.save();
 
@@ -33,6 +40,7 @@ public class Application extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!json.has("email") || !json.has("password")) {
+            response().setHeader("X-Global-Error", "invalidLogin");
             return badRequest();
         }
 
@@ -41,6 +49,7 @@ public class Application extends Controller {
 
         User user = User.findByEmail(email);
         if (user == null || !BCrypt.checkpw(password, user.password)) {
+            response().setHeader("X-Global-Error", "invalidLogin");
             return unauthorized("Bad email/password combo");
         }
 
