@@ -179,7 +179,9 @@ public class FeatureController extends Controller {
             }
 
             feature.problemCount++;
-            feature.problemRevenue += problem.annualRevenue;
+            if (problem.annualRevenue != null) {
+                feature.problemRevenue += problem.annualRevenue;
+            }
         }
 
         return features;
