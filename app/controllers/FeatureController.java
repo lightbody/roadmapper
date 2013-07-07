@@ -89,7 +89,7 @@ public class FeatureController extends Controller {
         String query = request().queryString().get("query")[0];
         if (query.equals("")) {
             // todo: same as above
-            return ok(Json.toJson(Feature.find.all()));
+            return ok(Json.toJson(dressFeatures(Feature.find.all())));
         }
 
         ExpressionList<Feature> where = Feature.find.where();
