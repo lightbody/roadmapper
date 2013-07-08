@@ -1,17 +1,17 @@
 package models;
 
 public class StaffSummary {
-    private int staffed;
-    private int scheduled;
+    private double staffed;
+    private double scheduled;
 
     public StaffSummary() {
     }
 
-    public StaffSummary(int staffed) {
+    public StaffSummary(double staffed) {
         this.staffed = staffed;
     }
 
-    public int getStaffed() {
+    public double getStaffed() {
         return staffed;
     }
 
@@ -19,7 +19,7 @@ public class StaffSummary {
         this.staffed = staffed;
     }
 
-    public int getScheduled() {
+    public double getScheduled() {
         return scheduled;
     }
 
@@ -28,6 +28,6 @@ public class StaffSummary {
     }
 
     public void addScheduledFeature(Size cost) {
-        scheduled += cost.getCostAsPersonWeeks();
+        scheduled += (cost.getCostAsPersonWeeks() / 5.0);
     }
 }

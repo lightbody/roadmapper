@@ -11,6 +11,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,25 +51,31 @@ public class TeamController extends Controller {
                 team.quarterStaffSummary.get(quarter).setStaffed(row.getInteger("count"));
             }
 
-            query = Ebean.createSqlQuery("select team_id, quarter, engineering_cost from feature where state != :released_state " +
-                    "and engineering_cost is not null and quarter in (:quarters) and team_id is not null");
-            query.setParameter("released_state", FeatureState.RELEASED);
-            query.setParameter("quarters", QUARTERS_AS_STRINGS);
-            list = query.findList();
-            for (SqlRow row : list) {
-                Long teamId = row.getLong("team_id");
-                Quarter quarter = Quarter.valueOf(row.getString("quarter"));
-                Size cost = Size.valueOf(row.getString("engineering_cost"));
+            updateStaffSummary(teamMap);
+        }
 
-                StaffSummary summary = teamMap.get(teamId).quarterStaffSummary.get(quarter);
+        return ok(Json.toJson(teams));
+    }
+
+    private static void updateStaffSummary(Map<Long, Team> teamMap) {
+        SqlQuery query = Ebean.createSqlQuery("select team_id, quarter, engineering_cost from feature where state != :released_state " +
+                "and engineering_cost is not null and quarter in (:quarters) and team_id is not null");
+        query.setParameter("released_state", FeatureState.RELEASED);
+        query.setParameter("quarters", QUARTERS_AS_STRINGS);
+        for (SqlRow row : query.findList()) {
+            Long teamId = row.getLong("team_id");
+            Quarter quarter = Quarter.valueOf(row.getString("quarter"));
+            Size cost = Size.valueOf(row.getString("engineering_cost"));
+
+            Team team = teamMap.get(teamId);
+            if (team != null) {
+                StaffSummary summary = team.quarterStaffSummary.get(quarter);
                 // could be an old quarter we don't care about anymore
                 if (summary != null) {
                     summary.addScheduledFeature(cost);
                 }
             }
         }
-
-        return ok(Json.toJson(teams));
     }
 
     @play.db.ebean.Transactional
@@ -84,7 +91,7 @@ public class TeamController extends Controller {
     public static Result updateStaffForQuarter(Long teamId, String quarter) {
         // format: {count: 123}
         JsonNode json = request().body().asJson();
-        int count = json.get("count").asInt();
+        double count = json.get("count").asDouble();
 
         SqlUpdate sqlUpdate = Ebean.createSqlUpdate("update team_staff_levels set count = :count where team_id = :team_id and quarter = :quarter");
         sqlUpdate.setParameter("count", count);
@@ -99,8 +106,12 @@ public class TeamController extends Controller {
             sqlUpdate.execute();
         }
 
-        // todo: return a populated StaffSummary object
         StaffSummary summary = new StaffSummary(count);
+
+        // return a populated StaffSummary object
+        Team teamShell = new Team();
+        teamShell.quarterStaffSummary.put(Quarter.valueOf(quarter), summary);
+        updateStaffSummary(Collections.singletonMap(teamId, teamShell));
 
         return ok(Json.toJson(summary));
     }

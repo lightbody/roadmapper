@@ -46,6 +46,22 @@ form .select2-container {
     margin: 0;
 }
 
+.team-staff-level-unscheduled {
+    background-color: #f7f7f7 !important;
+}
+
+.team-staff-level-underutilized {
+    background-color: #e2ffda !important;
+}
+
+.team-staff-level-ok {
+    background-color: #c5ffbf !important;
+}
+
+.team-staff-level-critical {
+    background-color: #ffacae !important;
+}
+
 .arr-field {
     width: 45%;
     text-align: right;

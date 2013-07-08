@@ -8,10 +8,7 @@ function TeamsCtrl($scope, $http, $location) {
             .success(function (returnedTeam) {
                 $scope.teams.push(returnedTeam);
                 $scope.closeNewTeam();
-            })
-            .error(function () {
-                debugger;
-            });
+            }).error(LogHandler($scope));
     };
 
     $scope.closeNewTeam = function() {
@@ -30,28 +27,25 @@ function TeamsCtrl($scope, $http, $location) {
         $http.put('/teams/' + team.id + '/' + quarter, newCount)
             .success(function (staffSummary) {
                 team.quarterStaffSummary[quarter] = staffSummary;
-            })
-            .error(function () {
-                debugger;
-            });
+            }).error(LogHandler($scope));
     };
 
     $scope.checkStaffing = function(summary) {
         if (summary.scheduled == 0) {
-            return 0;
+            return "unscheduled";
         }
 
         var pct = summary.scheduled / summary.staffed;
         if (pct < 0.85) {
-            return 0;
+            return "underutilized";
         }
 
         if (pct < 1.15) {
-            return 1;
+            return "ok";
         }
 
-        return -1;
-    }
+        return "critical";
+    };
 
     $http.get('/teams?detailed=true')
         .success(function (teams) {
