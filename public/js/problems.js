@@ -49,6 +49,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.querySelect2Options = {
+        openOnEnter: false,
         multiple: true,
         sortResults: function(results, container, query) {
             if (query.term) {
