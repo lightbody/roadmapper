@@ -21,7 +21,7 @@
         <th class="text-right"><a href="" ng-click="predicate = 'problemRevenue'; reverse=!reverse">ARR</a></th>
         <th><a href="" ng-click="predicate = 'quarter'; reverse=!reverse">Quarter</a></th>
         <th><a href="" ng-click="predicate = 'team.name'; reverse=!reverse">Team</a></th>
-        <th><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Last Modified</a></th>
+        <th><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Modified</a></th>
     </tr>
     </thead>
     <tbody>
@@ -32,12 +32,12 @@
         <td>{{feature.revenueBenefit}}</td>
         <td>{{feature.retentionBenefit}}</td>
         <td>{{feature.positioningBenefit}}</td>
-        <td class="text-right">{{feature.score}}</td>
-        <td class="text-right"><a ng-click="selectProblems(feature)">{{feature.problemCount}}</a></td>
-        <td class="text-right">{{feature.problemRevenue | noFractionCurrency}}</td>
+        <td class="text-right"><span ng-show="feature.score > 0">{{feature.score}}</span></td>
+        <td class="text-right"><a ng-click="selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
+        <td class="text-right"><span ng-show="feature.problemRevenue  > 0">{{feature.problemRevenue | noFractionCurrency}}</span></td>
         <td>{{feature.quarter}}</td>
         <td>{{feature.team.name}}</td>
-        <td><a href="mailto:{{feature.lastModifiedBy.email}}">{{feature.lastModifiedBy.name}}</a> on {{feature.lastModified | date}}</td>
+        <td><span tooltip="{{feature.lastModifiedBy.name}}">{{feature.lastModified | date}}</span></td>
     </tr>
     </tbody>
 
