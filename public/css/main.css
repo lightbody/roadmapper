@@ -44,6 +44,7 @@ form .select2-container {
 
 .team-staff-level input {
     margin: 0;
+    width: 20px;
 }
 
 .team-staff-level-unscheduled {

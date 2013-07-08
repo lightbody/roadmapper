@@ -1,4 +1,4 @@
-function TeamsCtrl($scope, $http, $location) {
+function TeamsCtrl($scope, $rootScope, $http, $location) {
     $scope.showNewTeamModal = function() {
         $scope.showNewTeam = true;
     };
@@ -45,6 +45,13 @@ function TeamsCtrl($scope, $http, $location) {
         }
 
         return "critical";
+    };
+
+    $scope.findFeatures = function(team, quarter) {
+        $rootScope.featureQuery = [{id: "team:" + team.name, text: "<strong>Team</strong>: " + team.name},
+            {id: "quarter:" + quarter, text: "<strong>Quarter</strong>: " + quarter}];
+        $location.path("/features");
+
     };
 
     $http.get('/teams?detailed=true')
