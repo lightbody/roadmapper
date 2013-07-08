@@ -165,18 +165,14 @@ public class FeatureController extends Controller {
 
             // normalize to max score
             feature.score = (int) (score / MAX_SCORE * 100);
+            feature.problemCount = 0;
+            feature.problemRevenue = 0;
         }
 
         // now query all problems
         List<Problem> problems = Problem.find.where().in("feature_id", featureMap.keySet()).findList();
         for (Problem problem : problems) {
             Feature feature = featureMap.get(problem.feature.id);
-            if (feature.problemCount == null) {
-                feature.problemCount = 0;
-            }
-            if (feature.problemRevenue == null) {
-                feature.problemRevenue = 0;
-            }
 
             feature.problemCount++;
             if (problem.annualRevenue != null) {
