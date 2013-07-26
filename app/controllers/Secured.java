@@ -1,5 +1,6 @@
 package controllers;
 
+import com.newrelic.api.agent.NewRelic;
 import models.Session;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -17,6 +18,7 @@ public class Secured extends Security.Authenticator {
 
         Session session = Session.find.byId(sessionId);
         if (session != null && session.expires.after(new Date())) {
+            NewRelic.addCustomParameter("username", session.user.email);
             return session.user.email;
         } else {
             return null;
