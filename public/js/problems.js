@@ -166,8 +166,8 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.modalOptions = {
-        backdropFade: true,
-        dialogFade: true,
+        backdropFade: false,
+        dialogFade: false,
         dialogClass: 'modal modal-problem'
     };
 

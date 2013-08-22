@@ -17,8 +17,8 @@ function TeamsCtrl($scope, $rootScope, $http, $location) {
     };
 
     $scope.modalOptions = {
-        backdropFade: true,
-        dialogFade: true,
+        backdropFade: false,
+        dialogFade: false,
         dialogClass: 'modal modal-team'
     };
 
