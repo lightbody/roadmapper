@@ -8,9 +8,6 @@ Array.prototype.remove = function (from, to) {
 angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
     config(function ($routeProvider) {
         $routeProvider.
-            when('/signup', {controller: SignupCtrl, templateUrl: 'templates/signup.html'}).
-            when('/login', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
-            when('/forgot-password/:sessionId', {controller: LoginCtrl, templateUrl: 'templates/login.html'}).
             when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
             when('/profile', {controller: ProfileCtrl, templateUrl: 'templates/profile.html'}).
             when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
@@ -18,7 +15,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
             when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
             when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
-            otherwise({redirectTo: '/login'});
+            otherwise({redirectTo: '/dashboard'});
     })
     .directive('integer', function() {
         return {
@@ -42,14 +39,6 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         return {
 
             controller: function ($scope, $location, $rootScope, $cookieStore) {
-                $scope.login = function () {
-                    $location.path("/login");
-                };
-
-                $scope.signup = function () {
-                    $location.path("/signup");
-                };
-
                 $scope.dashboard = function () {
                     $location.path("/dashboard");
                 };
@@ -71,10 +60,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 };
 
                 $scope.logout = function () {
-                    $cookieStore.remove("session.id");
-                    window.localStorage.removeItem("session.id");
-                    $rootScope.user = null;
-                    $location.path("/");
+                    window.location.href = "/logout"
                 };
             },
             templateUrl: "templates/navbar.html"
@@ -120,30 +106,10 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         // set up i18n bundle
         $rootScope.i18n = i18n;
 
-        // check if there is already a session?
-        var sessionId = window.localStorage["session.id"];
-        if (sessionId == null) {
-            sessionId = $cookieStore.get("session.id");
-        }
+        $http.get("/identify").success(function (user) {
+            $rootScope.user = user;
+        });
 
-        if (sessionId != null) {
-            $http.defaults.headers.common['X-Session-ID'] = sessionId;
-            $cookieStore.put("session.id", sessionId);
-            $http.get("/sessions/" + sessionId)
-                .success(function (data) {
-                    $rootScope.user = data.user;
-                })
-                .error(function () {
-                    // remove the cookie, since it's dead
-                    $cookieStore.remove("session.id");
-                    window.localStorage.removeItem("session.id");
-                    $location.path("/login");
-                });
-        } else {
-            if ($location.path() != "/login" && $location.path() != "/signup" && $location.path().indexOf("/forgot-password/") != 0) {
-                $location.path("/login");
-            }
-        }
     });
 
 function FormErrorHandler($scope) {
@@ -161,70 +127,6 @@ function LogHandler($scope) {
         // todo: we could do more here
         console.log("Got back " + status + " while requesting " + config.url);
     }
-}
-
-function SignupCtrl($scope, $http, $location) {
-    $scope.submit = function (user) {
-        $http.post('/users', user)
-            .success(function () {
-                $location.path('/login')
-            }).error(FormErrorHandler($scope));
-    }
-}
-
-function LoginCtrl($location, $scope, $rootScope, $http, $cookieStore, $routeParams) {
-    var loginSuccess = function (data) {
-        $http.defaults.headers.common['X-Session-ID'] = data.id;
-        $cookieStore.put("session.id", data.id);
-        if ($scope.remember) {
-            window.localStorage["session.id"] = data.id;
-        }
-
-        $rootScope.user = data.user;
-
-        if ($routeParams.sessionId) {
-            $location.path('/profile')
-        } else {
-            $location.path('/dashboard')
-        }
-    };
-
-    // check if there is already a session?
-    var sessionId = window.localStorage["session.id"];
-    if (sessionId == null) {
-        sessionId = $cookieStore.get("session.id");
-    }
-    if (sessionId == null) {
-        sessionId = $routeParams.sessionId;
-    }
-
-    if (sessionId != null) {
-        $http.get("/sessions/" + sessionId).success(loginSuccess).error(function () {
-            // remove the cookie, since it's dead
-            $cookieStore.remove("session.id");
-            window.localStorage.removeItem("session.id");
-        });
-    }
-
-    $scope.unauthorized = $rootScope.user == null;
-
-    $scope.$watch("user.email", function (value) {
-        ClearErrors($scope);
-    });
-
-    $scope.submit = function (user) {
-        $http.post('/authenticate', user)
-            .success(loginSuccess)
-            .error(FormErrorHandler($scope));
-    };
-
-    $scope.forgotPassword = function(email) {
-        $http.post('/forgot-password', {email: email})
-            .success(function() {
-                $scope.forgotPasswordEmailed = true;
-            })
-            .error(FormErrorHandler($scope));
-    };
 }
 
 function ProfileCtrl($scope, $rootScope, $http) {
@@ -248,8 +150,4 @@ function ProfileCtrl($scope, $rootScope, $http) {
 }
 
 function DashboardCtrl($scope, $rootScope, $location) {
-    if ($rootScope.user == null) {
-        $location.path("/login");
-        return;
-    }
 }

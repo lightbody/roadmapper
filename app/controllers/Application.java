@@ -1,96 +1,77 @@
 package controllers;
 
-import models.Session;
 import models.User;
 import org.codehaus.jackson.JsonNode;
+import play.Configuration;
+import play.Play;
 import play.Routes;
 import play.libs.Json;
+import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import util.BCrypt;
-import util.Mail;
 import views.html.index;
 
-import javax.mail.MessagingException;
-
 public class Application extends Controller {
-    public static Result getSession(String id) {
-        Session session = Session.find.byId(id);
-        if (session == null) {
-            return notFound();
-        } else {
-            // never send back the encrypted password
-            session.user.password = null;
+    public static Result oauthCallback() {
+        String code = request().queryString().get("code")[0];
 
-            return ok(Json.toJson(session));
-        }
-    }
+        Configuration config = Play.application().configuration();
 
-    public static Result createUser() {
-        JsonNode json = request().body().asJson();
-        User user = Json.fromJson(json, User.class);
+        WS.Response response = WS.url(config.getString("oauth.accessTokenUrl"))
+                .setQueryParameter("grant_type", "authorization_code")
+                .setQueryParameter("code", code)
+                .setQueryParameter("redirect_uri", config.getString("oauth.redirectUrl"))
+                .setQueryParameter("client_id", config.getString("oauth.clientId"))
+                .setQueryParameter("client_secret", config.getString("oauth.clientSecret"))
+                .post("").get();
 
-        // check if the user already exists
-        if (User.findByEmail(user.email) != null) {
-            response().setHeader("X-Global-Error", "emailTaken");
-            return internalServerError();
-        }
+        JsonNode json = response.asJson();
 
-        user.password = BCrypt.hashpw(user.password, BCrypt.gensalt());
-        user.save();
+        String accessToken = json.get("access_token").asText();
 
-        return ok();
-    }
+        response = WS.url(config.getString("oauth.userDetailUrl"))
+                .setHeader("Authorization", "Bearer " + accessToken)
+                .get().get();
 
-    public static Result authenticate() {
-        JsonNode json = request().body().asJson();
-
-        if (!json.has("email") || !json.has("password")) {
-            response().setHeader("X-Global-Error", "invalidLogin");
-            return badRequest();
-        }
-
-        String email = json.get("email").getTextValue();
-        String password = json.get("password").getTextValue();
-
-        User user = User.findByEmail(email);
-        if (user == null || !BCrypt.checkpw(password, user.password)) {
-            response().setHeader("X-Global-Error", "invalidLogin");
-            return unauthorized("Bad email/password combo");
-        }
-
-        // now create a session for the user
-        Session session = new Session(user, 30);
-        session.save();
-
-        // never send back the encrypted password
-        session.user.password = null;
-
-        return ok(Json.toJson(session));
-    }
-
-    public static Result forgotPassword() {
-        JsonNode json = request().body().asJson();
-
-        String email = json.get("email").asText();
+        String email = response.asJson().get("email").asText();
 
         User user = User.findByEmail(email);
         if (user == null) {
-            return ok();
+            // create one
+            user = new User();
+            user.email = email;
+            user.name = "N/A";
+            user.password = "N/A";
+            user.save();
         }
 
-        Session session = new Session(user, 30);
-        session.save();
+        session().put("oauth-access-token", accessToken);
+        session().put("oauth-email", email);
+        session().put("oauth-last-check", String.valueOf(System.currentTimeMillis()));
 
-        try {
-            Mail.send(email, "Roadmapper: Forgot password", "Please go here to reset your password: http://roadmapper-newrelic.herokuapp.com/#/forgot-password/" + session.id);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return internalServerError();
-        }
+        return redirect("/");
+    }
 
-        return ok();
+    public static Result logout() {
+        session().remove("oauth-access-token");
+
+        // note: this must be a two-stage logout process because we need to write the session cookie back
+        // before going to the external OAuth logout URL
+        return redirect(routes.Application.oauthLogout());
+    }
+
+    public static Result oauthLogout() {
+        return redirect(Play.application().configuration().getString("oauth.logoutUrl"));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result getUser() {
+        User user = User.findByEmail(request().username());
+        user.password = null;
+
+        return ok(Json.toJson(user));
     }
 
     @Security.Authenticated(Secured.class)
@@ -108,6 +89,7 @@ public class Application extends Controller {
         return ok();
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result home() {
         return ok(index.render());
     }
@@ -115,10 +97,7 @@ public class Application extends Controller {
     public static Result javascriptRoutes() {
         response().setContentType("text/javascript");
         return ok(
-                Routes.javascriptRouter("jsRoutes",
-                        controllers.routes.javascript.Application.createUser(),
-                        controllers.routes.javascript.Application.authenticate()
-                )
+                Routes.javascriptRouter("jsRoutes")
         );
     }
 

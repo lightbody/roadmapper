@@ -3,33 +3,33 @@
 # ~~~~
 
 # Authentication
-GET     /                           controllers.Application.home()
-POST    /authenticate               controllers.Application.authenticate()
-POST    /forgot-password            controllers.Application.forgotPassword()
-POST    /users                      controllers.Application.createUser()
-GET     /sessions/:id               controllers.Application.getSession(id)
-PUT     /profile                    controllers.Application.updateUser()
+GET         /                          controllers.Application.home()
+GET         /auth/callback             controllers.Application.oauthCallback()
+PUT         /profile                   controllers.Application.updateUser()
+GET         /identify                  controllers.Application.getUser()
+GET         /logout                    controllers.Application.logout()
+GET         /oauth-logout              controllers.Application.oauthLogout()
 
-GET     /problems                   controllers.ProblemController.find()
-POST    /problems                   controllers.ProblemController.create()
-GET     /problems/:id               controllers.ProblemController.getProblem(id: Long)
-PUT     /problems/:id               controllers.ProblemController.updateProblem(id: Long)
+GET         /problems                  controllers.ProblemController.find()
+POST        /problems                  controllers.ProblemController.create()
+GET         /problems/:id              controllers.ProblemController.getProblem(id: Long)
+PUT         /problems/:id              controllers.ProblemController.updateProblem(id: Long)
 
-GET     /features                   controllers.FeatureController.find()
-POST    /features                   controllers.FeatureController.create()
-GET     /features/:id               controllers.FeatureController.getFeature(id: Long)
-PUT     /features/:id               controllers.FeatureController.updateFeature(id: Long)
+GET         /features                  controllers.FeatureController.find()
+POST        /features                  controllers.FeatureController.create()
+GET         /features/:id              controllers.FeatureController.getFeature(id: Long)
+PUT         /features/:id              controllers.FeatureController.updateFeature(id: Long)
 
-GET     /teams                      controllers.TeamController.getAll()
-POST    /teams                      controllers.TeamController.create()
-PUT     /teams/:id/:quarter         controllers.TeamController.updateStaffForQuarter(id: Long, quarter: String)
+GET         /teams                     controllers.TeamController.getAll()
+POST        /teams                     controllers.TeamController.create()
+PUT         /teams/:id/:quarter        controllers.TeamController.updateStaffForQuarter(id: Long, quarter: String)
 
-GET     /tags                       controllers.TagController.search(query: String)
+GET         /tags                      controllers.TagController.search(query: String)
 
-GET     /js/routes.js               controllers.Application.javascriptRoutes()
+GET         /js/routes.js              controllers.Application.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /img/*file                  controllers.Assets.at(path="/public/img", file)
-GET     /js/*file                   controllers.Assets.at(path="/public/js", file)
-GET     /css/*file                  controllers.Assets.at(path="/public/css", file)
-GET     /templates/*file            controllers.Assets.at(path="/public/templates", file)
+GET         /img/*file                 controllers.Assets.at(path="/public/img", file)
+GET         /js/*file                  controllers.Assets.at(path="/public/js", file)
+GET         /css/*file                 controllers.Assets.at(path="/public/css", file)
+GET         /templates/*file           controllers.Assets.at(path="/public/templates", file)

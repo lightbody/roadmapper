@@ -1,32 +1,68 @@
 package controllers;
 
 import com.newrelic.api.agent.NewRelic;
-import models.Session;
+import play.Configuration;
+import play.Play;
+import play.libs.WS;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.Date;
-
 public class Secured extends Security.Authenticator {
+    public final static String OAUTH_BASE = "https://dev--auth-newrelic-com-rzk4pe3f3jxn.runscope.net";
+    public final static long OAUTH_TIMEOUT = 15000;
+
     @Override
     public String getUsername(Http.Context ctx) {
-        String sessionId = ctx.request().getHeader("X-Session-ID");
-        if (sessionId == null) {
+        String accessToken = ctx.session().get("oauth-access-token");
+        if (accessToken == null) {
             return null;
         }
 
-        Session session = Session.find.byId(sessionId);
-        if (session != null && session.expires.after(new Date())) {
-            NewRelic.addCustomParameter("username", session.user.email);
-            return session.user.email;
-        } else {
-            return null;
+        String email = ctx.session().get("oauth-email");
+        long lastCheck = Long.parseLong(ctx.session().get("oauth-last-check"));
+
+        // check again if we've timed out
+        if (System.currentTimeMillis() > lastCheck + OAUTH_TIMEOUT) {
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("Checking OAuth with access token: " + accessToken);
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+            System.out.println("**********************************");
+
+
+            Configuration config = Play.application().configuration();
+
+            System.out.println(config.keys());
+
+            WS.Response response = WS.url(config.getString("oauth.userDetailUrl"))
+                    .setHeader("Authorization", "Bearer " + accessToken)
+                    .get().get();
+
+            System.out.println("Got response: " + response.getBody());
+
+            if (response.getStatus() != 200) {
+                ctx.session().remove("oauth-access-token");
+                return null;
+            } else {
+                email = response.asJson().get("email").asText();
+                ctx.session().put("oauth-email", email);
+                ctx.session().put("oauth-last-check", String.valueOf(System.currentTimeMillis()));
+            }
         }
+
+        NewRelic.addCustomParameter("username", email);
+
+        return email;
     }
 
     @Override
     public Result onUnauthorized(Http.Context ctx) {
-        return unauthorized();
+        return redirect(Play.application().configuration().getString("oauth.authorizeUrl"));
     }
 }
