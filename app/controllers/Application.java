@@ -10,7 +10,6 @@ import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import util.BCrypt;
 import views.html.index;
 
 public class Application extends Controller {
@@ -72,21 +71,6 @@ public class Application extends Controller {
         user.password = null;
 
         return ok(Json.toJson(user));
-    }
-
-    @Security.Authenticated(Secured.class)
-    public static Result updateUser() {
-        JsonNode json = request().body().asJson();
-        User update = Json.fromJson(json, User.class);
-
-        User original = User.findByEmail(request().username());
-        original.name = update.name;
-        if (update.password != null) {
-            original.password = BCrypt.hashpw(update.password, BCrypt.gensalt());
-        }
-        original.save();
-
-        return ok();
     }
 
     @Security.Authenticated(Secured.class)

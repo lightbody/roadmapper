@@ -5,7 +5,6 @@
 # Authentication
 GET         /                          controllers.Application.home()
 GET         /auth/callback             controllers.Application.oauthCallback()
-PUT         /profile                   controllers.Application.updateUser()
 GET         /identify                  controllers.Application.getUser()
 GET         /logout                    controllers.Application.logout()
 GET         /oauth-logout              controllers.Application.oauthLogout()

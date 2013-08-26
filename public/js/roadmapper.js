@@ -9,7 +9,6 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
     config(function ($routeProvider) {
         $routeProvider.
             when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
-            when('/profile', {controller: ProfileCtrl, templateUrl: 'templates/profile.html'}).
             when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
             when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
             when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
@@ -53,10 +52,6 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
                 $scope.teams = function () {
                     $location.path("/teams");
-                };
-
-                $scope.profile = function () {
-                    $location.path("/profile");
                 };
 
                 $scope.logout = function () {
@@ -126,26 +121,6 @@ function LogHandler($scope) {
     return function(data, status, headers, config) {
         // todo: we could do more here
         console.log("Got back " + status + " while requesting " + config.url);
-    }
-}
-
-function ProfileCtrl($scope, $rootScope, $http) {
-    $rootScope.user.password = null;
-
-    $scope.update = function(user) {
-        var copy = angular.copy(user);
-        $rootScope.user.password = null;
-        $scope.confirmPassword = null;
-
-        $http.put("/profile", copy)
-            .success(function() {
-                $scope.profileUpdated = true;
-                setTimeout(function() {
-                    $scope.$apply(function () {
-                        $scope.profileUpdated = false;
-                    });
-                }, 2000);
-            }).error(FormErrorHandler($scope));
     }
 }
 
