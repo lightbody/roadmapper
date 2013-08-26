@@ -26,7 +26,13 @@ Next, create a user and database for the app.
 
 Edit `newrelic.yml` to set your New Relic license key.
 
-## 4. Start Play
+## 4. Configure OAuth settings
+
+Edit `conf/overrides.conf` and enter the root URL, client ID, and client secret. If you're a New Relic employee, you can get these values by asking another Roadmapper developer. If you're not a New Relic employee, you'll need to have your own OAuth 2 server up and running with a client set up using a redirect URL of `http://localhost:9000/auth/callback`.
+
+Note: You can also optionally configure the OAuth values using environment variables: OAUTH_ROOT_URL, OAUTH_CLIENT_ID, and OAUTH_CLIENT_SECRET respectively.
+
+## 5. Start Play
 
 In the `roadmapper` directory,
 
@@ -34,7 +40,7 @@ In the `roadmapper` directory,
 
 Then navigate to http://localhost:9000/ in your browser to run the app's setup process.
 
-## 4. Success
+## 6. Success
 
 # Development
 
