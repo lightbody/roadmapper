@@ -24,27 +24,11 @@ public class Secured extends Security.Authenticator {
 
         // check again if we've timed out
         if (System.currentTimeMillis() > lastCheck + OAUTH_TIMEOUT) {
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("Checking OAuth with access token: " + accessToken);
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-            System.out.println("**********************************");
-
-
             Configuration config = Play.application().configuration();
-
-            System.out.println(config.keys());
 
             WS.Response response = WS.url(config.getString("oauth.userDetailUrl"))
                     .setHeader("Authorization", "Bearer " + accessToken)
                     .get().get();
-
-            System.out.println("Got response: " + response.getBody());
 
             if (response.getStatus() != 200) {
                 ctx.session().remove("oauth-access-token");
