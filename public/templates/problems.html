@@ -22,7 +22,7 @@
     <tbody>
     <tr ng-repeat="problem in problems | orderBy:predicate:reverse">
         <td><span tooltip="{{problem.reporter.name}}">{{problem.date | date}}</span></td>
-        <td><a ng-click="editProblem(problem)">{{problem.description | truncate:30}}</a></td>
+        <td><a ng-click="editProblem(problem)">{{problem.description | truncate:200}}</a></td>
         <td>
             <span ng-show="!problem.accountId">{{problem.customerCompany | truncate:15}}</span>
             <a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" ng-show="problem.accountId" target="_blank">{{problem.customerCompany | truncate:15}}</a>

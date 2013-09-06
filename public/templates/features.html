@@ -27,7 +27,7 @@
     <tbody>
     <tr ng-repeat="feature in features | orderBy:predicate:reverse">
         <td>{{feature.id}}</td>
-        <td><a ng-click="editFeature(feature)">{{feature.title | truncate:30}}</a></td>
+        <td><a ng-click="editFeature(feature)">{{feature.title}}</a></td>
         <td>{{feature.engineeringCost}}</td>
         <td>{{feature.revenueBenefit}}</td>
         <td>{{feature.retentionBenefit}}</td>
