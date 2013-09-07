@@ -28,6 +28,18 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
 
     $scope.$watch("featureQuery", $scope.search);
 
+    $scope.sizeSort = function(feature) {
+    };
+
+    $scope.quarterSort = function(feature) {
+        var qtr = feature.quarter;
+        if (qtr == null) {
+            return null;
+        }
+
+        return qtr.substring(3, 7) + qtr.substring(0, 2);
+    };
+
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;

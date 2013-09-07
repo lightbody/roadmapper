@@ -28,6 +28,10 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
 
     $scope.$watch("query", $scope.search);
 
+    // default to sorting by reported date
+    $scope.predicate = "date";
+    $scope.reverse = true;
+
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;

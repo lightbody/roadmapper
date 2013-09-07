@@ -5,6 +5,8 @@ Array.prototype.remove = function (from, to) {
     return this.push.apply(this, rest);
 };
 
+var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
 angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
     config(function ($routeProvider) {
         $routeProvider.
@@ -86,6 +88,38 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             } else {
                 return input.substring(0, length) + " ...";
             }
+        }
+    })
+    .filter('minlinks', function() {
+        return function(input) {
+            return input.replace(LINK_EXPRESSION, "<link>");
+        }
+    })
+    .filter('size', function() {
+        return function(input) {
+            if (input == null) {
+                return "";
+            }
+
+            return input.substring(0, 1);
+        }
+    })
+    .filter('shortQuarter', function() {
+        return function(qtr) {
+            if (qtr == null) {
+                return null;
+            }
+
+            return qtr.substring(0, 2);
+        }
+    })
+    .filter('longQuarter', function() {
+        return function(qtr) {
+            if (qtr == null) {
+                return null;
+            }
+
+            return qtr.substring(3, 7) + ' ' + qtr.substring(0, 2);
         }
     })
     .run(function ($rootScope, $http, $cookieStore, $location) {

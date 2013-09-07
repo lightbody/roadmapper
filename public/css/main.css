@@ -4,6 +4,22 @@ body {
     /*background-color: #f5f5f5;*/
 }
 
+#feature-list, #problem-list {
+    table-layout: fixed;
+}
+
+#feature-list td, #problem-list td {
+    white-space: nowrap;
+    overflow:hidden;
+}
+
+#feature-list td.title, #problem-list td.flex {
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    width: 100%;
+}
+
 form .select2-container {
     margin-left: 0;
 }
