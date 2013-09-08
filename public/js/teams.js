@@ -22,6 +22,15 @@ function TeamsCtrl($scope, $rootScope, $http, $location) {
         dialogClass: 'modal modal-team'
     };
 
+    $scope.saveUtilization = function(team) {
+        $http.put('/teams/' + team.id, team)
+            .success(function (updatedTeam) {
+                team.name = updatedTeam.name;
+                team.utilization = updatedTeam.utilization;
+                team.quarterStaffSummary = updatedTeam.quarterStaffSummary;
+            }).error(LogHandler($scope));
+    };
+
     $scope.saveStaffLevel = function(team, quarter) {
         var newCount = {count: team.quarterStaffSummary[quarter].staffed};
         $http.put('/teams/' + team.id + '/' + quarter, newCount)

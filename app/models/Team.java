@@ -18,5 +18,10 @@ public class Team extends Model {
     @Constraints.Required
     public String name;
 
+    @Constraints.Required
+    @Constraints.Max(100)
+    @Constraints.Min(0)
+    public int utilization;
+
     public Map<Quarter, StaffSummary> quarterStaffSummary = new HashMap<>();
 }

@@ -72,7 +72,7 @@ public class TeamController extends Controller {
                 StaffSummary summary = team.quarterStaffSummary.get(quarter);
                 // could be an old quarter we don't care about anymore
                 if (summary != null) {
-                    summary.addScheduledFeature(cost);
+                    summary.addScheduledFeature(cost, team.utilization);
                 }
             }
         }
@@ -86,6 +86,42 @@ public class TeamController extends Controller {
         team.save();
 
         return ok(Json.toJson(team));
+    }
+
+    @play.db.ebean.Transactional
+    public static Result update(Long id) {
+        Team original = Team.find.byId(id);
+
+        if (original == null) {
+            return notFound();
+        }
+
+        JsonNode json = request().body().asJson();
+        Team update = Json.fromJson(json, Team.class);
+        original.name = update.name;
+        original.utilization = update.utilization;
+
+        original.save();
+
+
+        // we need to pull up the team utilization rates
+        Map<Long, Team> teamMap = Collections.singletonMap(id, original);
+        for (Quarter quarter : Quarter.values()) {
+            original.quarterStaffSummary.put(quarter, new StaffSummary());
+        }
+
+        // look up staff levels
+        SqlQuery query = Ebean.createSqlQuery("select quarter, count from team_staff_levels where team_id = :id");
+        query.setParameter("id", id);
+        List<SqlRow> list = query.findList();
+        for (SqlRow row : list) {
+            Quarter quarter = Quarter.valueOf(row.getString("quarter"));
+            original.quarterStaffSummary.get(quarter).setStaffed(row.getInteger("count"));
+        }
+
+        updateStaffSummary(teamMap);
+
+        return ok(Json.toJson(original));
     }
 
     public static Result updateStaffForQuarter(Long teamId, String quarter) {

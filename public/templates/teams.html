@@ -6,12 +6,14 @@
     <thead>
     <tr>
         <th>Team</th>
+        <th>% Util.</th>
         <th ng-repeat="quarter in enumQuarters">{{quarter}}</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="team in teams">
+    <tr ng-repeat="team in teams | orderBy:'name'">
         <td>{{team.name}}</td>
+        <td><input ng-change="saveUtilization(team)" ng-model="team.utilization" type="text" class="input-mini" style="width: 20px"/> </td>
         <td ng-repeat="quarter in enumQuarters">
             <form class="team-staff-level" ng-submit="saveStaffLevel(team, quarter)">
                 <input tooltip="{{team.quarterStaffSummary[quarter].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter])}}" ng-change="saveStaffLevel(team, quarter)" ng-model="team.quarterStaffSummary[quarter].staffed"/>

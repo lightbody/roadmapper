@@ -27,7 +27,8 @@ public class StaffSummary {
         this.scheduled = scheduled;
     }
 
-    public void addScheduledFeature(Size cost) {
-        scheduled += (cost.getCostAsPersonWeeks() / 5.0);
+    public void addScheduledFeature(Size cost, int utilization) {
+        double pct = utilization / 100.0;
+        scheduled += (cost.getCostAsPersonWeeks() / (52 / 4 * pct));
     }
 }
