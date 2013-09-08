@@ -142,8 +142,11 @@ public class FeatureController extends Controller {
             }
         }
 
+        // fixes N+1 query problem
+        where.join("creator");
+        where.join("lastModifiedBy");
+
         return ok(Json.toJson(dressFeatures(where.findList())));
-        //return ok(Json.toJson(where.findList()));
     }
 
     public static Feature dressFeature(Feature feature) {

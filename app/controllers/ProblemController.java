@@ -152,8 +152,11 @@ public class ProblemController extends Controller {
             }
         }
 
-        // todo: not sure why this isn't helping with the N+1 query issue
-        // where.join("reporter");
+        // fixes N+1 query problem
+        where.join("reporter");
+        where.join("lastModifiedBy");
+        where.join("feature");
+
         return ok(Json.toJson(where.findList()));
     }
 
