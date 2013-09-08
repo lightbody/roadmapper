@@ -143,7 +143,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
 function FormErrorHandler($scope) {
     return function(data, status, headers) {
-        $scope.errors = [headers("X-Global-Error")];
+        $scope.errors = [data.globalError];
     }
 }
 
@@ -158,5 +158,9 @@ function LogHandler($scope) {
     }
 }
 
-function DashboardCtrl($scope, $rootScope, $location) {
+function DashboardCtrl($scope, $http) {
+    $http.get('/dashboard-stats')
+        .success(function (stats) {
+            $scope.stats = stats;
+        }).error(LogHandler($scope));
 }

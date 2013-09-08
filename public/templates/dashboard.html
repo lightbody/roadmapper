@@ -1,1 +1,49 @@
-You are logged in as {{user.name}} ({{user.email}}).
+<h1>Global Stats</h1>
+
+<table id="global-stats" class="table table-bordered" style="width: 300px;">
+    <tbody>
+    <tr>
+        <td>New problems this week</td>
+        <td>{{stats.newProblemsThisWeek}}</td>
+    </tr>
+    <tr>
+        <td>New problems last week</td>
+        <td>{{stats.newProblemsLastWeek}}</td>
+    </tr>
+    <tr>
+        <td>Open problems this week</td>
+        <td>{{stats.openProblemsThisWeek}}</td>
+    </tr>
+    <tr>
+        <td>Open problems last week</td>
+        <td>{{stats.openProblemsLastWeek}}</td>
+    </tr>
+    <tr>
+        <td>Problems modified this week</td>
+        <td>{{stats.modifiedProblemsThisWeek}}</td>
+    </tr>
+    <tr>
+        <td>Problems modified last week</td>
+        <td>{{stats.modifiedProblemsLastWeek}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<h1>Recent Updates to Roadmapper</h1>
+
+<p>
+    The following is the changelog for the roadmapper tool. Want to see some more improvements? Open an issue on <a href="http://github.com/lightbody/roadmapper">Github</a>!
+</p>
+
+<div>
+    <h4>September 8, 2013</h4>
+
+    <ul>
+        <li>Teams can now have customizable utilization rates rather than the default of 40%</li>
+        <li>Cache busting logic should help with Firefox and Chrome bugs reported</li>
+        <li>Internal errors will at least report a generic error now, rather than a blank red box</li>
+        <li>Global stats showing off activity this week and last week</li>
+        <li>Much improved table design in problems and features</li>
+    </ul>
+</div>
+

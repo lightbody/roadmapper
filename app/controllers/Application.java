@@ -1,7 +1,14 @@
 package controllers;
 
+import com.avaje.ebean.Ebean;
+import models.DashboardStats;
+import models.ProblemState;
 import models.User;
 import org.codehaus.jackson.JsonNode;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
 import play.Configuration;
 import play.Play;
 import play.Routes;
@@ -76,6 +83,49 @@ public class Application extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result home() {
         return ok(index.render());
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result dashboardStats() {
+        DashboardStats stats = new DashboardStats();
+
+        final DateTime input = new DateTime(DateTimeZone.UTC);
+        final DateMidnight startOfLastWeek = new DateMidnight(input.minusWeeks(1).withDayOfWeek(DateTimeConstants.SUNDAY));
+        final DateMidnight endOfLastWeek = startOfLastWeek.plusDays(6);
+
+        stats.newProblemsThisWeek = Ebean.createSqlQuery("select count(*) from problem where date between :start and :end")
+                .setParameter("start", endOfLastWeek)
+                .setParameter("end", input)
+                .findUnique().getInteger("count");
+
+        stats.newProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where date between :start and :end")
+                .setParameter("start", startOfLastWeek)
+                .setParameter("end", endOfLastWeek)
+                .findUnique().getInteger("count");
+
+        stats.openProblemsThisWeek = Ebean.createSqlQuery("select count(*) from problem where state = :state and date between :start and :end")
+                .setParameter("state", ProblemState.OPEN)
+                .setParameter("start", endOfLastWeek)
+                .setParameter("end", input)
+                .findUnique().getInteger("count");
+
+        stats.openProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where state = :state and date between :start and :end")
+                .setParameter("state", ProblemState.OPEN)
+                .setParameter("start", startOfLastWeek)
+                .setParameter("end", endOfLastWeek)
+                .findUnique().getInteger("count");
+
+        stats.modifiedProblemsThisWeek= Ebean.createSqlQuery("select count(*) from problem where last_modified != date and last_modified between :start and :end")
+                .setParameter("start", endOfLastWeek)
+                .setParameter("end", input)
+                .findUnique().getInteger("count");
+
+        stats.modifiedProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where last_modified != date and last_modified between :start and :end")
+                .setParameter("start", startOfLastWeek)
+                .setParameter("end", endOfLastWeek)
+                .findUnique().getInteger("count");
+
+        return ok(Json.toJson(stats));
     }
 
     public static Result javascriptRoutes() {
