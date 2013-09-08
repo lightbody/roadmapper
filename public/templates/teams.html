@@ -14,7 +14,7 @@
         <td>{{team.name}}</td>
         <td ng-repeat="quarter in enumQuarters">
             <form class="team-staff-level" ng-submit="saveStaffLevel(team, quarter)">
-                <input tooltip="{{team.quarterStaffSummary[quarter].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter])}}" ng-model="team.quarterStaffSummary[quarter].staffed"/>
+                <input tooltip="{{team.quarterStaffSummary[quarter].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter])}}" ng-change="saveStaffLevel(team, quarter)" ng-model="team.quarterStaffSummary[quarter].staffed"/>
                 <a href="" class="icon-search" ng-click="findFeatures(team, quarter)"></a>
             </form>
         </td>
