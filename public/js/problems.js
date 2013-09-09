@@ -229,6 +229,8 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         $scope.showViewProblem = false;
     };
 
+    var counter = 1;
+
     $scope.select2Options = {
         multiple: true,
         createSearchChoice: function(val) {
@@ -241,8 +243,16 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         tags: [],
         tokenSeparators: [",", " "],
         query: function (query) {
+            counter++;
+            var cur = counter;
             $http.get("/tags?query=" + query.term)
                 .success(function (tags) {
+                    if (cur != counter) {
+                        //console.log("discarding: " +  cur + " != " + counter);
+                        return;
+                    }
+                    //console.log("keeping: " + cur + " == " + counter);
+
                     var results = [];
                     tags.map(function(tag) {results.push({id: tag, text: tag})});
                     query.callback({

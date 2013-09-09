@@ -58,6 +58,8 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         }
     };
 
+    var counter = 1;
+
     $scope.querySelect2Options = {
         multiple: true,
         sortResults: function(results, container, query) {
@@ -89,6 +91,9 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         tags: [],
         tokenSeparators: [",", " "],
         query: function (query) {
+            counter++;
+            var cur = counter;
+
             var term = query.term;
             if (term == "") {
                 query.callback({results: []});
@@ -132,6 +137,12 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
 
             $http.get("/tags?query=" + term)
                 .success(function (tags) {
+                    if (cur != counter) {
+                        //console.log("discarding: " +  cur + " != " + counter);
+                        return;
+                    }
+                    //console.log("keeping: " + cur + " == " + counter);
+
                     tags.map(function(tag) {results.push({id: tag, text: "<strong>Tag</strong>: " + tag})});
                     query.callback({
                         results: results
