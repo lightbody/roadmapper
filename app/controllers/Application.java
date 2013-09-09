@@ -5,7 +5,6 @@ import models.DashboardStats;
 import models.ProblemState;
 import models.User;
 import org.codehaus.jackson.JsonNode;
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -90,8 +89,8 @@ public class Application extends Controller {
         DashboardStats stats = new DashboardStats();
 
         final DateTime input = new DateTime(DateTimeZone.UTC);
-        final DateMidnight startOfLastWeek = new DateMidnight(input.minusWeeks(1).withDayOfWeek(DateTimeConstants.SUNDAY));
-        final DateMidnight endOfLastWeek = startOfLastWeek.plusDays(6);
+        final DateTime startOfLastWeek = input.withTimeAtStartOfDay().minusWeeks(2).withDayOfWeek(DateTimeConstants.SUNDAY);
+        final DateTime endOfLastWeek = input.withTimeAtStartOfDay().minusWeeks(1).withDayOfWeek(DateTimeConstants.SUNDAY);
 
         stats.newProblemsThisWeek = Ebean.createSqlQuery("select count(*) from problem where date between :start and :end")
                 .setParameter("start", endOfLastWeek)

@@ -10,12 +10,12 @@ var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z
 angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
     config(function ($routeProvider) {
         $routeProvider.
-            when('/dashboard', {controller: DashboardCtrl, templateUrl: 'templates/dashboard.html'}).
-            when('/problems', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
-            when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: 'templates/problems.html'}).
-            when('/features', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
-            when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: 'templates/features.html'}).
-            when('/teams', {controller: TeamsCtrl, templateUrl: 'templates/teams.html'}).
+            when('/dashboard', {controller: DashboardCtrl, templateUrl: templateUrls.dashboard}).
+            when('/problems', {controller: ProblemsCtrl, templateUrl: templateUrls.problems}).
+            when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: templateUrls.problems}).
+            when('/features', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
+            when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
+            when('/teams', {controller: TeamsCtrl, templateUrl: templateUrls.teams}).
             otherwise({redirectTo: '/dashboard'});
     })
     .directive('integer', function() {
@@ -60,7 +60,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                     window.location.href = "/logout"
                 };
             },
-            templateUrl: "templates/navbar.html"
+            templateUrl: "nav.html"
         }
     })
     .filter('noFractionCurrency',
