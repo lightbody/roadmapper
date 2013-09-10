@@ -135,10 +135,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         // set up i18n bundle
         $rootScope.i18n = i18n;
 
-        $http.get("/identify").success(function (user) {
-            $rootScope.user = user;
-        });
-
+        $rootScope.user = user;
     });
 
 function FormErrorHandler($scope) {

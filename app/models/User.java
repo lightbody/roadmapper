@@ -7,6 +7,7 @@ import play.db.ebean.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * User entity managed by Ebean
@@ -24,7 +25,7 @@ public class User extends Model {
     public String name;
 
     @Constraints.Required
-    public String password;
+    public Date firstLogin;
 
     // -- Queries
 

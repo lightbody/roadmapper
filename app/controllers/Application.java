@@ -18,6 +18,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 import views.html.index;
 
+import java.util.Date;
+
 public class Application extends Controller {
     public static Result oauthCallback() {
         String code = request().queryString().get("code")[0];
@@ -48,7 +50,7 @@ public class Application extends Controller {
             user = new User();
             user.email = email;
             user.name = "N/A";
-            user.password = "N/A";
+            user.firstLogin = new Date();
             user.save();
         }
 
@@ -72,16 +74,8 @@ public class Application extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result getUser() {
-        User user = User.findByEmail(request().username());
-        user.password = null;
-
-        return ok(Json.toJson(user));
-    }
-
-    @Security.Authenticated(Secured.class)
     public static Result home() {
-        return ok(index.render());
+        return ok(index.render(User.findByEmail(request().username())));
     }
 
     @Security.Authenticated(Secured.class)

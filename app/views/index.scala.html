@@ -1,3 +1,6 @@
+@(user: models.User)
+@import play.libs.Json
+
 <!DOCTYPE html>
 <html ng-app="roadmapper">
 <head>
@@ -46,6 +49,8 @@
     </script>
 
     <script type="text/javascript">
+        var user = @Html(Json.toJson(user).toString);
+
         var templateUrls = {
             dashboard: "@routes.VersionedAssets.at("templates/dashboard.html")",
             features: "@routes.VersionedAssets.at("templates/features.html")",
