@@ -30,6 +30,7 @@
                                 <!--<li class="active"><a ng-click="dashboard()">Dashboard</a></li>-->
                             <li><a ng-click="dashboard()">Dashboard</a></li>
                             <li><a ng-click="problems()">Problems</a></li>
+                            <li><a ng-click="tags()">Tags</a></li>
                             <li><a ng-click="features()">Features</a></li>
                             <li><a ng-click="teams()">Teams</a></li>
                             <li><a ng-click="logout()">Logout</a></li>
@@ -56,7 +57,8 @@
             features: "@routes.VersionedAssets.at("templates/features.html")",
             problems: "@routes.VersionedAssets.at("templates/problems.html")",
             profile: "@routes.VersionedAssets.at("templates/profile.html")",
-            teams: "@routes.VersionedAssets.at("templates/teams.html")"
+            teams: "@routes.VersionedAssets.at("templates/teams.html")",
+            tags: "@routes.VersionedAssets.at("templates/tags.html")"
         };
 
         var enumQuarters = ["@Html(Quarter.values().mkString("\",\""))"];
@@ -97,6 +99,7 @@
 <script type="text/javascript" src="@routes.VersionedAssets.at("js/problems.js")"></script>
 <script type="text/javascript" src="@routes.VersionedAssets.at("js/features.js")"></script>
 <script type="text/javascript" src="@routes.VersionedAssets.at("js/teams.js")"></script>
+<script type="text/javascript" src="@routes.VersionedAssets.at("js/tags.js")"></script>
 
 </body>
 </html>

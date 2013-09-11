@@ -25,6 +25,9 @@ PUT         /teams/:id                 controllers.TeamController.update(id: Lon
 PUT         /teams/:id/:quarter        controllers.TeamController.updateStaffForQuarter(id: Long, quarter: String)
 
 GET         /tags                      controllers.TagController.search(query: String)
+PUT         /tags/:tag                 controllers.TagController.editTag(tag: String)
+DELETE      /tags/:tag                 controllers.TagController.deleteTag(tag: String)
+GET         /tags/summaries            controllers.TagController.summaries()
 
 GET         /js/routes.js              controllers.Application.javascriptRoutes()
 

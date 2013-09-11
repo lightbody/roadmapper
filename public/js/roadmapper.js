@@ -16,6 +16,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             when('/features', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
             when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
             when('/teams', {controller: TeamsCtrl, templateUrl: templateUrls.teams}).
+            when('/tags', {controller: TagsCtrl, templateUrl: templateUrls.tags}).
             otherwise({redirectTo: '/dashboard'});
     })
     .directive('integer', function() {
@@ -48,12 +49,16 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                     $location.path("/problems");
                 };
 
+                $scope.tags = function () {
+                    $location.path("/tags");
+                };
+
                 $scope.features = function () {
                     $location.path("/features");
                 };
 
                 $scope.teams = function () {
-                    $location.path("/teams");
+                    $location.path("/banana");
                 };
 
                 $scope.logout = function () {
