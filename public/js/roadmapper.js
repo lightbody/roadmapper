@@ -58,7 +58,7 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 };
 
                 $scope.teams = function () {
-                    $location.path("/banana");
+                    $location.path("/teams");
                 };
 
                 $scope.logout = function () {
