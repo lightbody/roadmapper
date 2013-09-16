@@ -79,6 +79,7 @@
 
     </div>
     <div class="modal-footer">
+        <button class="btn btn-warning cancel" ng-click="clearNewProblem()">Clear</button>
         <button class="btn btn-warning cancel" ng-click="closeNewProblem()">Cancel</button>
         <button class="btn btn-primary" ng-click="createProblem(newProblem)" ng-disabled="newProblemForm.$invalid" type="submit">Confirm</button>
     </div>

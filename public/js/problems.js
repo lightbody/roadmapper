@@ -165,8 +165,13 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     $scope.closeNewProblem = function() {
         $location.path("/problems");
         ClearErrors($scope);
-        $scope.newProblem = null;
         $scope.showNewProblem = false;
+    };
+
+    $scope.clearNewProblem = function() {
+        // seperate clear functionality addresses https://github.com/lightbody/roadmapper/issues/2
+        ClearErrors($scope);
+        $scope.newProblem = null;
     };
 
     $scope.modalOptions = {
