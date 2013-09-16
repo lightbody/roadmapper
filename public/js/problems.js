@@ -161,6 +161,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 mixpanel.track("Record Problem", returnedProblem);
 
                 $scope.problems.push(returnedProblem);
+                $scope.clearNewProblem();
                 $scope.closeNewProblem();
             }).error(FormErrorHandler($scope));
     };
