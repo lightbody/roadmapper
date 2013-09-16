@@ -141,6 +141,20 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         $rootScope.i18n = i18n;
 
         $rootScope.user = user;
+
+        // mixpanel stuff
+        mixpanel.set_config({track_pageview: false});
+        mixpanel.identify(user.email);
+        mixpanel.register({
+            "User Email": user.email,
+            "User Name": user.name
+        });
+        mixpanel.people.set("$email", user.email);
+        mixpanel.people.set("$username", user.email);
+        mixpanel.people.set("$name", user.name);
+        mixpanel.people.set("$created", new Date(user.firstLogin));
+        mixpanel.people.increment("Sessions");
+        mixpanel.name_tag(user.name);
     });
 
 function FormErrorHandler($scope) {

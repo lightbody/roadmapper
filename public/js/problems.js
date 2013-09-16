@@ -157,6 +157,9 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
 
         $http.post('/problems', copy)
             .success(function (returnedProblem) {
+                mixpanel.people.increment("Problems Recorded");
+                mixpanel.track("Record Problem", returnedProblem);
+
                 $scope.problems.push(returnedProblem);
                 $scope.closeNewProblem();
             }).error(FormErrorHandler($scope));
