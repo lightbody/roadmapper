@@ -28,7 +28,7 @@ Edit `newrelic.yml` to set your New Relic license key.
 
 ## 4. Configure OAuth settings
 
-Edit `conf/overrides.conf` and enter the root URL, client ID, and client secret. If you're a New Relic employee, you can get these values by asking another Roadmapper developer. If you're not a New Relic employee, you'll need to have your own OAuth 2 server up and running with a client set up using a redirect URL of `http://localhost:9000/auth/callback`.
+Copy `conf/overrides.sample.conf` to `conf/overrides.conf` and enter the root URL, client ID, and client secret. If you're a New Relic employee, you can get these values by asking another Roadmapper developer. If you're not a New Relic employee, you'll need to have your own OAuth 2 server up and running with a client set up using a redirect URL of `http://localhost:9000/auth/callback`.
 
 Note: You can also optionally configure the OAuth values using environment variables: OAUTH_ROOT_URL, OAUTH_CLIENT_ID, and OAUTH_CLIENT_SECRET respectively.
 
