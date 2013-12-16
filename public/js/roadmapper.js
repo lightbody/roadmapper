@@ -142,6 +142,13 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
         $rootScope.user = user;
 
+        // segment.io
+        analytics.identify(user.email, {
+            name: user.name,
+            email: user.email,
+            firstLogin: user.firstLogin
+        });
+
         // mixpanel stuff
         mixpanel.set_config({track_pageview: false});
         mixpanel.identify(user.email);
