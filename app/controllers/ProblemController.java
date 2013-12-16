@@ -1,13 +1,13 @@
 package controllers;
 
 import com.avaje.ebean.*;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import models.Feature;
 import models.Problem;
 import models.ProblemState;
 import models.User;
-import org.codehaus.jackson.JsonNode;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -49,7 +49,7 @@ public class ProblemController extends Controller {
             return notFound();
         }
 
-        JsonNode json = request().body().asJson();
+        JsonNode json = request().body().asJson();;
         Problem update = Json.fromJson(json, Problem.class);
         original.lastModified = new Timestamp(System.currentTimeMillis());
         original.lastModifiedBy = User.findByEmail(request().username());

@@ -101,7 +101,7 @@ public class TagController extends Controller {
     }
 
     public static Result editTag(String tag) {
-        String newTag = request().body().asJson().get("tag").getTextValue();
+        String newTag = request().body().asJson().get("tag").textValue();
         if (tag.equals(newTag)) {
             // nothing to do!
             return ok();
