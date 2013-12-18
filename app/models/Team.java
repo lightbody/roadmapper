@@ -23,5 +23,5 @@ public class Team extends Model {
     @Constraints.Min(0)
     public int utilization;
 
-    public Map<Quarter, StaffSummary> quarterStaffSummary = new HashMap<>();
+    public Map<Integer, StaffSummary> quarterStaffSummary = new HashMap<>();
 }

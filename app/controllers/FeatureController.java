@@ -111,7 +111,7 @@ public class FeatureController extends Controller {
             } else if (term.startsWith("team:")) {
                 where.ilike("team.name", "%" + term.substring(5) + "%");
             } else if (term.startsWith("quarter:")) {
-                where.ilike("quarter", "%" + term.substring(8) + "%");
+                where.eq("quarter", Integer.parseInt(term.substring(8)));
             } else {
                 // no prefix? assume a tag then
                 tagsSeen++;
@@ -146,7 +146,16 @@ public class FeatureController extends Controller {
         where.join("creator");
         where.join("lastModifiedBy");
 
-        return ok(Json.toJson(dressFeatures(where.findList())));
+
+        List<Feature> list = where.findList();
+        if (list.size() > 10) {
+            list = list.subList(0, 10);
+        }
+
+        JsonNode jsonNode = Json.toJson(dressFeatures(list));
+        System.out.println("FOUND ENTRIES!");
+
+        return ok(jsonNode);
     }
 
     public static Feature dressFeature(Feature feature) {

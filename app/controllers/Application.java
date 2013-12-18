@@ -16,9 +16,12 @@ import play.libs.WS;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.Qtr;
 import views.html.index;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Application extends Controller {
     public static Result oauthCallback() {
@@ -75,7 +78,13 @@ public class Application extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result home() {
-        return ok(index.render(User.findByEmail(request().username())));
+        List<Qtr> activeQuarters = Qtr.active();
+        List<Qtr> allQuarters = new ArrayList<>();
+        for (int i = 1; i < 40; i++) {
+            allQuarters.add(new Qtr(i));
+        }
+
+        return ok(index.render(User.findByEmail(request().username()), activeQuarters, allQuarters));
     }
 
     @Security.Authenticated(Secured.class)

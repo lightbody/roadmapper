@@ -56,8 +56,8 @@ public class Feature extends Model {
     @ManyToOne
     public Team team;
 
-    @Enumerated(EnumType.STRING)
-    public Quarter quarter;
+    @Basic
+    public Integer quarter;
 
     public Set<String> tags;
 

@@ -19,7 +19,7 @@
         <th style="width: 2em" class="text-right"><a href="" ng-click="predicate = 'score'; reverse=!reverse">Score</a></th>
         <th style="width: 3em" class="text-right"><a href="" ng-click="predicate = 'problemCount'; reverse=!reverse">Probs</a></th>
         <th style="width: 6em" class="text-right"><a href="" ng-click="predicate = 'problemRevenue'; reverse=!reverse">ARR</a></th>
-        <th style="width: 2em"><a href="" ng-click="predicate = quarterSort; reverse=!reverse">Qtr</a></th>
+        <th style="width: 2em"><a href="" ng-click="predicate = 'quarter'; reverse=!reverse">Qtr</a></th>
         <th style="width: 6em"><a href="" ng-click="predicate = 'team.name'; reverse=!reverse">Team</a></th>
         <th style="width: 3em"><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Mod</a></th>
     </tr>
@@ -72,7 +72,7 @@
 
             <div class="controls controls-row">
                 <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="newFeature.team" placeholder="Not mapped to a team"/>
-                <select class="span2" ng-model="newFeature.quarter" ng-options="e for e in enumQuarters"></select>
+                <select class="span2" ng-model="newFeature.quarter" ng-options="¡"></select>
                 <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates"></select>
             </div>
 
@@ -116,7 +116,7 @@
 
             <div class="controls controls-row">
                 <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
-                <select class="span2" ng-model="selectedFeature.quarter" ng-options="e for e in enumQuarters">
+                <select class="span2" ng-model="selectedFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
                     <option value="">unscheduled</option>
                 </select>
                 <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates"></select>

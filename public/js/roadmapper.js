@@ -115,7 +115,14 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 return null;
             }
 
-            return qtr.substring(0, 2);
+            for (var i = 0; i < enumAllQuarters.length; i++) {
+                var quarter = enumAllQuarters[i];
+                if (quarter.id == qtr) {
+                    return quarter.label.substring(0, 2);
+                }
+            }
+
+            return null;
         }
     })
     .filter('longQuarter', function() {
@@ -124,7 +131,14 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 return null;
             }
 
-            return qtr.substring(3, 7) + ' ' + qtr.substring(0, 2);
+            for (var i = 0; i < enumAllQuarters.length; i++) {
+                var quarter = enumAllQuarters[i];
+                if (quarter.id == qtr) {
+                    return quarter.label;
+                }
+            }
+
+            return null;
         }
     })
     .run(function ($rootScope, $http, $cookieStore, $location) {
@@ -132,7 +146,8 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         $rootScope.featureQuery = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
 
         // wire up shared enums
-        $rootScope.enumQuarters = enumQuarters;
+        $rootScope.enumAllQuarters = enumAllQuarters;
+        $rootScope.enumActiveQuarters = enumActiveQuarters;
         $rootScope.enumSizes = enumSizes;
         $rootScope.enumProblemStates = enumProblemStates;
         $rootScope.enumFeatureStates = enumFeatureStates;

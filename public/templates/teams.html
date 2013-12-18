@@ -7,17 +7,17 @@
     <tr>
         <th>Team</th>
         <th>% Util.</th>
-        <th ng-repeat="quarter in enumQuarters">{{quarter}}</th>
+        <th ng-repeat="quarter in enumActiveQuarters">{{quarter.label}}</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="team in teams | orderBy:'name'">
         <td>{{team.name}}</td>
         <td><input ng-change="saveUtilization(team)" ng-model="team.utilization" type="text" class="input-mini" style="width: 20px"/> </td>
-        <td ng-repeat="quarter in enumQuarters">
-            <form class="team-staff-level" ng-submit="saveStaffLevel(team, quarter)">
-                <input tooltip="{{team.quarterStaffSummary[quarter].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter])}}" ng-change="saveStaffLevel(team, quarter)" ng-model="team.quarterStaffSummary[quarter].staffed"/>
-                <a href="" class="icon-search" ng-click="findFeatures(team, quarter)"></a>
+        <td ng-repeat="quarter in enumActiveQuarters">
+            <form class="team-staff-level" ng-submit="saveStaffLevel(team, quarter.id)">
+                <input tooltip="{{team.quarterStaffSummary[quarter.id].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter.id])}}" ng-change="saveStaffLevel(team, quarter.id)" ng-model="team.quarterStaffSummary[quarter.id].staffed"/>
+                <a href="" class="icon-search" ng-click="findFeatures(team, quarter.id)"></a>
             </form>
         </td>
 

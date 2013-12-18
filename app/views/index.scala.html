@@ -1,4 +1,4 @@
-@(user: models.User)
+@(user: models.User, activeQuarters: List[util.Qtr], allQuarters: List[util.Qtr])
 @import play.libs.Json
 @import play.api.Play
 
@@ -65,7 +65,9 @@
             tags: "@routes.VersionedAssets.at("templates/tags.html")"
         };
 
-        var enumQuarters = ["@Html(Quarter.values().mkString("\",\""))"];
+        var enumAllQuarters = [@for(qtr <- allQuarters) {{id: @qtr.id, label: "@qtr.label"},}];
+        var enumActiveQuarters = [@for(qtr <- activeQuarters) {{id: @qtr.id, label: "@qtr.label"},}];;
+
         var enumSizes = ["@Html(Size.values().mkString("\",\""))"];
         var enumProblemStates = ["@Html(ProblemState.values().mkString("\",\""))"];
         var enumFeatureStates = ["@Html(FeatureState.values().mkString("\",\""))"];

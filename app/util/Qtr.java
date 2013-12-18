@@ -4,13 +4,14 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Quarters are captured by integer, starting with 1 == Q1 2008 (first year of New Relic).
  */
-public class Qtr {
+public class Qtr implements Comparable<Qtr>, Serializable {
     public static void main(String[] args) {
         // test functions
         for (int i = 1; i < 40; i++) {
@@ -56,12 +57,7 @@ public class Qtr {
     private boolean fiscal;
 
     public static Qtr get(int quarter) {
-        DateTime founding = new DateTime(2008, 1, 1, 0, 0, DateTimeZone.UTC);
-        for (int i = 1; i < quarter; i++) {
-            founding = founding.plusMonths(3);
-        }
-
-        return new Qtr(quarter, founding);
+        return new Qtr(quarter);
     }
 
     public static Qtr get(String label) {
@@ -128,10 +124,14 @@ public class Qtr {
         }
     }
 
-    private Qtr(int id, DateTime start) {
+    public Qtr(Integer id) {
+        start = new DateTime(2008, 1, 1, 0, 0, DateTimeZone.UTC);
+        for (int i = 1; i < id; i++) {
+            start = start.plusMonths(3);
+        }
+
         fiscal = false;
         this.id = id;
-        this.start = start;
         this.end = start.plusMonths(3);
 
         int q = (start.getMonthOfYear() - 1) / 3 + 1;
@@ -178,5 +178,10 @@ public class Qtr {
         Qtr other = (Qtr) obj;
 
         return other.id == this.id && other.start.equals(this.start);
+    }
+
+    @Override
+    public int compareTo(Qtr qtr) {
+        return new Integer(qtr.id).compareTo(this.id);
     }
 }

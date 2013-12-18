@@ -56,9 +56,18 @@ function TeamsCtrl($scope, $rootScope, $http, $location) {
         return "critical";
     };
 
-    $scope.findFeatures = function(team, quarter) {
+    $scope.findFeatures = function(team, quarterId) {
+        var quarterLabel = "???";
+        for (var i = 0; i < $rootScope.enumAllQuarters.length; i++) {
+            var quarter = $rootScope.enumAllQuarters[i];
+            if (quarter.id == quarterId) {
+                quarterLabel = quarter.label;
+                break;
+            }
+        }
+
         $rootScope.featureQuery = [{id: "team:" + team.name, text: "<strong>Team</strong>: " + team.name},
-            {id: "quarter:" + quarter, text: "<strong>Quarter</strong>: " + quarter}];
+            {id: "quarter:" + quarterId, text: "<strong>Quarter</strong>: " + quarterLabel}];
         $location.path("/features");
 
     };

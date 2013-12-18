@@ -31,15 +31,6 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     $scope.sizeSort = function(feature) {
     };
 
-    $scope.quarterSort = function(feature) {
-        var qtr = feature.quarter;
-        if (qtr == null) {
-            return null;
-        }
-
-        return qtr.substring(3, 7) + qtr.substring(0, 2);
-    };
-
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;
@@ -117,8 +108,16 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
             // always offer team name matching todo: could improve this to detect if it's a team name
             results.push({id: "team:" + term, text: "<strong>Team</strong>: " + term});
 
-            // always offer quarter matching todo: could improve this to only match the QQ-YYYY format (or whatever)
-            results.push({id: "quarter:" + term, text: "<strong>Quarter</strong>: " + term});
+
+            // does the search term match any known quarters?
+            if (term.length > 3 || term.indexOf("Q") == 0 || term.indexOf("20") == 0 || term.indexOf("FY") == 0) {
+                for (var i = 0; i < $rootScope.enumAllQuarters.length; i++) {
+                    var quarter = $rootScope.enumAllQuarters[i];
+                    if (quarter.label.indexOf(term) != -1) {
+                        results.push({id: "quarter:" + quarter.id, text: "<strong>Quarter</strong>: " + quarter.label});
+                    }
+                }
+            }
 
             // status matching -- only do it when we haven't already selected a state
             var hasStateQuery = false;
