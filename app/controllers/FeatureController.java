@@ -146,14 +146,8 @@ public class FeatureController extends Controller {
         where.join("creator");
         where.join("lastModifiedBy");
 
-
         List<Feature> list = where.findList();
-        if (list.size() > 10) {
-            list = list.subList(0, 10);
-        }
-
         JsonNode jsonNode = Json.toJson(dressFeatures(list));
-        System.out.println("FOUND ENTRIES!");
 
         return ok(jsonNode);
     }
