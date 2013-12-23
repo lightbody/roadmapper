@@ -1,0 +1,44 @@
+        <h3>Problem #{{selectedProblem.id}}</h3>
+
+        <form name="editProblemForm" novalidate>
+
+            <div ng-include="'validation.html'"></div>
+
+            <div class="controls">
+                <textarea class="span7" rows="10" ng-model="selectedProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span3" ng-model="selectedProblem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="selectedProblem.customerCompany" placeholder="Customer Company" required>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="email" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
+
+                <div class="span2">
+                    <div class="controls input-prepend input-append">
+                        <span class="add-on">$</span>
+                        <input class="arr-field" type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR" integer>
+                        <span class="add-on">.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="text" class="span4" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+                <select class="span3" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
+            </div>
+
+            <div class="controls controls-row" style="padding-bottom: 10px">
+                <input type="text" class="span7" ui-select2="tagSelect2Options" ng-model="selectedProblem.tags"/>
+            </div>
+
+            <div class="controls controls-row">
+                <input type="hidden" class="span7" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
+            </div>
+        </form>
+
+        <button class="btn btn-warning cancel" ng-click="closeViewProblem()">Cancel</button>
+        <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)" ng-disabled="editProblemForm.$invalid" type="submit">Confirm</button>
