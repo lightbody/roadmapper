@@ -1,0 +1,36 @@
+<h3>Create new feature</h3>
+
+<form name="newFeatureForm" novalidate>
+
+    <div ng-include="'validation.html'"></div>
+
+    <div class="controls">
+        <input type="text" class="span8" ng-model="newFeature.title" autofocus="autofocus" placeholder="Feature" required>
+    </div>
+
+    <div class="controls controls-row">
+        <textarea class="span8" rows="10" ng-model="newFeature.description" placeholder="Extended Description"></textarea>
+    </div>
+
+    <div class="controls controls-row">
+        <select class="span2" ng-model="newFeature.engineeringCost" ng-options="e for e in enumSizes"></select>
+        <select class="span2" ng-model="newFeature.revenueBenefit" ng-options="e for e in enumSizes"></select>
+        <select class="span2" ng-model="newFeature.retentionBenefit" ng-options="e for e in enumSizes"></select>
+        <select class="span2" ng-model="newFeature.positioningBenefit" ng-options="e for e in enumSizes"></select>
+    </div>
+
+    <div class="controls controls-row">
+        <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="newFeature.team" placeholder="Not mapped to a team"/>
+        <select class="span2" ng-model="newFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters"></select>
+        <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates"></select>
+    </div>
+
+    <div class="controls controls-row">
+        <input type="text" class="span8" ui-select2="tagSelect2Options" ng-model="newFeature.tags"/>
+    </div>
+
+</form>
+
+
+<button class="btn btn-warning cancel" ng-click="closeNewFeature()">Cancel</button>
+<button class="btn btn-primary" ng-click="createFeature(newFeature)" ng-disabled="newFeatureForm.$invalid" type="submit">Confirm</button>

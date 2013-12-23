@@ -14,7 +14,8 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             when('/problems', {controller: ProblemsCtrl, templateUrl: templateUrls.problems}).
             when('/problems/:problemId', {controller: ProblemsCtrl, templateUrl: templateUrls.problems}).
             when('/features', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
-            when('/features/:featureId', {controller: FeaturesCtrl, templateUrl: templateUrls.features}).
+            when('/features/new', {controller: NewFeatureCtrl, templateUrl: templateUrls.newFeature}).
+            when('/features/:featureId', {controller: ViewFeatureCtrl, templateUrl: templateUrls.viewFeature}).
             when('/teams', {controller: TeamsCtrl, templateUrl: templateUrls.teams}).
             when('/tags', {controller: TagsCtrl, templateUrl: templateUrls.tags}).
             otherwise({redirectTo: '/dashboard'});
