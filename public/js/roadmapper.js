@@ -153,6 +153,57 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
         $rootScope.enumProblemStates = enumProblemStates;
         $rootScope.enumFeatureStates = enumFeatureStates;
 
+        var counter = 1;
+
+        // wire up shared select2 configs
+        $rootScope.tagSelect2Options = {
+            multiple: true,
+            createSearchChoice: function(val) {
+                if (val.length>0) {
+                    return {id: val, text: val};
+                } else {
+                    return null;
+                }
+            },
+            tags: [],
+            tokenSeparators: [",", " "],
+            query: function (query) {
+                counter++;
+                var cur = counter;
+                $http.get("/tags?query=" + query.term)
+                    .success(function (tags) {
+                        if (cur != counter) {
+                            //console.log("discarding: " +  cur + " != " + counter);
+                            return;
+                        }
+                        //console.log("keeping: " + cur + " == " + counter);
+
+                        var results = [];
+                        tags.map(function(tag) {results.push({id: tag, text: tag})});
+                        query.callback({
+                            results: results
+                        });
+                    }).error(LogHandler($rootScope));
+            },
+            formatNoMatches: function(){ return 'empty';}
+        };
+
+        $rootScope.teamSelect2Options = {
+            allowClear: true,
+            query: function (query) {
+                $http.get("/teams")
+                    .success(function (teams) {
+                        var results = [];
+                        teams.map(function(team) {results.push({id: team.id, text: team.name})});
+                        query.callback({
+                            results: results
+                        });
+                    }).error(LogHandler($rootScope));
+            }
+        };
+
+
+
         // set up i18n bundle
         $rootScope.i18n = i18n;
 
