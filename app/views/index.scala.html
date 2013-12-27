@@ -35,9 +35,9 @@
                         <ul class="nav">
                                 <!--<li class="active"><a ng-click="dashboard()">Dashboard</a></li>-->
                             <li><a ng-click="dashboard()">Dashboard</a></li>
-                            <li><a ng-click="problems()">Problems</a></li>
+                            <li><a href="#/problems">Problems</a></li>
                             <li><a ng-click="tags()">Tags</a></li>
-                            <li><a ng-click="features()">Features</a></li>
+                            <li><a href="#/features">Features</a></li>
                             <li><a ng-click="teams()">Teams</a></li>
                             <li><a ng-click="logout()">Logout</a></li>
                         </ul>
@@ -106,6 +106,10 @@ mixpanel.init("@Play.current.configuration.getString("mixpanel.projectId")");</s
     <div class="container">
         <p class="muted credit">Contact Patrick Lightbody if you have questions about this app. Thanks!</p>
     </div>
+</div>
+
+<div id="loading-mask" ng-show="loading == true">
+    <h1>Loading...</h1>
 </div>
 
 <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>

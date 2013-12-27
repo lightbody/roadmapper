@@ -1,5 +1,20 @@
 function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
     $scope.queryReturned = true;
+    $scope.numPerPage = 10;
+    $scope.filteredProblems = [];
+    $scope.maxSize = 5;
+    $scope.problems = [];
+
+
+    var filterProblems = function() {
+        console.log("watch!");
+
+        var begin = (($scope.currentPage - 1) * $scope.numPerPage)
+            , end = begin + $scope.numPerPage;
+
+        $scope.filteredProblems = $scope.problems.slice(begin, end);
+    };
+
     $scope.search = function () {
         $scope.queryReturned = false;
 
@@ -11,12 +26,25 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 query: $scope.query.map(function(e) { return e.id } ).join(",")
             }
         }).success(function (problems) {
+                console.log("query returned");
                 $scope.queryReturned = true;
                 $scope.problems = problems;
+                $scope.currentPage = 1;
+                filterProblems();
             });
     };
 
     $scope.$watch("query", $scope.search);
+
+    $scope.numPages = function () {
+        console.log("numPages");
+        
+        return Math.ceil($scope.problems.length / $scope.numPerPage);
+    };
+
+    $scope.$watch('currentPage + numPerPage', filterProblems);
+
+
 
     // default to sorting by reported date
     $scope.predicate = "date";

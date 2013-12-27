@@ -47,16 +47,8 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                     $location.path("/dashboard");
                 };
 
-                $scope.problems = function () {
-                    $location.path("/problems");
-                };
-
                 $scope.tags = function () {
                     $location.path("/tags");
-                };
-
-                $scope.features = function () {
-                    $location.path("/features");
                 };
 
                 $scope.teams = function () {

@@ -1,5 +1,4 @@
 function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
-
     $scope.editProblem = function(problem) {
         $scope.selectedProblem = problem;
         $http.get('/problems/' + problem.id)
@@ -16,7 +15,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
                 $scope.selectedProblem = problemWithTags;
                 $scope.showViewProblem = true;
-                $location.path("/problems/" + problem.id);
+                $rootScope.loading = false;
             });
     };
 
@@ -55,8 +54,8 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
         }
     };
 
-    debugger;
     if (/^\-?\d*$/.test($routeParams.problemId)) {
+        $rootScope.loading = true;
         $scope.editProblem({id: $routeParams.problemId});
     } else {
         $location.path("/problems");

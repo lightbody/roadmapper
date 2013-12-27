@@ -2,10 +2,24 @@
 
 <hr/>
 
-<form id="problem-search" class="form-search" ng-submit="search()">
-    <input type="text" class="span7 search-query" ng-model="query" ui-select2="querySelect2Options">
+<div class="span5" style="margin-left: 0">
+    <form id="problem-search" class="form-search" ng-submit="search()">
+        <input type="text" class="span5 search-query" ng-model="query" ui-select2="querySelect2Options">
+    </form>
+</div>
+
+<div class="span2" style="margin: 6px auto auto 6px">
     <img src="/js/select2/select2-spinner.gif" width="16" height="16" ng-show="!queryReturned"/>
-</form>
+</div>
+
+<div class="text-right">
+    <div ng-show="problems.length > numPerPage" class="no-selection">
+        <pagination num-pages="numPages()"
+                    current-page="currentPage" max-size="maxSize"
+                    boundary-links="true"></pagination>
+    </div>
+</div>
+
 
 <table id="problem-list" class="table table-striped table-hover" ng-show="queryReturned">
     <thead>
@@ -20,7 +34,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="problem in problems | orderBy:predicate:reverse">
+    <tr ng-repeat="problem in filteredProblems | orderBy:predicate:reverse">
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
         <td class="flex"><a href="#/problems/{{problem.id}}">{{problem.description | truncate:200 | minlinks}}</a></td>
         <td class="flex">
@@ -34,4 +48,5 @@
     </tr>
     </tbody>
 </table>
+
 
