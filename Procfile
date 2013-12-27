@@ -1,1 +1,1 @@
-web: target/start ${JAVA_OPTS} -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.url=${DATABASE_URL} -Dmail.smtp.user=${SENDGRID_USERNAME} -Dmail.smtp.pass=${SENDGRID_PASSWORD} -Ddb.default.driver=org.postgresql.Driver
+web: target/universal/stage/bin/roadmapper ${JAVA_OPTS} -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.url=${DATABASE_URL} -Dmail.smtp.user=${SENDGRID_USERNAME} -Dmail.smtp.pass=${SENDGRID_PASSWORD} -Ddb.default.driver=org.postgresql.Driver
