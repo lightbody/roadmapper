@@ -15,7 +15,7 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
                 $scope.selectedFeature = featureWithTags;
                 $scope.showViewFeature = true;
-                $location.path("/features/" + feature.id);
+                $rootScope.loading = false;
             });
     };
 
@@ -49,6 +49,7 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
     // if we're given an ID then go ahead and get it, otherwise redirect back
     if (/^\-?\d*$/.test($routeParams.featureId)) {
+        $rootScope.loading = true;
         $scope.editFeature({id: $routeParams.featureId});
     } else {
         $location.path("/features");

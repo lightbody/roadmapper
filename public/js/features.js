@@ -1,5 +1,17 @@
 function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
     $scope.queryReturned = true;
+    $scope.numPerPage = 10;
+    $scope.filteredFeatures = [];
+    $scope.maxSize = 5;
+    $scope.features = [];
+
+    var filterFeatures = function() {
+        var begin = (($scope.currentPage - 1) * $scope.numPerPage)
+            , end = begin + $scope.numPerPage;
+
+        $scope.filteredFeatures= $scope.features.slice(begin, end);
+    };
+
     $scope.search = function () {
         $scope.queryReturned = false;
 
@@ -13,13 +25,18 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         }).success(function (features) {
                 $scope.queryReturned = true;
                 $scope.features = features;
+                $scope.currentPage = 1;
+                filterFeatures();
             });
     };
 
     $scope.$watch("featureQuery", $scope.search);
 
-    $scope.sizeSort = function(feature) {
+    $scope.numPages = function () {
+        return Math.ceil($scope.features.length / $scope.numPerPage);
     };
+
+    $scope.$watch('currentPage + numPerPage', filterFeatures);
 
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {

@@ -2,10 +2,23 @@
 
 <hr/>
 
-<form id="feature-search" class="form-search">
-    <input type="text" class="span7" ng-model="featureQuery" ui-select2="querySelect2Options">
+<div class="span5" style="margin-left: 0">
+    <form id="feature-search" class="form-search" ng-submit="search()">
+        <input type="text" class="span5" ng-model="featureQuery" ui-select2="querySelect2Options">
+    </form>
+</div>
+
+<div class="span2" style="margin: 6px auto auto 6px">
     <img src="/js/select2/select2-spinner.gif" width="16" height="16" ng-show="!queryReturned"/>
-</form>
+</div>
+
+<div class="text-right">
+    <div ng-show="features.length > numPerPage" class="no-selection">
+        <pagination num-pages="numPages()"
+                    current-page="currentPage" max-size="maxSize"
+                    boundary-links="true"></pagination>
+    </div>
+</div>
 
 <table id="feature-list" class="table table-striped table-hover" ng-show="queryReturned">
     <thead>
@@ -25,7 +38,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="feature in features | orderBy:predicate:reverse">
+    <tr ng-repeat="feature in filteredFeatures | orderBy:predicate:reverse">
         <td>{{feature.id}}</td>
         <td class="title">
             <a href="#/features/{{feature.id}}">{{feature.title}}</a>
