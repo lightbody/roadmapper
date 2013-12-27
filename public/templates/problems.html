@@ -34,7 +34,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="problem in filteredProblems | orderBy:predicate:reverse">
+    <tr ng-repeat="problem in filteredProblems">
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
         <td class="flex"><a href="#/problems/{{problem.id}}">{{problem.description | truncate:200 | minlinks}}</a></td>
         <td class="flex">

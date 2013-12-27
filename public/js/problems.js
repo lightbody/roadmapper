@@ -12,6 +12,35 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         $scope.filteredProblems = $scope.problems.slice(begin, end);
     };
 
+    var sortProblems = function() {
+        if (!$scope.problems) return;
+        $scope.problems.sort(function (a, b) {
+            var a1 = a[$scope.predicate];
+            if (a1 && a1.toLowerCase) {
+                a1 = a1.toLowerCase();
+            }
+
+            var b1 = b[$scope.predicate];
+            if (b1 && b1.toLowerCase) {
+                b1 = b1.toLowerCase();
+            }
+
+            if (!$scope.reverse) {
+                return a1 > b1 ? 1 : -1;
+            } else {
+                return a1 > b1 ? -1 : 1;
+            }
+        });
+    };
+
+    var watchSorter = function() {
+        sortProblems();
+        filterProblems();
+    };
+
+    $scope.$watch("predicate", watchSorter);
+    $scope.$watch("reverse", watchSorter);
+
     $scope.search = function () {
         $scope.queryReturned = false;
 
@@ -27,6 +56,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 $scope.queryReturned = true;
                 $scope.problems = problems;
                 $scope.currentPage = 1;
+                sortProblems();
                 filterProblems();
             });
     };

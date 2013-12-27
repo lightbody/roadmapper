@@ -12,6 +12,36 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         $scope.filteredFeatures= $scope.features.slice(begin, end);
     };
 
+    var sortFeatures = function() {
+        if (!$scope.features) return;
+        $scope.features.sort(function (a, b) {
+            var a1 = a[$scope.predicate];
+            if (a1 && a1.toLowerCase) {
+                a1 = a1.toLowerCase();
+            }
+
+            var b1 = b[$scope.predicate];
+            if (b1 && b1.toLowerCase) {
+                b1 = b1.toLowerCase();
+            }
+
+            if (!$scope.reverse) {
+                return a1 > b1 ? 1 : -1;
+            } else {
+                return a1 > b1 ? -1 : 1;
+            }
+        });
+    };
+
+    var watchSorter = function() {
+        sortFeatures();
+        filterFeatures();
+    };
+
+    $scope.$watch("predicate", watchSorter);
+    $scope.$watch("reverse", watchSorter);
+
+
     $scope.search = function () {
         $scope.queryReturned = false;
 
@@ -26,6 +56,7 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 $scope.queryReturned = true;
                 $scope.features = features;
                 $scope.currentPage = 1;
+                sortFeatures();
                 filterFeatures();
             });
     };
