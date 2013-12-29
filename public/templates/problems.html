@@ -3,38 +3,38 @@
 <hr/>
 
 <div class="span5" style="margin-left: 0">
-    <form id="problem-search" class="form-search" ng-submit="search()">
+    <form id="problem-search" class="form-search" ng-submit="problemService.search()">
         <input type="text" class="span5 search-query" ng-model="junk" ui-select2="querySelect2Options">
     </form>
 </div>
 
 <div class="span2" style="margin: 6px auto auto 6px">
-    <img src="/img/spinner.gif" width="16" height="16" ng-show="!queryReturned"/>
+    <img src="/img/spinner.gif" width="16" height="16" ng-show="!problemService.queryReturned"/>
 </div>
 
 <div class="text-right">
-    <div ng-show="problems.length > numPerPage" class="no-selection">
-        <pagination num-pages="numPages()"
-                    current-page="currentPage" max-size="maxSize"
+    <div ng-show="problemService.problems.length > problemService.numPerPage" class="no-selection">
+        <pagination num-pages="problemService.numPages()"
+                    current-page="problemService.currentPage" max-size="problemService.maxSize"
                     boundary-links="true"></pagination>
     </div>
 </div>
 
 
-<table id="problem-list" class="table table-striped table-hover" ng-show="queryReturned">
+<table id="problem-list" class="table table-striped table-hover" ng-show="problemService.queryReturned">
     <thead>
     <tr>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'date'; reverse=!reverse">Date</a></th>
-        <th><a href="" ng-click="predicate = 'description'; reverse=!reverse">Description</a></th>
-        <th style="width: 7em"><a href="" ng-click="predicate = 'customerCompany'; reverse=!reverse">Company</a></th>
-        <th style="width: 6em; text-align: right"><a href="" ng-click="predicate = 'annualRevenue'; reverse=!reverse">ARR</a></th>
-        <th style="width: 7em"><a href="" ng-click="predicate = 'customerName'; reverse=!reverse">Customer</a></th>
-        <th style="width: 7em"><a href="" ng-click="predicate = 'feature.name'; reverse=!reverse">Feature</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Mod</a></th>
+        <th style="width: 3em"><a href="" ng-click="problemService.sort('date')">Date</a></th>
+        <th><a href="" ng-click="problemService.sort('description')">Description</a></th>
+        <th style="width: 7em"><a href="" ng-click="problemService.sort('customerCompany')">Company</a></th>
+        <th style="width: 6em; text-align: right"><a href="" ng-click="problemService.sort('annualRevenue')">ARR</a></th>
+        <th style="width: 7em"><a href="" ng-click="problemService.sort('customerName')">Customer</a></th>
+        <th style="width: 7em"><a href="" ng-click="problemService.sort('feature.name')">Feature</a></th>
+        <th style="width: 3em"><a href="" ng-click="problemService.sort('lastModified')">Mod</a></th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="problem in filteredProblems">
+    <tr ng-repeat="problem in problemService.filteredProblems">
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
         <td class="flex"><a href="#/problems/{{problem.id}}">{{problem.description | truncate:200 | minlinks}}</a></td>
         <td class="flex">

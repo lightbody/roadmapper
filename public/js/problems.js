@@ -1,76 +1,5 @@
-function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
-    $scope.queryReturned = true;
-    $scope.numPerPage = 10;
-    $scope.filteredProblems = [];
-    $scope.maxSize = 5;
-    $scope.problems = [];
-
-    var filterProblems = function() {
-        var begin = (($scope.currentPage - 1) * $scope.numPerPage)
-            , end = begin + $scope.numPerPage;
-
-        $scope.filteredProblems = $scope.problems.slice(begin, end);
-    };
-
-    var sortProblems = function() {
-        if (!$scope.problems) return;
-        $scope.problems.sort(function (a, b) {
-            var a1 = a[$scope.predicate];
-            if (a1 && a1.toLowerCase) {
-                a1 = a1.toLowerCase();
-            }
-
-            var b1 = b[$scope.predicate];
-            if (b1 && b1.toLowerCase) {
-                b1 = b1.toLowerCase();
-            }
-
-            if (!$scope.reverse) {
-                return a1 > b1 ? 1 : -1;
-            } else {
-                return a1 > b1 ? -1 : 1;
-            }
-        });
-    };
-
-    var watchSorter = function() {
-        sortProblems();
-        filterProblems();
-    };
-
-    $scope.$watch("predicate", watchSorter);
-    $scope.$watch("reverse", watchSorter);
-
-    $scope.search = function () {
-        $scope.queryReturned = false;
-
-        // keep a copy of the query on the root scope so we maintain state
-        $rootScope.query = $scope.query;
-
-        $http.get('/problems', {
-            params: {
-                query: $scope.query.map(function(e) { return e.id } ).join(",")
-            }
-        }).success(function (problems) {
-                $scope.queryReturned = true;
-                $scope.problems = problems;
-                $scope.currentPage = 1;
-                sortProblems();
-                filterProblems();
-            });
-    };
-
-    $scope.$watch("query", $scope.search);
-
-    $scope.numPages = function () {
-        return Math.ceil($scope.problems.length / $scope.numPerPage);
-    };
-
-    $scope.$watch('currentPage + numPerPage', filterProblems);
-
-    // default to sorting by reported date
-    $scope.predicate = "date";
-    $scope.reverse = true;
+function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService) {
+    problemService.wireUpController($scope);
 
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
@@ -93,7 +22,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.querySelect2Options = {
-        model: "query",
+        model: "problemService.query",
         openOnEnter: false,
         multiple: true,
         sortResults: function(results, container, query) {
@@ -155,7 +84,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
 
             // status matching -- only do it when we haven't already selected a state
             var hasStateQuery = false;
-            $scope.query.map(function(e) {
+            problemService.query.map(function(e) {
                 if (e.id.indexOf("state:") == 0) {
                     hasStateQuery = true;
                 }
