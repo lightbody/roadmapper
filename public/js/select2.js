@@ -5,7 +5,7 @@
  *     This change is so that you do not have to do an additional query yourself on top of Select2's own query
  * @params [options] {object} The configuration options passed to $.fn.select2(). Refer to the documentation
  */
-angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelect2', ['uiSelect2Config', '$timeout', function (uiSelect2Config, $timeout) {
+angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelect2', ['uiSelect2Config', '$timeout', '$parse', function (uiSelect2Config, $timeout, $parse) {
     var options = {};
     if (uiSelect2Config) {
         angular.extend(options, uiSelect2Config);
@@ -52,7 +52,7 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                         controller.$render();
                     }, true);
                     controller.$render = function () {
-                        elm.select2('data', scope[opts.model]);
+                        elm.select2('data', $parse(opts.model)(scope));
                     };
 
                     // Update valid and dirty statuses
@@ -77,7 +77,7 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                                 return;
                             }
                             scope.$apply(function () {
-                                scope[opts.model] = elm.select2('data');
+                                $parse(opts.model).assign(scope, elm.select2('data'));
                                 //controller.$setViewValue(elm.select2('data'));
                             });
                         });
@@ -129,7 +129,7 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
 
                     // Not sure if I should just check for !isSelect OR if I should check for 'tags' key
                     if (!opts.initSelection && !isSelect) {
-                        scope[opts.model] = elm.select2('data');
+                        $parse(opts.model).assign(scope, elm.select2('data'));
                         //controller.$setViewValue(elm.select2('data'));
                     }
                 });
