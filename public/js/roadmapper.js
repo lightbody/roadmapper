@@ -7,8 +7,9 @@ Array.prototype.remove = function (from, to) {
 
 var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
-angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
-    config(function ($routeProvider) {
+var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2"]);
+
+roadmapper.config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/dashboard', {controller: DashboardCtrl, templateUrl: templateUrls.dashboard}).
             when('/problems', {controller: ProblemsCtrl, templateUrl: templateUrls.problems}).
@@ -20,8 +21,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             when('/teams', {controller: TeamsCtrl, templateUrl: templateUrls.teams}).
             when('/tags', {controller: TagsCtrl, templateUrl: templateUrls.tags}).
             otherwise({redirectTo: '/dashboard'});
-    })
-    .directive('integer', function() {
+    }]);
+
+roadmapper.directive('integer', function() {
         return {
             require: 'ngModel',
             link: function(scope, elm, attrs, ctrl) {
@@ -38,8 +40,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 });
             }
         };
-    })
-    .directive("navbar", function () {
+    });
+
+roadmapper.directive("navbar", function () {
         return {
 
             controller: function ($scope, $location, $rootScope, $cookieStore) {
@@ -61,8 +64,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
             },
             templateUrl: "nav.html"
         }
-    })
-    .filter('noFractionCurrency',
+    });
+
+roadmapper.filter('noFractionCurrency',
         [ '$filter', '$locale',
             function (filter, locale) {
                 var currencyFilter = filter('currency');
@@ -75,8 +79,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                     }
                     return value.substring(0, sep) + ')';
                 };
-            } ])
-    .filter('truncate', function() {
+            } ]);
+
+roadmapper.filter('truncate', function() {
         return function(input, length) {
             if (input == null) {
                 return "";
@@ -88,13 +93,15 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
                 return input.substring(0, length) + " ...";
             }
         }
-    })
-    .filter('minlinks', function() {
+    });
+
+roadmapper.filter('minlinks', function() {
         return function(input) {
             return input.replace(LINK_EXPRESSION, "<link>");
         }
-    })
-    .filter('size', function() {
+    });
+
+roadmapper.filter('size', function() {
         return function(input) {
             if (input == null) {
                 return "";
@@ -102,8 +109,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
             return input.substring(0, 1);
         }
-    })
-    .filter('shortQuarter', function() {
+    });
+
+roadmapper.filter('shortQuarter', function() {
         return function(qtr) {
             if (qtr == null) {
                 return null;
@@ -118,8 +126,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
             return null;
         }
-    })
-    .filter('longQuarter', function() {
+    });
+
+roadmapper.filter('longQuarter', function() {
         return function(qtr) {
             if (qtr == null) {
                 return null;
@@ -134,8 +143,9 @@ angular.module('roadmapper', ["ngCookies", "ui.bootstrap", "ui.select2"]).
 
             return null;
         }
-    })
-    .run(function ($rootScope, $http, $cookieStore, $location) {
+    });
+
+roadmapper.run(function ($rootScope, $http, $cookieStore, $location) {
         $rootScope.query = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
         $rootScope.featureQuery = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
 

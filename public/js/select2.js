@@ -10,24 +10,16 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
     if (uiSelect2Config) {
         angular.extend(options, uiSelect2Config);
     }
+
     return {
         require: 'ngModel',
+        priority: 1,
         compile: function (tElm, tAttrs) {
             var watch,
                 repeatOption,
                 repeatAttr,
                 isSelect = tElm.is('select'),
-                isMultiple = (tAttrs.multiple !== undefined);
-
-            // Enable watching of the options dataset if in use
-            if (tElm.is('select')) {
-                repeatOption = tElm.find('option[ng-repeat], option[data-ng-repeat]');
-
-                if (repeatOption.length) {
-                    repeatAttr = repeatOption.attr('ng-repeat') || repeatOption.attr('data-ng-repeat');
-                    watch = jQuery.trim(repeatAttr.split('|')[0]).split(' ').pop();
-                }
-            }
+                isMultiple = angular.isDefined(tAttrs.multiple);
 
             return function (scope, elm, attrs, controller) {
                 // instance-specific options
@@ -43,55 +35,29 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
 
                 if (controller) {
                     // Watch the model for programmatic changes
-                    scope.$watch(tAttrs.ngModel, function(current, old) {
-                        if (!current) {
-                            return
+                    scope.$watch(opts.model, function(current, old) {
+                        if (typeof current === "string") {
+                            console.log("Uhh -- why is a string showing up here?");
+                            // todo: WHY DOES THIS HAPPEN?
+                            return;
                         }
-                        if (current == old) {
-                            return
-                        }
-                        controller.$render()
-                    }, true)
-                    controller.$render = function () {
-                        if (isSelect) {
-                            elm.select2('val', controller.$viewValue);
-                        } else {
-                            if (isMultiple) {
-                                if (!controller.$viewValue) {
-                                    elm.select2('data', []);
-                                } else if (angular.isArray(controller.$viewValue)) {
-                                    elm.select2('data', controller.$viewValue);
-                                } else {
-                                    elm.select2('val', controller.$viewValue);
-                                }
-                            } else {
-                                if (angular.isObject(controller.$viewValue)) {
-                                    elm.select2('data', controller.$viewValue);
-                                } else if (!controller.$viewValue) {
-                                    elm.select2('data', null);
-                                } else {
-                                    elm.select2('val', controller.$viewValue);
-                                }
-                            }
-                        }
-                    };
 
-                    // Watch the options dataset for changes
-                    if (watch) {
-                        scope.$watch(watch, function (newVal, oldVal, scope) {
-                            if (!newVal) return;
-                            // Delayed so that the options have time to be rendered
-                            $timeout(function () {
-                                elm.select2('val', controller.$viewValue);
-                                // Refresh angular to remove the superfluous option
-                                elm.trigger('change');
-                            });
-                        });
-                    }
+
+                        if (!current) {
+                            return;
+                        }
+                        if (current === old) {
+                            return;
+                        }
+                        controller.$render();
+                    }, true);
+                    controller.$render = function () {
+                        elm.select2('data', scope[opts.model]);
+                    };
 
                     // Update valid and dirty statuses
                     controller.$parsers.push(function (value) {
-                        var div = elm.prev()
+                        var div = elm.prev();
                         div
                             .toggleClass('ng-invalid', !controller.$valid)
                             .toggleClass('ng-valid', controller.$valid)
@@ -104,10 +70,15 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
 
                     if (!isSelect) {
                         // Set the view and model value and update the angular template manually for the ajax/multiple select2.
-                        elm.bind("change", function () {
-                            if (scope.$$phase) return;
+                        elm.bind("change", function (e) {
+                            e.stopImmediatePropagation();
+
+                            if (scope.$$phase || scope.$root.$$phase) {
+                                return;
+                            }
                             scope.$apply(function () {
-                                controller.$setViewValue(elm.select2('data'));
+                                scope[opts.model] = elm.select2('data');
+                                //controller.$setViewValue(elm.select2('data'));
                             });
                         });
 
@@ -115,8 +86,13 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                             var initSelection = opts.initSelection;
                             opts.initSelection = function (element, callback) {
                                 initSelection(element, function (value) {
+                                    var isPristine = controller.$pristine;
                                     controller.$setViewValue(value);
                                     callback(value);
+                                    if (isPristine) {
+                                        controller.$setPristine();
+                                    }
+                                    elm.prev().toggleClass('ng-pristine', controller.$pristine);
                                 });
                             };
                         }
@@ -137,6 +113,7 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
 
                 if (attrs.ngMultiple) {
                     scope.$watch(attrs.ngMultiple, function(newVal) {
+                        attrs.$set('multiple', !!newVal);
                         elm.select2(opts);
                     });
                 }
@@ -146,13 +123,15 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                     elm.select2(opts);
 
                     // Set initial value - I'm not sure about this but it seems to need to be there
-                    elm.val(controller.$viewValue);
+                    //elm.val(controller.$viewValue);
                     // important!
                     controller.$render();
 
                     // Not sure if I should just check for !isSelect OR if I should check for 'tags' key
-                    if (!opts.initSelection && !isSelect)
-                        controller.$setViewValue(elm.select2('data'));
+                    if (!opts.initSelection && !isSelect) {
+                        scope[opts.model] = elm.select2('data');
+                        //controller.$setViewValue(elm.select2('data'));
+                    }
                 });
             };
         }

@@ -52,7 +52,6 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 query: $scope.query.map(function(e) { return e.id } ).join(",")
             }
         }).success(function (problems) {
-                console.log("query returned");
                 $scope.queryReturned = true;
                 $scope.problems = problems;
                 $scope.currentPage = 1;
@@ -94,6 +93,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.querySelect2Options = {
+        model: "query",
         openOnEnter: false,
         multiple: true,
         sortResults: function(results, container, query) {

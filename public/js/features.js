@@ -1,6 +1,6 @@
 function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
     $scope.queryReturned = true;
-    $scope.numPerPage = 10;
+    $scope.numPerPage = 10; //Math.floor((window.innerHeight - 218) / 37);
     $scope.filteredFeatures = [];
     $scope.maxSize = 5;
     $scope.features = [];
@@ -90,6 +90,7 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     var counter = 1;
 
     $scope.querySelect2Options = {
+        model: "featureQuery",
         multiple: true,
         sortResults: function(results, container, query) {
             if (query.term) {
