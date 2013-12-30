@@ -24,10 +24,36 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             });
     };
 
+    $scope.cmdEnter = function() {
+        if (!problemService.nextProblem) {
+            // no next problem? ok let's just save and stay put
+            if ($scope.editProblemForm.$valid) {
+                $scope.saveProblem($scope.selectedProblem);
+            }
+        } else {
+            // there is a next problem and the current form hasn't been touched, then just move on without saving
+            if ($scope.editProblemForm.$pristine) {
+                problemService.selectProblem(problemService.nextProblem);
+            } else if ($scope.editProblemForm.$valid) {
+                $scope.saveProblem($scope.selectedProblem, function() {
+                    problemService.selectProblem(problemService.nextProblem);
+                });
+            }
+        }
+    };
+
     $scope.saveProblemAndContinue = function(problem) {
-        $scope.saveProblem(problem, function() {
+        if (!problemService.nextProblem) {
+            return;
+        }
+
+        if ($scope.editProblemForm.$pristine) {
             problemService.selectProblem(problemService.nextProblem);
-        });
+        } else if ($scope.editProblemForm.$valid) {
+            $scope.saveProblem(problem, function() {
+                problemService.selectProblem(problemService.nextProblem);
+            });
+        }
     };
 
     $scope.saveProblem = function(problem, callback) {

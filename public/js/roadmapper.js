@@ -27,6 +27,20 @@ function NavBarCtrl($scope) {
     $scope.isCollapsed = true;
 }
 
+roadmapper.directive("cmdEnter", function() {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if((event.metaKey || event.ctrlKey) &&  event.keyCode == 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.cmdEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
+
 roadmapper.directive('integer', function() {
         return {
             require: 'ngModel',

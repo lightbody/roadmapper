@@ -1,6 +1,14 @@
 function NewProblemCtrl($scope, $http, $location) {
     $scope.createAnother = true;
 
+    $scope.cmdEnter = function() {
+        if ($scope.newProblemForm.$pristine || $scope.newProblemForm.$invalid) {
+            return;
+        }
+
+        $scope.createProblem($scope.newProblem);
+    };
+
     $scope.createProblem = function (problem) {
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
@@ -21,7 +29,7 @@ function NewProblemCtrl($scope, $http, $location) {
                 mixpanel.track("Record Problem", returnedProblem);
 
                 if ($scope.createAnother) {
-                    $scope.newProblem = {};
+                    $scope.newProblem = {tags: []};
                     $scope.junk = []; // todo: ugly hack to clear out tag selector
                     $scope.newProblemForm.$setPristine(true);
                     // todo: we should focus back on the description field but I don't know how :(

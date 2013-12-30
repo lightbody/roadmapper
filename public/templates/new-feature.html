@@ -1,6 +1,6 @@
 <h3>Create new feature</h3>
 
-<form name="newFeatureForm" novalidate>
+<form name="newFeatureForm" novalidate cmd-enter="cmdEnter()">
 
     <div ng-include="'validation.html'"></div>
 
@@ -31,6 +31,22 @@
 
 </form>
 
+<div class="row">
+    <div class="span5" style="padding-bottom: 20px;">
+        <button class="btn btn-warning cancel" ng-click="cancelNewFeature()">Cancel</button>
+        <button class="btn btn-primary" ng-click="createFeature(newFeature)" ng-disabled="newFeatureForm.$invalid" type="submit">Create</button>
+        <div class="checkbox" style="display: inline-flex">
+            <label>
+                <input type="checkbox" ng-model="createAnother"> Create another
+            </label>
+        </div>
 
-<button class="btn btn-warning cancel" ng-click="closeNewFeature()">Cancel</button>
-<button class="btn btn-primary" ng-click="createFeature(newFeature)" ng-disabled="newFeatureForm.$invalid" type="submit">Create</button>
+    </div>
+    <div class="span2" style="text-align: right">
+                <span ng-show="saved">
+                    Created feature {{saved}}!
+                </span>
+
+        <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
+    </div>
+</div>

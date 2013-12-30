@@ -24,6 +24,24 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             });
     };
 
+    $scope.cmdEnter = function() {
+        if (!featureService.nextFeature) {
+            // no next feature? ok let's just save and stay put
+            if ($scope.editFeatureForm.$valid) {
+                $scope.saveFeature($scope.selectedFeature);
+            }
+        } else {
+            // there is a next feature and the current form hasn't been touched, then just move on without saving
+            if ($scope.editFeatureForm.$pristine) {
+                featureService.selectFeature(featureService.nextFeature);
+            } else if ($scope.editFeatureForm.$valid) {
+                $scope.saveFeature($scope.selectedFeature, function() {
+                    featureService.selectFeature(featureService.nextFeature);
+                });
+            }
+        }
+    };
+
     $scope.saveFeatureAndContinue = function(feature) {
         $scope.saveFeature(feature, function() {
             featureService.selectFeature(featureService.nextFeature);
