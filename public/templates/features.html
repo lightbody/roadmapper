@@ -1,48 +1,47 @@
-<a href="#/features/new">Create new feature</a>
-
-<hr/>
-
 <div class="span5" style="margin-left: 0">
-    <form id="feature-search" class="form-search" ng-submit="search()">
-        <input type="text" class="span5" ng-model="junk" roadmapper-ui-select2="querySelect2Options" roadmapper-ui-select2-model="featureQuery">
+    <form id="feature-search" class="form-search" ng-submit="featureService.search()">
+        <input type="text" class="span5 search-query" ng-model="junk" roadmapper-ui-select2="querySelect2Options" roadmapper-ui-select2-model="featureService.query">
     </form>
 </div>
 
-<div class="span2" style="margin: 6px auto auto 6px">
-    <img src="/img/spinner.gif" width="16" height="16" ng-show="!queryReturned"/>
+<div class="span3" style="margin: 6px auto auto 6px">
+    <img src="/img/spinner.gif" width="16" height="16" ng-show="!featureService.queryReturned"/>
+    <a href="#/features/new">Create new feature</a>
 </div>
 
 <div class="text-right">
-    <div ng-show="features.length > numPerPage" class="no-selection">
-        <pagination num-pages="numPages()"
-                    current-page="currentPage" max-size="maxSize"
+    <div ng-show="featureService.features.length > featureService.numPerPage" class="no-selection">
+        <pagination num-pages="featureService.numPages()"
+                    current-page="featureService.currentPage" max-size="featureService.maxSize"
                     boundary-links="true"></pagination>
     </div>
 </div>
 
-<table id="feature-list" class="table table-striped table-hover" ng-show="queryReturned">
+<table id="feature-list" class="table table-striped table-hover" ng-show="featureService.queryReturned">
     <thead>
     <tr>
-        <th style="width: 2em"><a href="" ng-click="predicate = 'id'; reverse=!reverse">ID</a></th>
-        <th><a href="" ng-click="predicate = 'title'; reverse=!reverse">Title</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'engineeringCost'; reverse=!reverse">Cost</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'revenueBenefit'; reverse=!reverse">Rev</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'retentionBenefit'; reverse=!reverse">Ret</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'positioningBenefit'; reverse=!reverse">Pos</a></th>
-        <th style="width: 2em" class="text-right"><a href="" ng-click="predicate = 'score'; reverse=!reverse">Score</a></th>
-        <th style="width: 3em" class="text-right"><a href="" ng-click="predicate = 'problemCount'; reverse=!reverse">Probs</a></th>
-        <th style="width: 6em" class="text-right"><a href="" ng-click="predicate = 'problemRevenue'; reverse=!reverse">ARR</a></th>
-        <th style="width: 2em"><a href="" ng-click="predicate = 'quarter'; reverse=!reverse">Qtr</a></th>
-        <th style="width: 6em"><a href="" ng-click="predicate = 'team.name'; reverse=!reverse">Team</a></th>
-        <th style="width: 3em"><a href="" ng-click="predicate = 'lastModified'; reverse=!reverse">Mod</a></th>
+        <th style="width: 2em"><a href="" ng-click="featureService.sort('id')">ID</a></th>
+        <th><a href="" ng-click="featureService.sort('title')">Title</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('state')">State</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('engineeringCost')">Cost</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('revenueBenefit')">Rev</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('retentionBenefit')">Ret</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('positioningBenefit')">Pos</a></th>
+        <th style="width: 2em" class="text-right"><a href="" ng-click="featureService.sort('score')">Score</a></th>
+        <th style="width: 3em" class="text-right"><a href="" ng-click="featureService.sort('problemCount')">Probs</a></th>
+        <th style="width: 6em" class="text-right"><a href="" ng-click="featureService.sort('problemRevenue')">ARR</a></th>
+        <th style="width: 2em"><a href="" ng-click="featureService.sort('quarter')">Qtr</a></th>
+        <th style="width: 6em"><a href="" ng-click="featureService.sort('team.name')">Team</a></th>
+        <th style="width: 3em"><a href="" ng-click="featureService.sort('lastModified')">Mod</a></th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="feature in filteredFeatures">
+    <tr ng-repeat="feature in featureService.filteredFeatures">
         <td>{{feature.id}}</td>
         <td class="title">
-            <a href="#/features/{{feature.id}}">{{feature.title}}</a>
+            <a ng-click="featureService.selectFeature(feature)">{{feature.title}}</a>
         </td>
+        <td>{{feature.state}}</td>
         <td>{{feature.engineeringCost | size}}</td>
         <td>{{feature.revenueBenefit | size}}</td>
         <td>{{feature.retentionBenefit| size}}</td>

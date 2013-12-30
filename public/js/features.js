@@ -1,73 +1,5 @@
-function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
-    $scope.queryReturned = true;
-    $scope.numPerPage = 10; //Math.floor((window.innerHeight - 218) / 37);
-    $scope.filteredFeatures = [];
-    $scope.maxSize = 5;
-    $scope.features = [];
-
-    var filterFeatures = function() {
-        var begin = (($scope.currentPage - 1) * $scope.numPerPage)
-            , end = begin + $scope.numPerPage;
-
-        $scope.filteredFeatures= $scope.features.slice(begin, end);
-    };
-
-    var sortFeatures = function() {
-        if (!$scope.features) return;
-        $scope.features.sort(function (a, b) {
-            var a1 = a[$scope.predicate];
-            if (a1 && a1.toLowerCase) {
-                a1 = a1.toLowerCase();
-            }
-
-            var b1 = b[$scope.predicate];
-            if (b1 && b1.toLowerCase) {
-                b1 = b1.toLowerCase();
-            }
-
-            if (!$scope.reverse) {
-                return a1 > b1 ? 1 : -1;
-            } else {
-                return a1 > b1 ? -1 : 1;
-            }
-        });
-    };
-
-    var watchSorter = function() {
-        sortFeatures();
-        filterFeatures();
-    };
-
-    $scope.$watch("predicate", watchSorter);
-    $scope.$watch("reverse", watchSorter);
-
-
-    $scope.search = function () {
-        $scope.queryReturned = false;
-
-        // keep a copy of the query on the root scope so we maintain state
-        $rootScope.featureQuery = $scope.featureQuery;
-
-        $http.get('/features', {
-            params: {
-                query: $scope.featureQuery.map(function(e) { return e.id } ).join(",")
-            }
-        }).success(function (features) {
-                $scope.queryReturned = true;
-                $scope.features = features;
-                $scope.currentPage = 1;
-                sortFeatures();
-                filterFeatures();
-            });
-    };
-
-    $scope.$watch("featureQuery", $scope.search);
-
-    $scope.numPages = function () {
-        return Math.ceil($scope.features.length / $scope.numPerPage);
-    };
-
-    $scope.$watch('currentPage + numPerPage', filterFeatures);
+function FeaturesCtrl($scope, $http, featureService, problemService, $routeParams, $location, $route, $rootScope) {
+    featureService.wireUpController($scope);
 
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
@@ -193,8 +125,10 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
             return object.text;
         }
     };
+
     $scope.selectProblems = function(feature) {
-        $rootScope.query = [{id: "featureId:" + feature.id, text: "<strong>Feature</strong>: " + feature.title}]
+        problemService.query = [{id: "featureId:" + feature.id, text: "<strong>Feature</strong>: " + feature.title}];
+        problemService.search();
         $location.path("/problems");
     };
 }
