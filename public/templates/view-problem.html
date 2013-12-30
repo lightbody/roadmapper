@@ -1,3 +1,6 @@
+<div class="row">
+    <div class="span7">
+
         <h3>Problem #{{selectedProblem.id}}</h3>
 
         <form name="editProblemForm" novalidate>
@@ -40,5 +43,53 @@
             </div>
         </form>
 
-        <button class="btn btn-warning cancel" ng-click="closeViewProblem()">Cancel</button>
-        <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)" ng-disabled="editProblemForm.$invalid" type="submit">Confirm</button>
+        <div class="row">
+            <div class="span4">
+                <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save</button>
+
+                <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
+
+                <span ng-show="saved">
+                    Saved...
+                </span>
+            </div>
+            <div class="span3" style="text-align: right">
+                <div ng-show="problemService.nextProblem">
+                    <button class="btn btn-secondary" ng-click="saveProblemAndContinue(selectedProblem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save &raquo;</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div class="span5">
+        <div class="row" ng-show="problemService.prevProblem || problemService.nextProblem">
+            <div class="span5">
+                <strong>Browsing <a href="/#/problems">{{problemService.problems.length}} problems</a></strong>
+            </div>
+        </div>
+
+        <div class="row" ng-show="problemService.prevProblem">
+            <div class="span1">
+                Previous:
+            </div>
+            <div class="span4 quickNavLinks">
+                <a ng-click="problemService.selectProblem(problemService.prevProblem)">{{problemService.prevProblem.description | truncate:200 | minlinks}}</a>
+            </div>
+        </div>
+        <div class="row" ng-show="problemService.nextProblem">
+            <div class="span1">
+                Next:
+            </div>
+            <div class="span4 quickNavLinks">
+                <a ng-click="problemService.selectProblem(problemService.nextProblem)">{{problemService.nextProblem.description | truncate:200 | minlinks}}</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

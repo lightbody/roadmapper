@@ -1,4 +1,4 @@
-roadmapper.factory('problemService', function ($http) {
+roadmapper.factory('problemService', function ($http, $location) {
     var problemService = {
         problems: [],
         filteredProblems: [],
@@ -49,6 +49,7 @@ roadmapper.factory('problemService', function ($http) {
     };
 
     problemService.search = function () {
+        console.log("searching", problemService.query);
         problemService.queryReturned = false;
 
         $http.get('/problems', {
@@ -75,13 +76,53 @@ roadmapper.factory('problemService', function ($http) {
         problemService.reverse = !problemService.reverse;
     };
 
+    problemService.selectProblem = function(problem) {
+        problemService.selectedProblem = problem;
+
+        // find the index for this problem
+        var index = -1;
+        for (var i = 0; i < problemService.problems.length; i++) {
+            var p = problemService.problems[i];
+            if (p.id == problem.id) {
+                index = i;
+                break;
+            }
+        }
+
+        // now get the next and previous problems
+        problemService.nextProblem = null;
+        problemService.prevProblem = null;
+        if (index != -1) {
+            if (index > 0) {
+                problemService.prevProblem = problemService.problems[index - 1];
+            }
+            if (index < problemService.problems.length - 1) {
+                problemService.nextProblem = problemService.problems[index + 1];
+            }
+        }
+
+        $location.path("/problems/" + problem.id);
+    };
+
     problemService.wireUpController = function(scope) {
         scope.problemService = problemService;
-        scope.$watch("problemService.query", problemService.search);
+        scope.$watch("problemService.query", function(newValue, oldValue) {
+            // we only want to search when the value actually changes
+            var oldStr = oldValue.map(function (e) { return e.id }).join(",");
+            var newStr = newValue.map(function (e) { return e.id }).join(",");
+            if (oldStr == newStr) {
+                return;
+            }
+
+            problemService.search();
+        });
         scope.$watch("problemService.predicate", watchSorter);
         scope.$watch("problemService.reverse", watchSorter);
         scope.$watch('problemService.currentPage + problemService.numPerPage', filterProblems);
     };
+
+    // force a search the first time
+    problemService.search();
 
     return problemService;
 });

@@ -1,4 +1,6 @@
-function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
+function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService) {
+    $scope.problemService = problemService;
+
     $scope.editProblem = function(problem) {
         $scope.selectedProblem = problem;
         $http.get('/problems/' + problem.id)
@@ -15,11 +17,18 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
                 $scope.selectedProblem = problemWithTags;
                 $scope.showViewProblem = true;
+                $scope.editProblemForm.$setPristine(true);
                 $rootScope.loading = false;
             });
     };
 
-    $scope.saveProblem = function(problem) {
+    $scope.saveProblemAndContinue = function(problem) {
+        $scope.saveProblem(problem, function() {
+            problemService.selectProblem(problemService.nextProblem);
+        });
+    };
+
+    $scope.saveProblem = function(problem, callback) {
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
         copy.tags = [];
@@ -30,14 +39,19 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             delete copy.feature.text;
         }
 
+        $scope.saving = true;
+
         $http.put('/problems/' + problem.id, copy)
             .success(function(returnedProblem) {
-                $scope.closeViewProblem();
+                $scope.saving = false;
+                $scope.saved = true;
+                $scope.editProblemForm.$setPristine(true);
+                callback();
+                setTimeout(function() {
+                    $scope.saved = false;
+                    $scope.$digest();
+                }, 5000);
             }).error(FormErrorHandler($scope))
-    };
-
-    $scope.closeViewProblem = function() {
-        $location.path("/problems");
     };
 
     $scope.featureSelect2Options = {

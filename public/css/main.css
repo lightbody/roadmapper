@@ -116,6 +116,12 @@ a.ng-binding {
     margin-top: 200px;
 }
 
+.quickNavLinks {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .no-selection {
     -webkit-user-select: none; /* webkit (safari, chrome) browsers */
     -moz-user-select: none; /* mozilla browsers */
