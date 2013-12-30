@@ -1,4 +1,4 @@
-roadmapper.factory('featureService', function ($http, $location) {
+roadmapper.factory('featureService', function ($http, $location, $parse) {
     var featureService = {
         features: [],
         featuresFeatures: [],
@@ -23,20 +23,37 @@ roadmapper.factory('featureService', function ($http, $location) {
         }
 
         featureService.features.sort(function (a, b) {
-            var a1 = a[featureService.predicate];
+            var a1 = $parse(featureService.predicate)(a);
+
             if (a1 && a1.toLowerCase) {
                 a1 = a1.toLowerCase();
             }
 
-            var b1 = b[featureService.predicate];
+            var b1 = $parse(featureService.predicate)(b);
             if (b1 && b1.toLowerCase) {
                 b1 = b1.toLowerCase();
             }
 
+            if (a1 == null) {
+                a1 = "";
+            }
+
+            if (b1 == null) {
+                b1 = "";
+            }
+
             if (!featureService.reverse) {
-                return a1 > b1 ? 1 : -1;
+                if (a1 == b1) {
+                    return a.id > b.id ? 1 : -1;
+                } else {
+                    return a1 > b1 ? 1 : -1;
+                }
             } else {
-                return a1 > b1 ? -1 : 1;
+                if (a1 == b1) {
+                    return a.id > b.id ? -1 : 1;
+                } else {
+                    return a1 > b1 ? -1 : 1;
+                }
             }
         });
     };

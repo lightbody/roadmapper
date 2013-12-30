@@ -1,4 +1,4 @@
-roadmapper.factory('problemService', function ($http, $location) {
+roadmapper.factory('problemService', function ($http, $location, $parse) {
     var problemService = {
         problems: [],
         filteredProblems: [],
@@ -23,20 +23,37 @@ roadmapper.factory('problemService', function ($http, $location) {
         }
 
         problemService.problems.sort(function (a, b) {
-            var a1 = a[problemService.predicate];
+            var a1 = $parse(problemService.predicate)(a);
+
             if (a1 && a1.toLowerCase) {
                 a1 = a1.toLowerCase();
             }
 
-            var b1 = b[problemService.predicate];
+            var b1 = $parse(problemService.predicate)(b);
             if (b1 && b1.toLowerCase) {
                 b1 = b1.toLowerCase();
             }
 
+            if (a1 == null) {
+                a1 = "";
+            }
+
+            if (b1 == null) {
+                b1 = "";
+            }
+
             if (!problemService.reverse) {
-                return a1 > b1 ? 1 : -1;
+                if (a1 == b1) {
+                    return a.id > b.id ? 1 : -1;
+                } else {
+                    return a1 > b1 ? 1 : -1;
+                }
             } else {
-                return a1 > b1 ? -1 : 1;
+                if (a1 == b1) {
+                    return a.id > b.id ? -1 : 1;
+                } else {
+                    return a1 > b1 ? -1 : 1;
+                }
             }
         });
     };
