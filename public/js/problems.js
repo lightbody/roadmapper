@@ -22,7 +22,6 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     };
 
     $scope.querySelect2Options = {
-        model: "problemService.query",
         openOnEnter: false,
         multiple: true,
         sortResults: function(results, container, query) {

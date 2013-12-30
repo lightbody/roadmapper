@@ -90,7 +90,6 @@ function FeaturesCtrl($scope, $http, $routeParams, $location, $route, $rootScope
     var counter = 1;
 
     $scope.querySelect2Options = {
-        model: "featureQuery",
         multiple: true,
         sortResults: function(results, container, query) {
             if (query.term) {

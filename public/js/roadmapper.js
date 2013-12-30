@@ -7,7 +7,7 @@ Array.prototype.remove = function (from, to) {
 
 var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
-var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2"]);
+var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2", "roadmapper.ui.select2"]);
 
 roadmapper.config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
@@ -161,6 +161,7 @@ roadmapper.run(function ($rootScope, $http, $cookieStore, $location) {
         // wire up shared select2 configs
         $rootScope.tagSelect2Options = {
             multiple: true,
+            simple_tags: true,
             createSearchChoice: function(val) {
                 if (val.length>0) {
                     return {id: val, text: val};

@@ -32,10 +32,12 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
         $http.put('/features/' + feature.id, copy)
             .success(function(returnedFeature) {
-                for (var i = 0; i < $scope.features.length; i++) {
-                    if ($scope.features[i].id == feature.id) {
-                        $scope.features[i] = returnedFeature;
-                        break;
+                if ($scope.features) {
+                    for (var i = 0; i < $scope.features.length; i++) {
+                        if ($scope.features[i].id == feature.id) {
+                            $scope.features[i] = returnedFeature;
+                            break;
+                        }
                     }
                 }
 
