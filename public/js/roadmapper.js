@@ -23,6 +23,10 @@ roadmapper.config(['$routeProvider', function ($routeProvider) {
             otherwise({redirectTo: '/dashboard'});
     }]);
 
+function NavBarCtrl($scope) {
+    $scope.isCollapsed = true;
+}
+
 roadmapper.directive('integer', function() {
         return {
             require: 'ngModel',
@@ -40,30 +44,6 @@ roadmapper.directive('integer', function() {
                 });
             }
         };
-    });
-
-roadmapper.directive("navbar", function () {
-        return {
-
-            controller: function ($scope, $location, $rootScope, $cookieStore) {
-                $scope.dashboard = function () {
-                    $location.path("/dashboard");
-                };
-
-                $scope.tags = function () {
-                    $location.path("/tags");
-                };
-
-                $scope.teams = function () {
-                    $location.path("/teams");
-                };
-
-                $scope.logout = function () {
-                    window.location.href = "/logout"
-                };
-            },
-            templateUrl: "nav.html"
-        }
     });
 
 roadmapper.filter('noFractionCurrency',
