@@ -19,6 +19,8 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                 $scope.showViewProblem = true;
                 $scope.editProblemForm.$setPristine(true);
                 $rootScope.loading = false;
+
+                problemService.update(problemWithTags);
             });
     };
 
@@ -43,10 +45,14 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
         $http.put('/problems/' + problem.id, copy)
             .success(function(returnedProblem) {
+                problemService.update(returnedProblem);
+
                 $scope.saving = false;
                 $scope.saved = true;
                 $scope.editProblemForm.$setPristine(true);
-                callback();
+                if (callback) {
+                    callback();
+                }
                 setTimeout(function() {
                     $scope.saved = false;
                     $scope.$digest();

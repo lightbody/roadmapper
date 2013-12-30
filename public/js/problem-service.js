@@ -65,6 +65,15 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
         problemService.filteredProblems = problemService.problems.slice(begin, end);
     };
 
+    problemService.update = function(problem) {
+        for (var i = 0; i < problemService.problems.length; i++) {
+            if (problemService.problems[i].id == problem.id) {
+                problemService.problems[i] = problem;
+                break;
+            }
+        }
+    };
+
     problemService.search = function () {
         problemService.queryReturned = false;
 

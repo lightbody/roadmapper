@@ -65,6 +65,15 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
         featureService.filteredFeatures = featureService.features.slice(begin, end);
     };
 
+    featureService.update = function(feature) {
+        for (var i = 0; i < featureService.features.length; i++) {
+            if (featureService.features[i].id == feature.id) {
+                featureService.features[i] = feature;
+                break;
+            }
+        }
+    };
+
     featureService.search = function () {
         featureService.queryReturned = false;
 

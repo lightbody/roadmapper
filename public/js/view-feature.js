@@ -1,4 +1,6 @@
-function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootScope) {
+function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootScope, featureService) {
+    $scope.featureService = featureService;
+
     $scope.editFeature = function(feature) {
         $scope.selectedFeature = feature;
         $http.get('/features/' + feature.id)
@@ -15,11 +17,20 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
                 $scope.selectedFeature = featureWithTags;
                 $scope.showViewFeature = true;
+                $scope.editFeatureForm.$setPristine(true);
                 $rootScope.loading = false;
+
+                featureService.update(featureWithTags);
             });
     };
 
-    $scope.saveFeature = function(feature) {
+    $scope.saveFeatureAndContinue = function(feature) {
+        $scope.saveFeature(feature, function() {
+            featureService.selectFeature(featureService.nextFeature);
+        });
+    };
+
+    $scope.saveFeature = function(feature, callback) {
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(feature);
         copy.tags = [];
@@ -30,23 +41,23 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             delete copy.team.text;
         }
 
+        $scope.saving = true;
+
         $http.put('/features/' + feature.id, copy)
             .success(function(returnedFeature) {
-                if ($scope.features) {
-                    for (var i = 0; i < $scope.features.length; i++) {
-                        if ($scope.features[i].id == feature.id) {
-                            $scope.features[i] = returnedFeature;
-                            break;
-                        }
-                    }
+                featureService.update(returnedFeature);
+
+                $scope.saving = false;
+                $scope.saved = true;
+                $scope.editFeatureForm.$setPristine(true);
+                if (callback) {
+                    callback();
                 }
-
-                $scope.closeViewFeature();
+                setTimeout(function() {
+                    $scope.saved = false;
+                    $scope.$digest();
+                }, 5000);
             }).error(FormErrorHandler($scope));
-    };
-
-    $scope.closeViewFeature = function() {
-        $location.path("/features");
     };
 
     // if we're given an ID then go ahead and get it, otherwise redirect back

@@ -1,37 +1,87 @@
-<h3>Feature {{selectedFeature.id}}</h3>
+<div class="row">
+    <div class="span8">
 
-<form name="editFeatureForm" novalidate>
+        <h3>Feature {{selectedFeature.id}}</h3>
 
-    <div ng-include="'validation.html'"></div>
+        <form name="editFeatureForm" novalidate>
+        
+            <div ng-include="'validation.html'"></div>
+        
+            <div class="controls">
+                <input type="text" class="span8" ng-model="selectedFeature.title" autofocus="autofocus" placeholder="Feature" required>
+            </div>
+        
+            <div class="controls controls-row">
+                <textarea class="span8" rows="10" ng-model="selectedFeature.description" placeholder="Extended Description"></textarea>
+            </div>
+        
+            <div class="controls controls-row">
+                <select class="span2" ng-model="selectedFeature.engineeringCost" ng-options="e for e in enumSizes"></select>
+                <select class="span2" ng-model="selectedFeature.revenueBenefit" ng-options="e for e in enumSizes"></select>
+                <select class="span2" ng-model="selectedFeature.retentionBenefit" ng-options="e for e in enumSizes"></select>
+                <select class="span2" ng-model="selectedFeature.positioningBenefit" ng-options="e for e in enumSizes"></select>
+            </div>
+        
+            <div class="controls controls-row">
+                <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
+                <select class="span2" ng-model="selectedFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
+                    <option value="">unscheduled</option>
+                </select>
+                <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates"></select>
+            </div>
+        
+            <div class="controls controls-row">
+                <input type="text" class="span8" roadmapper-ui-select2="tagSelect2Options" ng-model="junk" roadmapper-ui-select2-model="selectedFeature.tags"/>
+            </div>
+        
+        </form>
 
-    <div class="controls">
-        <input type="text" class="span8" ng-model="selectedFeature.title" autofocus="autofocus" placeholder="Feature" required>
+        <div class="row">
+            <div class="span4">
+                <button class="btn btn-primary" ng-click="saveFeature(selectedFeature)" ng-disabled="editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save</button>
+
+                <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
+
+                <span ng-show="saved">
+                    Saved...
+                </span>
+            </div>
+            <div class="span4" style="text-align: right">
+                <div ng-show="featureService.nextFeature">
+                    <button class="btn btn-secondary" ng-click="saveFeatureAndContinue(selectedFeature)" ng-disabled="editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save &raquo;</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="controls controls-row">
-        <textarea class="span8" rows="10" ng-model="selectedFeature.description" placeholder="Extended Description"></textarea>
+    <div class="span4">
+        <div class="row" ng-show="featureService.prevFeature || featureService.nextFeature">
+            <div class="span4">
+                <strong>Browsing <a href="/#/features">{{featureService.features.length}} features</a></strong>
+            </div>
+        </div>
+
+        <div class="row" ng-show="featureService.prevFeature">
+            <div class="span1">
+                Previous:
+            </div>
+            <div class="span3 quickNavLinks">
+                <a ng-click="featureService.selectFeature(featureService.prevFeature)">{{featureService.prevFeature.title}}</a>
+            </div>
+        </div>
+        <div class="row" ng-show="featureService.nextFeature">
+            <div class="span1">
+                Next:
+            </div>
+            <div class="span3 quickNavLinks">
+                <a ng-click="featureService.selectFeature(featureService.nextFeature)">{{featureService.nextFeature.title}}</a>
+            </div>
+        </div>
+
     </div>
 
-    <div class="controls controls-row">
-        <select class="span2" ng-model="selectedFeature.engineeringCost" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="selectedFeature.revenueBenefit" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="selectedFeature.retentionBenefit" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="selectedFeature.positioningBenefit" ng-options="e for e in enumSizes"></select>
-    </div>
+</div>
 
-    <div class="controls controls-row">
-        <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
-        <select class="span2" ng-model="selectedFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
-            <option value="">unscheduled</option>
-        </select>
-        <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates"></select>
-    </div>
+        
 
-    <div class="controls controls-row">
-        <input type="text" class="span8" roadmapper-ui-select2="tagSelect2Options" ng-model="junk" roadmapper-ui-select2-model="selectedFeature.tags"/>
-    </div>
-
-</form>
-
-<button class="btn btn-warning cancel" ng-click="closeViewFeature()">Cancel</button>
-<button class="btn btn-primary" ng-click="saveFeature(selectedFeature)" ng-disabled="editFeatureForm.$invalid" type="submit">Confirm</button>
