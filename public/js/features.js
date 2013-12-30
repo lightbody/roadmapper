@@ -91,7 +91,7 @@ function FeaturesCtrl($scope, $http, featureService, problemService, $routeParam
 
             // status matching -- only do it when we haven't already selected a state
             var hasStateQuery = false;
-            $scope.featureQuery.map(function(e) {
+            featureService.query.map(function(e) {
                 if (e.id.indexOf("state:") == 0) {
                     hasStateQuery = true;
                 }

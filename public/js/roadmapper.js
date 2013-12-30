@@ -126,9 +126,6 @@ roadmapper.filter('longQuarter', function() {
     });
 
 roadmapper.run(function ($rootScope, $http, $cookieStore, $location) {
-        $rootScope.query = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
-        $rootScope.featureQuery = [{id: "state:OPEN", text: "<strong>State</strong>: OPEN"}];
-
         // wire up shared enums
         $rootScope.enumAllQuarters = enumAllQuarters;
         $rootScope.enumActiveQuarters = enumActiveQuarters;

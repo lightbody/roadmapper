@@ -1,15 +1,17 @@
-function TagsCtrl($scope, $http, $rootScope, $location) {
+function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemService) {
     // default to sorting by reported date
     $scope.predicate = "unresolvedArr";
     $scope.reverse = true;
 
     $scope.selectProblemsByTag = function(tag, state) {
-        $rootScope.query = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        problemService.query = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        problemService.search();
         $location.path("/problems");
     };
 
     $scope.selectFeaturesByTag = function(tag, state) {
-        $rootScope.featureQuery = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        featureService.query = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        featureService.search();
         $location.path("/features");
     };
 

@@ -1,4 +1,4 @@
-function TeamsCtrl($scope, $rootScope, $http, $location) {
+function TeamsCtrl($scope, $rootScope, $http, $location, featureService) {
     $scope.showNewTeamModal = function() {
         $scope.showNewTeam = true;
     };
@@ -66,8 +66,9 @@ function TeamsCtrl($scope, $rootScope, $http, $location) {
             }
         }
 
-        $rootScope.featureQuery = [{id: "team:" + team.name, text: "<strong>Team</strong>: " + team.name},
+        featureService.query = [{id: "team:" + team.name, text: "<strong>Team</strong>: " + team.name},
             {id: "quarter:" + quarterId, text: "<strong>Quarter</strong>: " + quarterLabel}];
+        featureService.search();
         $location.path("/features");
 
     };
