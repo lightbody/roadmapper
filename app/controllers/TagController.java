@@ -166,7 +166,7 @@ public class TagController extends Controller {
     }
 
     public static Result search(String query) {
-        SqlQuery q = Ebean.createSqlQuery("select distinct tag from (select tag from problem_tags where tag like :like union select tag from feature_tags where tag like :like) t order by tag");
+        SqlQuery q = Ebean.createSqlQuery("select tag from (select tag, count(*) from problem_tags where tag like :like group by tag union select tag, count(*) from feature_tags where tag like :like group by tag) t group by tag order by sum(count) desc limit 10");
         q.setParameter("like", "%" + query + "%");
         List<SqlRow> rows = q.findList();
         Set<String> tags = new HashSet<>();
