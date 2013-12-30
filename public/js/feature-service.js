@@ -75,6 +75,18 @@ roadmapper.factory('featureService', function ($http, $location) {
         featureService.reverse = !featureService.reverse;
     };
 
+    featureService.shouldShow = function(col) {
+        if (col == 'state' || col == 'team' || col == 'quarter') {
+            for (var i = 0; i < featureService.query.length; i++) {
+                if (featureService.query[i].id.indexOf(col + ":") == 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    };
+
     featureService.selectFeature = function(feature) {
         featureService.selectedFeature = feature;
 

@@ -22,7 +22,7 @@
     <tr>
         <th style="width: 2em"><a href="" ng-click="featureService.sort('id')">ID</a></th>
         <th><a href="" ng-click="featureService.sort('title')">Title</a></th>
-        <th style="width: 3em"><a href="" ng-click="featureService.sort('state')">State</a></th>
+        <th style="width: 3em" ng-show="featureService.shouldShow('state')"><a href="" ng-click="featureService.sort('state')">State</a></th>
         <th style="width: 3em"><a href="" ng-click="featureService.sort('engineeringCost')">Cost</a></th>
         <th style="width: 3em"><a href="" ng-click="featureService.sort('revenueBenefit')">Rev</a></th>
         <th style="width: 3em"><a href="" ng-click="featureService.sort('retentionBenefit')">Ret</a></th>
@@ -30,8 +30,8 @@
         <th style="width: 2em" class="text-right"><a href="" ng-click="featureService.sort('score')">Score</a></th>
         <th style="width: 3em" class="text-right"><a href="" ng-click="featureService.sort('problemCount')">Probs</a></th>
         <th style="width: 6em" class="text-right"><a href="" ng-click="featureService.sort('problemRevenue')">ARR</a></th>
-        <th style="width: 2em"><a href="" ng-click="featureService.sort('quarter')">Qtr</a></th>
-        <th style="width: 6em"><a href="" ng-click="featureService.sort('team.name')">Team</a></th>
+        <th style="width: 2em" ng-show="featureService.shouldShow('quarter')"><a href="" ng-click="featureService.sort('quarter')">Qtr</a></th>
+        <th style="width: 6em" ng-show="featureService.shouldShow('team')"><a href="" ng-click="featureService.sort('team.name')">Team</a></th>
         <th style="width: 3em"><a href="" ng-click="featureService.sort('lastModified')">Mod</a></th>
     </tr>
     </thead>
@@ -41,7 +41,7 @@
         <td class="title">
             <a ng-click="featureService.selectFeature(feature)">{{feature.title}}</a>
         </td>
-        <td>{{feature.state}}</td>
+        <td ng-show="featureService.shouldShow('state')">{{feature.state}}</td>
         <td>{{feature.engineeringCost | size}}</td>
         <td>{{feature.revenueBenefit | size}}</td>
         <td>{{feature.retentionBenefit| size}}</td>
@@ -49,8 +49,8 @@
         <td class="text-right"><span ng-show="feature.score > 0">{{feature.score}}</span></td>
         <td class="text-right"><a ng-click="selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
         <td class="text-right"><span ng-show="feature.problemRevenue  > 0">{{feature.problemRevenue | noFractionCurrency}}</span></td>
-        <td><span tooltip="{{feature.quarter | longQuarter}}">{{feature.quarter | shortQuarter}}</span></td>
-        <td>{{feature.team.name}}</td>
+        <td ng-show="featureService.shouldShow('quarter')"><span tooltip="{{feature.quarter | longQuarter}}">{{feature.quarter | shortQuarter}}</span></td>
+        <td ng-show="featureService.shouldShow('team')">{{feature.team.name}}</td>
         <td><span tooltip="{{feature.lastModifiedBy.name}} on {{feature.lastModified | date}}" tooltip-placement="left">{{feature.lastModified | date:'MMM d'}}</span></td>
     </tr>
     </tbody>
