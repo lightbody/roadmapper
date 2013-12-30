@@ -1,4 +1,4 @@
-function NewFeatureCtrl($scope, $http, $location) {
+function NewFeatureCtrl($scope, $http, $location, featureService) {
     $scope.createAnother = false;
 
     $scope.cmdEnter = function() {
@@ -30,11 +30,12 @@ function NewFeatureCtrl($scope, $http, $location) {
                     $scope.$digest();
                 }, 5000);
 
+                featureService.search();
                 if ($scope.createAnother) {
                     $scope.newFeature = {tags: []};
                     $scope.junk = []; // todo: ugly hack to clear out tag selector
                     $scope.newFeatureForm.$setPristine(true);
-                    // todo: we should focus back on the title field but I don't know how :(
+                    $("#newFeatureFirstInput").focus(); // todo: we should focus back first field in a more Angular-like way, but I have no idea how!
                 } else {
                     $location.path("/features");
                 }

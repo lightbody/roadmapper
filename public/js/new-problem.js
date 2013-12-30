@@ -1,4 +1,4 @@
-function NewProblemCtrl($scope, $http, $location) {
+function NewProblemCtrl($scope, $http, $location, problemService) {
     $scope.createAnother = true;
 
     $scope.cmdEnter = function() {
@@ -28,11 +28,12 @@ function NewProblemCtrl($scope, $http, $location) {
                 mixpanel.people.increment("Problems Recorded");
                 mixpanel.track("Record Problem", returnedProblem);
 
+                problemService.search();
                 if ($scope.createAnother) {
                     $scope.newProblem = {tags: []};
                     $scope.junk = []; // todo: ugly hack to clear out tag selector
                     $scope.newProblemForm.$setPristine(true);
-                    // todo: we should focus back on the description field but I don't know how :(
+                    $("#newProblemFirstInput").focus(); // todo: we should focus back first field in a more Angular-like way, but I have no idea how!
                 } else {
                     $location.path("/problems");
                 }
