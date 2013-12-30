@@ -1,4 +1,4 @@
-function FeaturesCtrl($scope, $http, featureService, problemService, $routeParams, $location, $route, $rootScope) {
+function FeaturesCtrl($scope, $http, featureService, $q, problemService, $location, $rootScope) {
     featureService.wireUpController($scope);
 
     var sortHack = function(tag) {
@@ -19,8 +19,7 @@ function FeaturesCtrl($scope, $http, featureService, problemService, $routeParam
         }
     };
 
-    var counter = 1;
-
+    var canceler = null;
     $scope.querySelect2Options = {
         multiple: true,
         sortResults: function(results, container, query) {
@@ -52,9 +51,6 @@ function FeaturesCtrl($scope, $http, featureService, problemService, $routeParam
         tags: [],
         tokenSeparators: [",", " "],
         query: function (query) {
-            counter++;
-            var cur = counter;
-
             var term = query.term;
             if (term == "") {
                 query.callback({results: []});
@@ -104,14 +100,12 @@ function FeaturesCtrl($scope, $http, featureService, problemService, $routeParam
                 });
             }
 
-            $http.get("/tags?query=" + term)
+            if (canceler != null) {
+                canceler.resolve();
+            }
+            canceler = $q.defer();
+            $http.get("/tags?query=" + term, {timeout: canceler.promise})
                 .success(function (tags) {
-                    if (cur != counter) {
-                        //console.log("discarding: " +  cur + " != " + counter);
-                        return;
-                    }
-                    //console.log("keeping: " + cur + " == " + counter);
-
                     tags.map(function(tag) {results.push({id: tag, text: "<strong>Tag</strong>: " + tag})});
                     query.callback({
                         results: results

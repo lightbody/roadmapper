@@ -1,4 +1,4 @@
-function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService) {
+function ProblemsCtrl($scope, $http, $q, $location,problemService) {
     problemService.wireUpController($scope);
 
     var sortHack = function(tag) {
@@ -21,6 +21,7 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
         }
     };
 
+    var canceler = null;
     $scope.querySelect2Options = {
         openOnEnter: false,
         multiple: true,
@@ -96,7 +97,11 @@ function ProblemsCtrl($scope, $http, $routeParams, $location, $route, $rootScope
                 });
             }
 
-            $http.get("/tags?query=" + term)
+            if (canceler != null) {
+                canceler.resolve();
+            }
+            canceler = $q.defer();
+            $http.get("/tags?query=" + term, {timeout: canceler.promise})
                 .success(function (tags) {
                     tags.map(function(tag) {results.push({id: tag, text: "<strong>Tag</strong>: " + tag})});
                     query.callback({
