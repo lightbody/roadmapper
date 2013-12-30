@@ -49,7 +49,6 @@ roadmapper.factory('problemService', function ($http, $location) {
     };
 
     problemService.search = function () {
-        console.log("searching", problemService.query);
         problemService.queryReturned = false;
 
         $http.get('/problems', {
