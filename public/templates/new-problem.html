@@ -31,11 +31,31 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span7" ui-select2="tagSelect2Options" ng-model="newProblem.tags"/>
+                <input type="text" class="span7" roadmapper-ui-select2="tagSelect2Options" ng-model="junk" roadmapper-ui-select2-model="newProblem.tags"/>
             </div>
 
+            <div class="controls controls-row">
+
+            </div>
         </form>
 
-        <button class="btn btn-warning cancel" ng-click="clearNewProblem()">Clear</button>
-        <button class="btn btn-warning cancel" ng-click="closeNewProblem()">Cancel</button>
-        <button class="btn btn-primary" ng-click="createProblem(newProblem)" ng-disabled="newProblemForm.$invalid" type="submit">Confirm</button>
+        <div class="row">
+            <div class="span5" style="padding-bottom: 20px;">
+                <button class="btn btn-warning cancel" ng-click="cancelNewProblem()">Cancel</button>
+                <button class="btn btn-primary" ng-click="createProblem(newProblem)" ng-disabled="newProblemForm.$invalid" type="submit">Create</button>
+                <div class="checkbox" style="display: inline-flex">
+                    <label>
+                        <input type="checkbox" ng-model="createAnother"> Create another
+                    </label>
+                </div>
+
+            </div>
+            <div class="span2" style="text-align: right">
+                <span ng-show="saved">
+                    Created problem {{saved}}!
+                </span>
+
+                <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
+            </div>
+        </div>
+
