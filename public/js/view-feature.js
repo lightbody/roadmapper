@@ -1,6 +1,19 @@
 function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootScope, featureService) {
     $scope.featureService = featureService;
 
+    var findRelatedFeatures = function() {
+        if (!$scope.selectedFeature.tags) {
+            return;
+        }
+
+        var tagSearch = $scope.selectedFeature.tags.map(function(tag) {return tag.id}).join(" ");
+        $http.get("/features?limit=10&query=state:OPEN,text:" + tagSearch)
+            .success(function (relatedFeatures) {
+                $scope.relatedFeatures = relatedFeatures;
+            }).error(LogHandler($scope));
+    };
+    $scope.$watch("selectedFeature.tags", findRelatedFeatures);
+
     $scope.editFeature = function(feature) {
         $scope.selectedFeature = feature;
         $http.get('/features/' + feature.id)
@@ -21,6 +34,9 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                 $rootScope.loading = false;
 
                 featureService.update(featureWithTags);
+
+                // get a list of related features
+                findRelatedFeatures();
             });
     };
 

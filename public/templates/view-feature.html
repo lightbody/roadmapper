@@ -79,6 +79,15 @@
             </div>
         </div>
 
+        <div ng-show="relatedFeatures.length > 0">
+            <h3>Related Features</h3>
+            <ul>
+                <li ng-repeat="feature in relatedFeatures">
+                    <a ng-click="featureService.selectFeature(featureService.nextFeature)">{{feature.title}}</a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 
 </div>
