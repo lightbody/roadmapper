@@ -30,7 +30,9 @@ public class Qtr implements Comparable<Qtr>, Serializable {
         System.out.println("Q3-2011 => " + get("Q3-2011").label);
         System.out.println("Q4-2013 => " + get("Q3-2013").label);
         System.out.println("Q2-2012 => " + get("Q2-2012").label);
+        System.out.println("Q4+2014 => " + get("Q4+2013").label);
         System.out.println("Q0-2014 => " + get("Q0-2014").label);
+        System.out.println("Q1-2014 => " + get("Q1-2014").label);
         System.out.println("Q1-FY15 => " + get("Q1-FY15").label);
         System.out.println("Q3-FY15 => " + get("Q3-FY15").label);
         System.out.println("Q4-FY15 => " + get("Q4-FY15").label);
@@ -62,7 +64,7 @@ public class Qtr implements Comparable<Qtr>, Serializable {
 
     public static Qtr get(String label) {
         // special case Q0-214
-        if ("Q0-2014".equals(label)) {
+        if ("Q0-2014".equals(label) || "Q4+2013".equals(label)) {
             return get(1, 2014);
         }
 
@@ -137,7 +139,7 @@ public class Qtr implements Comparable<Qtr>, Serializable {
         int q = (start.getMonthOfYear() - 1) / 3 + 1;
 
         if (id == 25) {
-            q = 0;
+            label = "Q4+2013";
         } else if (id > 25) {
             fiscal = true;
             q = q - 1;
@@ -145,9 +147,7 @@ public class Qtr implements Comparable<Qtr>, Serializable {
             if (id >= 29 && q == 0) {
                 q = 4;
             }
-        }
 
-        if (fiscal) {
             int year = start.getYearOfCentury();
             if (q != 4) {
                 year++;
