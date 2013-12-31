@@ -13,16 +13,28 @@
     </div>
 
     <div class="controls controls-row">
-        <select class="span2" ng-model="newFeature.engineeringCost" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="newFeature.revenueBenefit" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="newFeature.retentionBenefit" ng-options="e for e in enumSizes"></select>
-        <select class="span2" ng-model="newFeature.positioningBenefit" ng-options="e for e in enumSizes"></select>
+        <select class="span2" ng-model="selectedFeature.engineeringCost" ng-options="e for e in enumSizes">
+            <option value="">eng. cost not set</option>
+        </select>
+        <select class="span2" ng-model="selectedFeature.revenueBenefit" ng-options="e for e in enumSizes">
+            <option value="">rev. benefit not set</option>
+        </select>
+        <select class="span2" ng-model="selectedFeature.retentionBenefit" ng-options="e for e in enumSizes">
+            <option value="">ret. benefit not set</option>
+        </select>
+        <select class="span2" ng-model="selectedFeature.positioningBenefit" ng-options="e for e in enumSizes">
+            <option value="">pos. benefit not set</option>
+        </select>
     </div>
 
     <div class="controls controls-row">
         <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="newFeature.team" placeholder="Not mapped to a team"/>
-        <select class="span2" ng-model="newFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters"></select>
-        <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates"></select>
+        <select class="span2" ng-model="newFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
+            <option value="">unscheduled</option>
+        </select>
+        <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates">
+            <option value="">status not set</option>
+        </select>
     </div>
 
     <div class="controls controls-row">
