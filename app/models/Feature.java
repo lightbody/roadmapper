@@ -61,4 +61,7 @@ public class Feature extends Model {
 
     public Set<String> tags;
 
+    @Transient
+    public Float rank;
+
 }

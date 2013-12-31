@@ -88,11 +88,26 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
 
     $scope.featureSelect2Options = {
         allowClear: true,
+        sortResults: function(results, container, query) {
+            if (query.term) {
+                return results.sort(function(a, b) {
+                    if (a.rank == b.rank) {
+                        return 0;
+                    } else {
+                        return a.rank > b.rank ? -1 : 1;
+                    }
+                });
+            }
+
+            return results;
+        },
         query: function (query) {
-            $http.get("/features?query=title:" + query.term)
+            $http.get("/features?limit=20&query=state:OPEN,any:" + query.term)
                 .success(function (features) {
                     var results = [];
-                    features.map(function(feature) {results.push({id: feature.id, text: feature.title})});
+                    if (features) {
+                        features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
+                    }
                     query.callback({
                         results: results
                     });

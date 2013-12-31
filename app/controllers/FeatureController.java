@@ -90,11 +90,17 @@ public class FeatureController extends Controller {
             return ok();
         }
 
+        Integer limit = null;
+        if (request().queryString().get("limit") != null) {
+            limit = Integer.parseInt(request().queryString().get("limit")[0]);
+        }
+
         ExpressionList<Feature> where = Feature.find.where();
         String[] terms = query.split(",");
 
         int tagsSeen = 0;
         Multimap<Long, Boolean> tagMatchCount = LinkedListMultimap.create();
+        Map<Long, Float> rankings = null;
 
         for (String term : terms) {
             if (term.startsWith("state:")) {
@@ -110,12 +116,35 @@ public class FeatureController extends Controller {
                 where.ilike("team.name", "%" + term.substring(5) + "%");
             } else if (term.startsWith("quarter:")) {
                 where.eq("quarter", Integer.parseInt(term.substring(8)));
+            } else if (term.startsWith("any:")) {
+                rankings = new HashMap<>();
+                String tsquery = term.substring(4);
+                tsquery = tsquery.replaceAll("[\\|\\&\\!'\\@\\#\\$\\%\\^\\*\\(\\)\\{\\[\\}\\]\\+\\=\\-\\_\\?\\;\\:\\'\"\\<\\>\\,\\.\\/]", "")
+                        .replaceAll("[ \t\n\r]", "|");
+
+                SqlQuery searchQuery = Ebean.createSqlQuery("select id, ts_rank_cd(textsearch, query) rank from (select id, title, setweight(to_tsvector(coalesce((select string_agg(tag, ' ') from feature_tags where feature_id = id),'')), 'A') || setweight(to_tsvector(coalesce(title,'')), 'B') || setweight(to_tsvector(coalesce(description,'')), 'C') as textsearch from feature) t, to_tsquery(:tsquery) query where textsearch @@ query order by rank desc");
+                searchQuery.setParameter("tsquery", tsquery);
+                if (limit != null) {
+                    searchQuery.setMaxRows(limit);
+                }
+                List<SqlRow> list = searchQuery.findList();
+                for (SqlRow row : list) {
+                    Long featureId = row.getLong("id");
+                    Float rank = row.getFloat("rank");
+                    rankings.put(featureId, rank);
+                }
+            } else if (term.startsWith("similarProblem:")) {
+            } else if (term.startsWith("similarFeature:")) {
+
             } else {
                 // no prefix? assume a tag then
                 tagsSeen++;
 
                 SqlQuery tagQuery = Ebean.createSqlQuery("select feature_id from feature_tags where tag = :tag");
                 tagQuery.setParameter("tag", term);
+                if (limit != null) {
+                    tagQuery.setMaxRows(limit);
+                }
                 List<SqlRow> list = tagQuery.findList();
                 for (SqlRow row : list) {
                     Long featureId = row.getLong("feature_id");
@@ -140,11 +169,30 @@ public class FeatureController extends Controller {
             }
         }
 
+        if (rankings != null) {
+            if (rankings.isEmpty()) {
+                return ok();
+            }
+
+            where.in("id", rankings.keySet());
+        }
+
         // fixes N+1 query problem
         where.join("creator");
         where.join("lastModifiedBy");
 
+        if (limit != null) {
+            where.setMaxRows(limit);
+        }
+
         List<Feature> list = where.findList();
+
+        if (rankings != null) {
+            for (Feature feature : list) {
+                feature.rank = rankings.get(feature.id);
+            }
+        }
+
         JsonNode jsonNode = Json.toJson(dressFeatures(list));
 
         return ok(jsonNode);
