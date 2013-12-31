@@ -116,26 +116,21 @@ public class FeatureController extends Controller {
                 where.ilike("team.name", "%" + term.substring(5) + "%");
             } else if (term.startsWith("quarter:")) {
                 where.eq("quarter", Integer.parseInt(term.substring(8)));
-            } else if (term.startsWith("any:")) {
+            } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();
                 String tsquery = term.substring(4);
                 tsquery = tsquery.replaceAll("[\\|\\&\\!'\\@\\#\\$\\%\\^\\*\\(\\)\\{\\[\\}\\]\\+\\=\\-\\_\\?\\;\\:\\'\"\\<\\>\\,\\.\\/]", "")
                         .replaceAll("[ \t\n\r]", "|");
 
-                SqlQuery searchQuery = Ebean.createSqlQuery("select id, ts_rank_cd(textsearch, query) rank from (select id, title, setweight(to_tsvector(coalesce((select string_agg(tag, ' ') from feature_tags where feature_id = id),'')), 'A') || setweight(to_tsvector(coalesce(title,'')), 'B') || setweight(to_tsvector(coalesce(description,'')), 'C') as textsearch from feature) t, to_tsquery(:tsquery) query where textsearch @@ query order by rank desc");
+                SqlQuery searchQuery = Ebean.createSqlQuery("select id, ts_rank_cd(textsearch, query) rank from (select id, setweight(to_tsvector(coalesce((select string_agg(tag, ' ') from feature_tags where feature_id = id),'')), 'A') || setweight(to_tsvector(coalesce(title,'')), 'B') || setweight(to_tsvector(coalesce(description,'')), 'C') as textsearch from feature) t, to_tsquery(:tsquery) query where textsearch @@ query order by rank desc");
                 searchQuery.setParameter("tsquery", tsquery);
                 if (limit != null) {
                     searchQuery.setMaxRows(limit);
                 }
                 List<SqlRow> list = searchQuery.findList();
                 for (SqlRow row : list) {
-                    Long featureId = row.getLong("id");
-                    Float rank = row.getFloat("rank");
-                    rankings.put(featureId, rank);
+                    rankings.put(row.getLong("id"), row.getFloat("rank"));
                 }
-            } else if (term.startsWith("similarProblem:")) {
-            } else if (term.startsWith("similarFeature:")) {
-
             } else {
                 // no prefix? assume a tag then
                 tagsSeen++;

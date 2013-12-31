@@ -8,14 +8,16 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $locati
             return "11111" + tag;
         } else if (tag.indexOf("description:") == 0) {
             return "22222" + tag;
-        } else if (tag.indexOf("createdBy:") == 0) {
+        } else if (tag.indexOf("text:") == 0) {
             return "33333" + tag;
-        } else if (tag.indexOf("team:") == 0) {
+        } else if (tag.indexOf("createdBy:") == 0) {
             return "44444" + tag;
-        } else if (tag.indexOf("quarter:") == 0) {
+        } else if (tag.indexOf("team:") == 0) {
             return "55555" + tag;
-        } else {
+        } else if (tag.indexOf("quarter:") == 0) {
             return "66666" + tag;
+        } else {
+            return "77777" + tag;
         }
     };
 
@@ -59,9 +61,10 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $locati
 
             var results = [];
 
-            // always offer title & description matching
+            // always offer title, description, and full text matching
             results.push({id: "title:" + term, text: "<strong>Title</strong>: " + term});
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
+            results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
 
             // always offer account name matching
             results.push({id: "company:" + term, text: "<strong>Company</strong>: " + term});

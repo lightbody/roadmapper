@@ -14,10 +14,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Security.Authenticated(Secured.class)
 public class ProblemController extends Controller {
@@ -88,11 +85,17 @@ public class ProblemController extends Controller {
             return ok();
         }
 
+        Integer limit = null;
+        if (request().queryString().get("limit") != null) {
+            limit = Integer.parseInt(request().queryString().get("limit")[0]);
+        }
+
         ExpressionList<Problem> where = Problem.find.where();
         String[] terms = query.split(",");
 
         int tagsSeen = 0;
         Multimap<Long, Boolean> tagMatchCount = LinkedListMultimap.create();
+        Map<Long, Float> rankings = null;
 
         for (String term : terms) {
             if (term.startsWith("state:")) {
@@ -119,6 +122,21 @@ public class ProblemController extends Controller {
                     where.eq("feature.id", featureId);
                 } catch (NumberFormatException e) {
                     // ignore
+                }
+            } else if (term.startsWith("text:")) {
+                rankings = new HashMap<>();
+                String tsquery = term.substring(4);
+                tsquery = tsquery.replaceAll("[\\|\\&\\!'\\@\\#\\$\\%\\^\\*\\(\\)\\{\\[\\}\\]\\+\\=\\-\\_\\?\\;\\:\\'\"\\<\\>\\,\\.\\/]", "")
+                        .replaceAll("[ \t\n\r]", "|");
+
+                SqlQuery searchQuery = Ebean.createSqlQuery("select id, ts_rank_cd(textsearch, query) rank from (select id, setweight(to_tsvector(coalesce((select string_agg(tag, ' ') from problem_tags where problem_id = id),'')), 'A') || setweight(to_tsvector(coalesce(description,'')), 'B') as textsearch from problem) t, to_tsquery(:tsquery) query where textsearch @@ query order by rank desc");
+                searchQuery.setParameter("tsquery", tsquery);
+                if (limit != null) {
+                    searchQuery.setMaxRows(limit);
+                }
+                List<SqlRow> list = searchQuery.findList();
+                for (SqlRow row : list) {
+                    rankings.put(row.getLong("id"), row.getFloat("rank"));
                 }
             } else {
                 // no prefix? assume a tag then
@@ -152,12 +170,32 @@ public class ProblemController extends Controller {
             }
         }
 
+        if (rankings != null) {
+            if (rankings.isEmpty()) {
+                return ok();
+            }
+
+            where.in("id", rankings.keySet());
+        }
+
         // fixes N+1 query problem
         where.join("reporter");
         where.join("lastModifiedBy");
         where.join("feature");
 
-        return ok(Json.toJson(where.findList()));
+        if (limit != null) {
+            where.setMaxRows(limit);
+        }
+
+        List<Problem> list = where.findList();
+
+        if (rankings != null) {
+            for (Problem problem : list) {
+                problem.rank = rankings.get(problem.id);
+            }
+        }
+
+        return ok(Json.toJson(list));
     }
 
     @play.db.ebean.Transactional

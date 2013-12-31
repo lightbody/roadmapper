@@ -16,8 +16,10 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
             return "44444" + tag;
         } else if (tag.indexOf("description:") == 0) {
             return "55555" + tag;
-        } else {
+        } else if (tag.indexOf("text:") == 0) {
             return "66666" + tag;
+        } else {
+            return "77777" + tag;
         }
     };
 
@@ -62,8 +64,9 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
 
             var results = [];
 
-            // always offer description matching
+            // always offer description & text matching
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
+            results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
 
             // always offer account name matching
             results.push({id: "company:" + term, text: "<strong>Company</strong>: " + term});

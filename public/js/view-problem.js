@@ -102,7 +102,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             return results;
         },
         query: function (query) {
-            $http.get("/features?limit=20&query=state:OPEN,any:" + query.term)
+            $http.get("/features?limit=20&query=state:OPEN,text:" + query.term)
                 .success(function (features) {
                     var results = [];
                     if (features) {

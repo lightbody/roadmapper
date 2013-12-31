@@ -51,6 +51,9 @@ public class Problem extends Model {
 
     public Set<String> tags;
 
+    @Transient
+    public Float rank;
+
     public static Model.Finder<Long, Problem> find = new Model.Finder<>(Long.class, Problem.class);
 
     public static void create(Problem problem) {
