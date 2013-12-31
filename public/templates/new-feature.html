@@ -14,26 +14,26 @@
 
     <div class="controls controls-row">
         <select class="span2" ng-model="selectedFeature.engineeringCost" ng-options="e for e in enumSizes">
-            <option value="">eng. cost not set</option>
+            <option value="">Engineering cost</option>
         </select>
         <select class="span2" ng-model="selectedFeature.revenueBenefit" ng-options="e for e in enumSizes">
-            <option value="">rev. benefit not set</option>
+            <option value="">Revenue benefits</option>
         </select>
         <select class="span2" ng-model="selectedFeature.retentionBenefit" ng-options="e for e in enumSizes">
-            <option value="">ret. benefit not set</option>
+            <option value="">Retention benefits</option>
         </select>
         <select class="span2" ng-model="selectedFeature.positioningBenefit" ng-options="e for e in enumSizes">
-            <option value="">pos. benefit not set</option>
+            <option value="">Positioning benefits</option>
         </select>
     </div>
 
     <div class="controls controls-row">
         <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="newFeature.team" placeholder="Not mapped to a team"/>
         <select class="span2" ng-model="newFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
-            <option value="">unscheduled</option>
+            <option value="">Unscheduled</option>
         </select>
-        <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates">
-            <option value="">status not set</option>
+        <select class="span3" ng-model="newFeature.state" ng-options="e for e in enumFeatureStates" required>
+            <option value="">Status</option>
         </select>
     </div>
 

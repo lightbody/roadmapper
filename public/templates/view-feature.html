@@ -1,4 +1,18 @@
 <div class="row">
+    <div class="span4">
+        <a href="/#/features">&#8617; Back to {{featureService.features.length}} features</a>
+    </div>
+
+    <div class="span4 quickNavLinks">
+        <a ng-show="featureService.prevFeature" ng-click="featureService.selectFeature(featureService.prevFeature)">&#8592; {{featureService.prevFeature.title}}</a>
+    </div>
+
+    <div class="span4 quickNavLinks">
+        <a ng-show="featureService.nextFeature" ng-click="featureService.selectFeature(featureService.nextFeature)">&#8594; {{featureService.nextFeature.title}}</a>
+    </div>
+</div>
+
+<div class="row">
     <div class="span8">
 
         <h3>Feature {{selectedFeature.id}}</h3>
@@ -17,25 +31,27 @@
 
             <div class="controls controls-row">
                 <select class="span2" ng-model="selectedFeature.engineeringCost" ng-options="e for e in enumSizes">
-                    <option value="">Eng. cost not set</option>
+                    <option value="">Engineering cost</option>
                 </select>
                 <select class="span2" ng-model="selectedFeature.revenueBenefit" ng-options="e for e in enumSizes">
-                    <option value="">Rev. benefit not set</option>
+                    <option value="">Revenue benefits</option>
                 </select>
                 <select class="span2" ng-model="selectedFeature.retentionBenefit" ng-options="e for e in enumSizes">
-                    <option value="">Ret. benefit not set</option>
+                    <option value="">Retention benefits</option>
                 </select>
                 <select class="span2" ng-model="selectedFeature.positioningBenefit" ng-options="e for e in enumSizes">
-                    <option value="">Pos. benefit not set</option>
+                    <option value="">Positioning benefits</option>
                 </select>
             </div>
         
             <div class="controls controls-row">
                 <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
                 <select class="span2" ng-model="selectedFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
-                    <option value="">unscheduled</option>
+                    <option value="">Unscheduled</option>
                 </select>
-                <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates"></select>
+                <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates" required>
+                    <option value="">Status</option>
+                </select>
             </div>
         
             <div class="controls controls-row">
@@ -64,29 +80,6 @@
     </div>
 
     <div class="span4">
-        <div class="row" ng-show="featureService.prevFeature || featureService.nextFeature">
-            <div class="span4">
-                <strong>Browsing <a href="/#/features">{{featureService.features.length}} features</a></strong>
-            </div>
-        </div>
-
-        <div class="row" ng-show="featureService.prevFeature">
-            <div class="span1">
-                Previous:
-            </div>
-            <div class="span3 quickNavLinks">
-                <a ng-click="featureService.selectFeature(featureService.prevFeature)">{{featureService.prevFeature.title}}</a>
-            </div>
-        </div>
-        <div class="row" ng-show="featureService.nextFeature">
-            <div class="span1">
-                Next:
-            </div>
-            <div class="span3 quickNavLinks">
-                <a ng-click="featureService.selectFeature(featureService.nextFeature)">{{featureService.nextFeature.title}}</a>
-            </div>
-        </div>
-
         <div ng-show="relatedFeatures.length > 0">
             <h3>Related Features</h3>
             <ul>
