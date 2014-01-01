@@ -8,8 +8,8 @@ These instructions assume you have cloned the repo into a local directory named 
 
 ## 1. Install Play
 
-[Play 2.0.4](http://www.playframework.com/download) is used by Roadmapper.
-See the [installation instructions](http://www.playframework.com/documentation/2.0.4/Installing).
+[Play 2.2.1](http://www.playframework.com/download) is used by Roadmapper.
+See the [installation instructions](http://www.playframework.com/documentation/2.2.1/Installing).
 
 ## 2. Setup database
 
