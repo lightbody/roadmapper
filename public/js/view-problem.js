@@ -89,17 +89,13 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
     $scope.featureSelect2Options = {
         allowClear: true,
         sortResults: function(results, container, query) {
-            if (query.term) {
-                return results.sort(function(a, b) {
-                    if (a.rank == b.rank) {
-                        return 0;
-                    } else {
-                        return a.rank > b.rank ? -1 : 1;
-                    }
-                });
-            }
-
-            return results;
+            return results.sort(function(a, b) {
+                if (a.rank == b.rank) {
+                    return 0;
+                } else {
+                    return a.rank > b.rank ? -1 : 1;
+                }
+            });
         },
         query: function (query) {
             var term = query.term;
