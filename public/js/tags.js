@@ -70,7 +70,7 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
             for (var i = 0; i < tags.length; i++) {
                 var tag = tags[i];
                 tag.unresolvedProblems = tag.openProblems + tag.assignedProblems + tag.reviewedProblems;
-                tag.unresolvedFeatures = tag.openFeatures + tag.researchingFeatures + tag.plannedFeatures + tag.committedFeatures + tag.startedFeatures + tag.stalledFeatures;
+                tag.unresolvedFeatures = tag.openFeatures;
             }
             $scope.tags = tags;
         });

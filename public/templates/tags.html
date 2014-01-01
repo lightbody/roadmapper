@@ -2,8 +2,8 @@
     <thead>
     <tr>
         <th></th>
-        <th colspan="4">Problems</th>
-        <th colspan="6">Features</th>
+        <th colspan="5">Problems</th>
+        <th>Features</th>
         <th></th>
     </tr>
     <tr>
@@ -14,12 +14,6 @@
         <th><a href="" ng-click="predicate = 'unresolvedProblems'; reverse=!reverse">Total</a></th>
         <th><a href="" ng-click="predicate = 'unresolvedArr'; reverse=!reverse">ARR</a></th>
         <th><a href="" ng-click="predicate = 'openFeatures'; reverse=!reverse">Open</a></th>
-        <th><a href="" ng-click="predicate = 'researchingFeatures'; reverse=!reverse">Researching</a></th>
-        <th><a href="" ng-click="predicate = 'plannedFeatures'; reverse=!reverse">Planned</a></th>
-        <th><a href="" ng-click="predicate = 'committedFeatures'; reverse=!reverse">Committed</a></th>
-        <th><a href="" ng-click="predicate = 'startedFeatures'; reverse=!reverse">Started</a></th>
-        <th><a href="" ng-click="predicate = 'stalledFeatures'; reverse=!reverse">Stalled</a></th>
-        <th><a href="" ng-click="predicate = 'unresolvedFeatures'; reverse=!reverse">Total</a></th>
         <th></th>
     </tr>
     </thead>
@@ -32,12 +26,6 @@
         <td>{{tag.unresolvedProblems}}</td>
         <td>{{tag.unresolvedArr | noFractionCurrency}}</td>
         <td><a href="" ng-click="selectFeaturesByTag(tag, 'OPEN')">{{tag.openFeatures}}</a></td>
-        <td><a href="" ng-click="selectFeaturesByTag(tag, 'RESEARCHING')">{{tag.researchingFeatures}}</a></td>
-        <td><a href="" ng-click="selectFeaturesByTag(tag, 'PLANNED')">{{tag.plannedFeatures}}</a></td>
-        <td><a href="" ng-click="selectFeaturesByTag(tag, 'COMMITTED')">{{tag.committedFeatures}}</a></td>
-        <td><a href="" ng-click="selectFeaturesByTag(tag, 'STARTED')">{{tag.startedFeatures}}</a></td>
-        <td><a href="" ng-click="selectFeaturesByTag(tag, 'STALLED')">{{tag.stalledFeatures}}</a></td>
-        <td>{{tag.unresolvedFeatures}}</td>
         <td><a href="" ng-click="showEditTagModal(tag)"><i class="icon-edit"></i></a> <a href="" ng-click="showDeleteTagModal(tag)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>

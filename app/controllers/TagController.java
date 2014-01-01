@@ -72,21 +72,6 @@ public class TagController extends Controller {
                 case OPEN:
                     summary.openFeatures = count;
                     break;
-                case COMMITTED:
-                    summary.committedFeatures = count;
-                    break;
-                case PLANNED:
-                    summary.plannedFeatures = count;
-                    break;
-                case RESEARCHING:
-                    summary.researchingFeatures = count;
-                    break;
-                case STALLED:
-                    summary.stalledFeatures = count;
-                    break;
-                case STARTED:
-                    summary.startedFeatures = count;
-                    break;
             }
         }
 

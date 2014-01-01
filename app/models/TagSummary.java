@@ -19,15 +19,5 @@ public class TagSummary {
 
     public int openFeatures;
 
-    public int researchingFeatures;
-
-    public int plannedFeatures;
-
-    public int committedFeatures;
-
-    public int startedFeatures;
-
-    public int stalledFeatures;
-
     public double unresolvedArr;
 }
