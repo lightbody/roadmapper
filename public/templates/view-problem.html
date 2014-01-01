@@ -1,23 +1,43 @@
 <div class="row">
-    <div class="span7">
+    <div class="span4">
+        <a href="/#/features">&#8617; Back to {{problemService.problems.length}} problems</a>
+    </div>
 
-        <h3>Problem #{{selectedProblem.id}}</h3>
+    <div class="span4 quickNavLinks">
+        <a ng-show="problemService.prevProblem" ng-click="problemService.selectProblem(problemService.prevProblem)">&#8592; {{problemService.prevProblem.description | truncate:200 | minlinks}}</a>
+    </div>
+
+    <div class="span4 quickNavLinks">
+        <a ng-show="problemService.nextProblem" ng-click="problemService.selectProblem(problemService.nextProblem)">&#8594; {{problemService.nextProblem.description | truncate:200 | minlinks}}</a>
+    </div>
+</div>
+
+<hr/>
+
+<div class="row">
+    <div class="span12">
+        <h3>Problem {{selectedProblem.id}}</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span8">
 
         <form name="editProblemForm" novalidate cmd-enter="cmdEnter()">
 
             <div ng-include="'validation.html'"></div>
 
             <div class="controls">
-                <textarea class="span7" rows="10" ng-model="selectedProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
+                <textarea class="span8" rows="10" ng-model="selectedProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span3" ng-model="selectedProblem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="selectedProblem.customerName" placeholder="Customer Name" required>
                 <input type="text" class="span4" ng-model="selectedProblem.customerCompany" placeholder="Customer Company" required>
             </div>
 
             <div class="controls controls-row">
-                <input type="email" class="span3" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
+                <input type="email" class="span4" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
                 <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
 
                 <div class="span2">
@@ -30,16 +50,16 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span4" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+                <input type="text" class="span5" ng-model="selectedProblem.url" placeholder="URL (Optional)">
                 <select class="span3" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
             </div>
 
             <div class="controls controls-row" style="padding-bottom: 10px">
-                <input type="text" class="span7" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="selectedProblem.tags"/>
+                <input type="text" class="span8" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="selectedProblem.tags"/>
             </div>
 
             <div class="controls controls-row">
-                <input type="hidden" class="span7" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
+                <input type="hidden" class="span8" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
             </div>
         </form>
 
@@ -53,41 +73,33 @@
                     Saved...
                 </span>
             </div>
-            <div class="span3" style="text-align: right">
+            <div class="span4" style="text-align: right">
                 <div ng-show="problemService.nextProblem">
                     <button class="btn btn-secondary" ng-click="saveProblemAndContinue(selectedProblem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save &raquo;</button>
                 </div>
             </div>
         </div>
 
-
-
-
     </div>
 
-    <div class="span5">
-        <div class="row" ng-show="problemService.prevProblem || problemService.nextProblem">
-            <div class="span5">
-                <strong>Browsing <a href="/#/problems">{{problemService.problems.length}} problems</a></strong>
-            </div>
-        </div>
+    <div class="span4">
 
-        <div class="row" ng-show="problemService.prevProblem">
-            <div class="span1">
-                Previous:
-            </div>
-            <div class="span4 quickNavLinks">
-                <a ng-click="problemService.selectProblem(problemService.prevProblem)">{{problemService.prevProblem.description | truncate:200 | minlinks}}</a>
-            </div>
-        </div>
-        <div class="row" ng-show="problemService.nextProblem">
-            <div class="span1">
-                Next:
-            </div>
-            <div class="span4 quickNavLinks">
-                <a ng-click="problemService.selectProblem(problemService.nextProblem)">{{problemService.nextProblem.description | truncate:200 | minlinks}}</a>
-            </div>
-        </div>
+        <table>
+            <tbody>
+            <tr>
+                <td class="metadata-label">Submitted On</td>
+                <td>{{selectedProblem.date | date}}</td>
+            </tr>
+            <tr>
+                <td class="metadata-label">Reported By</td>
+                <td><a href="mailto:{{selectedProblem.reporter.email}}">{{selectedProblem.reporter.name}}</a></td>
+            </tr>
+            <tr>
+                <td class="metadata-label">Last Modified By</td>
+                <td><a href="mailto:{{selectedProblem.lastModifiedBy.email}}">{{selectedProblem.lastModifiedBy.name}}</a><br/>{{selectedProblem.lastModified | date}}</td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 

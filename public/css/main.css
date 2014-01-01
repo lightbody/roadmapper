@@ -9,20 +9,25 @@ body {
     margin-left: 10px;
 }
 
-#feature-list, #problem-list {
+#feature-list, #problem-list, .related-list {
     table-layout: fixed;
 }
 
-#feature-list td, #problem-list td {
+#feature-list td, #problem-list td, .related-list td {
     white-space: nowrap;
     overflow:hidden;
 }
 
-#feature-list td.title, #problem-list td.flex {
+#feature-list td.title, #problem-list td.flex, .related-list td.title {
     text-overflow:ellipsis;
     overflow:hidden;
     white-space:nowrap;
     width: 100%;
+}
+
+.metadata-label {
+    padding-right: 10px;
+    vertical-align: top;
 }
 
 form .select2-container {

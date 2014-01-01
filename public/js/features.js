@@ -1,4 +1,6 @@
-function FeaturesCtrl($scope, $http, featureService, $q, problemService, $location, $rootScope) {
+function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootScope) {
+    $scope.featureService = featureService;
+    $scope.problemService = problemService;
     featureService.wireUpController($scope);
 
     var sortHack = function(tag) {
@@ -121,11 +123,5 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $locati
         formatResult: function(object, container) {
             return object.text;
         }
-    };
-
-    $scope.selectProblems = function(feature) {
-        problemService.query = [{id: "featureId:" + feature.id, text: "<strong>Feature</strong>: " + feature.title}];
-        problemService.search();
-        $location.path("/problems");
     };
 }

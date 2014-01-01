@@ -47,7 +47,7 @@
         <td>{{feature.retentionBenefit| size}}</td>
         <td>{{feature.positioningBenefit| size}}</td>
         <td class="text-right"><span ng-show="feature.score > 0">{{feature.score}}</span></td>
-        <td class="text-right"><a ng-click="selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
+        <td class="text-right"><a ng-click="problemService.selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
         <td class="text-right"><span ng-show="feature.problemRevenue  > 0">{{feature.problemRevenue | noFractionCurrency}}</span></td>
         <td ng-show="featureService.shouldShow('quarter')"><span tooltip="{{feature.quarter | longQuarter}}">{{feature.quarter | shortQuarter}}</span></td>
         <td ng-show="featureService.shouldShow('team')">{{feature.team.name}}</td>

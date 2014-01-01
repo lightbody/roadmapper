@@ -12,11 +12,16 @@
     </div>
 </div>
 
+<hr/>
+
+<div class="row">
+    <div class="span12">
+        <h3>Feature {{selectedFeature.id}}</h3>
+    </div>
+</div>
+
 <div class="row">
     <div class="span8">
-
-        <h3>Feature {{selectedFeature.id}}</h3>
-
         <form name="editFeatureForm" novalidate cmd-enter="cmdEnter()">
         
             <div ng-include="'validation.html'"></div>
@@ -80,17 +85,74 @@
     </div>
 
     <div class="span4">
-        <div ng-show="relatedFeatures.length > 0">
-            <h3>Related Features</h3>
-            <ul>
-                <li ng-repeat="feature in relatedFeatures">
-                    <a ng-click="featureService.selectFeature(featureService.nextFeature)">{{feature.title}}</a>
-                </li>
-            </ul>
-        </div>
+
+        <table>
+            <tbody>
+            <tr>
+                <td class="metadata-label">Creator</td>
+                <td><a href="mailto:{{selectedFeature.creator.email}}">{{selectedFeature.creator.name}}</a></td>
+            </tr>
+            <tr>
+                <td class="metadata-label">Last Modified By</td>
+                <td><a href="mailto:{{selectedFeature.lastModifiedBy.email}}">{{selectedFeature.lastModifiedBy.name}}</a><br/>{{selectedFeature.lastModified | date}}</td>
+            </tr>
+            <tr>
+                <td class="metadata-label">Problems</td>
+                <td><a ng-click="problemService.selectProblems(selectedFeature)">{{selectedFeature.problemCount}}</a></td>
+            </tr>
+            <tr>
+                <td class="metadata-label">Revenue</td>
+                <td><a ng-click="problemService.selectProblems(selectedFeature)">{{selectedFeature.problemRevenue | noFractionCurrency}}</a></td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 
+</div>
+
+<hr/>
+
+<div class="row">
+    <div class="span12">
+        <h3>Related Features</h3>
+
+        <span ng-show="related.features.length == 0">
+            No related features found. Try tagging your features and problems more!
+        </span>
+
+        <table class="table table-striped table-hover related-list" ng-show="related.features.length > 0">
+            <thead>
+            <tr>
+                <th style="width: 2em"><a href="" ng-click="sortRelated('id')">ID</a></th>
+                <th style="width: 2em"><a href="" ng-click="sortRelated('rank')">Rank</a></th>
+                <th><a href="" ng-click="sortRelated('title')">Title</a></th>
+                <th style="width: 2em" class="text-right"><a href="" ng-click="sortRelated('score')">Score</a></th>
+                <th style="width: 3em" class="text-right"><a href="" ng-click="sortRelated('problemCount')">Probs</a></th>
+                <th style="width: 6em" class="text-right"><a href="" ng-click="sortRelated('problemRevenue')">ARR</a></th>
+                <th style="width: 2em"><a href="" ng-click="sortRelated('quarter')">Qtr</a></th>
+                <th style="width: 6em"><a href="" ng-click="sortRelated('team.name')">Team</a></th>
+                <th style="width: 4em"><a href="" ng-click="sortRelated('lastModified')">Mod</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="feature in related.features | orderBy:related.predicate:related.reverse">
+                <td>{{feature.id}}</td>
+                <td>{{feature.rank | number:2}}</td>
+                <td class="title">
+                    <a ng-click="featureService.selectFeature(feature)">{{feature.title}}</a>
+                </td>
+                <td class="text-right"><span ng-show="feature.score > 0">{{feature.score}}</span></td>
+                <td class="text-right"><a ng-click="problemService.selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
+                <td class="text-right"><span ng-show="feature.problemRevenue  > 0">{{feature.problemRevenue | noFractionCurrency}}</span></td>
+                <td><span tooltip="{{feature.quarter | longQuarter}}">{{feature.quarter | shortQuarter}}</span></td>
+                <td>{{feature.team.name}}</td>
+                <td><span tooltip="{{feature.lastModifiedBy.name}} on {{feature.lastModified | date}}" tooltip-placement="left">{{feature.lastModified | date:'MMM d'}}</span></td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
 </div>
 
         

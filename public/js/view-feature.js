@@ -1,5 +1,11 @@
-function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootScope, featureService) {
+function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, featureService, problemService) {
     $scope.featureService = featureService;
+    $scope.problemService = problemService;
+    $scope.related = {
+        predicate: "rank",
+        reverse: true,
+        features: []
+    };
 
     var findRelatedFeatures = function() {
         if (!$scope.selectedFeature.tags) {
@@ -7,12 +13,17 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $route, $rootSc
         }
 
         var tagSearch = $scope.selectedFeature.tags.map(function(tag) {return tag.id}).join(" ");
-        $http.get("/features?limit=10&query=state:OPEN,text:" + tagSearch)
-            .success(function (relatedFeatures) {
-                $scope.relatedFeatures = relatedFeatures;
+        $http.get("/features?limit=20&query=state:OPEN,text:" + tagSearch)
+            .success(function (features) {
+                $scope.related.features = features;
             }).error(LogHandler($scope));
     };
     $scope.$watch("selectedFeature.tags", findRelatedFeatures);
+
+    $scope.sortRelated = function(predicate) {
+        $scope.related.predicate = predicate;
+        $scope.related.reverse = !$scope.related.reverse;
+    };
 
     $scope.editFeature = function(feature) {
         $scope.selectedFeature = feature;

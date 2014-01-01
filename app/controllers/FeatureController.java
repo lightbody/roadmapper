@@ -41,7 +41,7 @@ public class FeatureController extends Controller {
             feature.tags.add(row.getString("tag"));
         }
 
-        return ok(Json.toJson(feature));
+        return ok(Json.toJson(dressFeature(feature)));
     }
 
     @play.db.ebean.Transactional

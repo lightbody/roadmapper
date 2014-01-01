@@ -102,7 +102,14 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             return results;
         },
         query: function (query) {
-            $http.get("/features?limit=20&query=state:OPEN,text:" + query.term)
+            var term = query.term;
+
+            // no term initially? that's cool -- we'll borrow the tags (if any) as a convenience
+            if (term == "") {
+                term = $scope.selectedProblem.tags.map(function(tag) { return tag.id; }).join(" ");
+            }
+
+            $http.get("/features?limit=20&query=state:OPEN,text:" + term)
                 .success(function (features) {
                     var results = [];
                     if (features) {

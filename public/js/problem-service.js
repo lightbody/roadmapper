@@ -129,6 +129,12 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
         $location.path("/problems/" + problem.id);
     };
 
+    problemService.selectProblems = function(feature) {
+        problemService.query = [{id: "featureId:" + feature.id, text: "<strong>Feature</strong>: " + feature.title}];
+        problemService.search();
+        $location.path("/problems");
+    };
+
     problemService.wireUpController = function(scope) {
         scope.problemService = problemService;
         scope.$watch("problemService.query", function(newValue, oldValue) {
