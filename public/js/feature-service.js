@@ -101,7 +101,6 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     featureService.numPages = function () {
-        console.log("!!!!!!!!!!!!!!");
         return Math.ceil(featureService.features.length / featureService.numPerPage);
     };
 
@@ -111,6 +110,16 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     featureService.shouldShow = function(col) {
+        if (window.innerWidth <= 767) {
+            if (col == 'engineeringCost' || col == 'revenueBenefit' || col == 'retentionBenefit' || col == 'positioningBenefit' || col == 'lastModified') {
+                return false;
+            }
+        } else if (window.innerWidth <= 979) {
+            if (col == 'engineeringCost' || col == 'revenueBenefit' || col == 'retentionBenefit' || col == 'positioningBenefit') {
+                return false;
+            }
+        }
+
         if (col == 'state' || col == 'team' || col == 'quarter') {
             for (var i = 0; i < featureService.query.length; i++) {
                 if (featureService.query[i].id.indexOf(col + ":") == 0) {

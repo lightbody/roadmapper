@@ -3,6 +3,14 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     $scope.problemService = problemService;
     featureService.wireUpController($scope);
 
+    $(window).on("resize.FeaturesCtrl", debouncer(function() {
+        $scope.$digest();
+    }, 1000));
+
+    $scope.$on('$destroy', function() {
+        $(window).off("resize.FeaturesCtrl");
+    });
+
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;

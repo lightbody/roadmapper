@@ -5,8 +5,89 @@ body {
     /*background-color: #f5f5f5;*/
 }
 
+@media (max-width: 979px) {
+    body {
+        padding-top: 0;
+    }
+}
+
 .navbar-inner .container {
     margin-left: 10px;
+}
+
+.list-header-search, .list-header-search .search-query {
+    width: 290px !important;
+}
+
+.list-header-create div {
+    margin-top: 8px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    width: 100%;
+}
+
+.list-header-pagination {
+    width: 470px !important;
+    text-align: right;
+}
+
+.list-header-pagination .pagination {
+    margin: 0;
+}
+
+@media (min-width: 1200px) {
+    .list-header-search, .list-header-search .search-query {
+        width: 470px !important;
+    }
+
+    .list-header-create {
+
+    }
+
+    .list-header-pagination {
+
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .list-header-search, .list-header-search .search-query {
+        width: 470px !important;
+    }
+
+    .list-header-create {
+        width: 140px;
+    }
+
+    .list-header-pagination {
+        text-align: left;
+    }
+
+    .list-header-pagination .pagination {
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 767px) {
+    .list-header-search, .list-header-search .search-query {
+        width: 100% !important;
+    }
+
+    .list-header-search form {
+        margin-bottom: 5px;
+    }
+
+    .list-header-create {
+
+    }
+
+    .list-header-pagination {
+        text-align: left;
+    }
+
+    .list-header-pagination .pagination {
+        margin-top: 5px;
+    }
 }
 
 #feature-list, #problem-list, .related-list {

@@ -1,6 +1,14 @@
 function ProblemsCtrl($scope, $http, $q, $location,problemService) {
     problemService.wireUpController($scope);
 
+    $(window).on("resize.ProblemsCtrl", debouncer(function() {
+        $scope.$digest();
+    }, 1000));
+
+    $scope.$on('$destroy', function() {
+        $(window).off("resize.ProblemsCtrl");
+    });
+
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;

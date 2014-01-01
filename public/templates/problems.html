@@ -1,22 +1,27 @@
-<div class="span5" style="margin-left: 0">
-    <form id="problem-search" class="form-search" ng-submit="problemService.search()">
-        <input type="text" class="span5 search-query" ng-model="junk" roadmapper-ui-select2="querySelect2Options" roadmapper-ui-select2-model="problemService.query">
-    </form>
-</div>
+<div class="row list-header">
+    <div class="span5 list-header-search">
+        <form id="problem-search" class="form-search" ng-submit="problemService.search()">
+            <input type="text" class="span5 search-query" ng-model="junk" roadmapper-ui-select2="querySelect2Options" roadmapper-ui-select2-model="problemService.query">
+        </form>
+    </div>
 
-<div class="span3" style="margin: 6px auto auto 6px">
-    <img src="/img/spinner.gif" width="16" height="16" ng-show="!problemService.queryReturned"/>
-    <a href="#/problems/new">Create new problem</a>
-</div>
+    <div class="span2 list-header-create">
+        <div>
+            <img src="/img/spinner.gif" width="16" height="16" ng-show="!problemService.queryReturned"/>
+            <a href="#/problems/new">Create new problem</a>
+        </div>
+    </div>
 
-<div class="text-right">
-    <div ng-show="problemService.problems.length > problemService.numPerPage" class="no-selection">
-        <pagination num-pages="problemService.numPages()"
-                    current-page="problemService.currentPage" max-size="problemService.maxSize"
-                    boundary-links="true"></pagination>
+    <div class="span5 list-header-pagination">
+        <div ng-show="problemService.problems.length > problemService.numPerPage" class="no-selection">
+            <pagination class="pagination-sm"
+                        num-pages="problemService.numPages()"
+                        current-page="problemService.currentPage"
+                        max-size="problemService.maxSize"
+                        boundary-links="true"></pagination>
+        </div>
     </div>
 </div>
-
 
 <table id="problem-list" class="table table-striped table-hover" ng-show="problemService.queryReturned">
     <thead>
@@ -25,9 +30,9 @@
         <th><a href="" ng-click="problemService.sort('description')">Description</a></th>
         <th style="width: 7em"><a href="" ng-click="problemService.sort('customerCompany')">Company</a></th>
         <th style="width: 6em; text-align: right"><a href="" ng-click="problemService.sort('annualRevenue')">ARR</a></th>
-        <th style="width: 7em"><a href="" ng-click="problemService.sort('customerName')">Customer</a></th>
-        <th style="width: 7em"><a href="" ng-click="problemService.sort('feature.name')">Feature</a></th>
-        <th style="width: 3em"><a href="" ng-click="problemService.sort('lastModified')">Mod</a></th>
+        <th style="width: 7em" ng-show="problemService.shouldShow('customerName')"><a href="" ng-click="problemService.sort('customerName')">Customer</a></th>
+        <th style="width: 7em" ng-show="problemService.shouldShow('feature.name')"><a href="" ng-click="problemService.sort('feature.name')">Feature</a></th>
+        <th style="width: 3em" ng-show="problemService.shouldShow('lastModified')"><a href="" ng-click="problemService.sort('lastModified')">Mod</a></th>
     </tr>
     </thead>
     <tbody>
@@ -39,9 +44,9 @@
             <a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" ng-show="problem.accountId" target="_blank">{{problem.customerCompany | truncate:15}}</a>
         </td>
         <td style="text-align: right"><span ng-show="problem.annualRevenue > 0">{{problem.annualRevenue | noFractionCurrency}}</span></td>
-        <td class="flex"><a href="mailto:{{problem.customerEmail}}">{{problem.customerName | truncate:15}}</a></td>
-        <td class="flex"><a ng-click="selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
-        <td><span tooltip="{{problem.lastModifiedBy.name}} on {{problem.lastModified | date}}" tooltip-placement="left">{{problem.lastModified | date:'MMM d'}}</span></td>
+        <td class="flex" ng-show="problemService.shouldShow('customerName')"><a href="mailto:{{problem.customerEmail}}">{{problem.customerName | truncate:15}}</a></td>
+        <td class="flex" ng-show="problemService.shouldShow('feature.name')"><a ng-click="selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
+        <td ng-show="problemService.shouldShow('lastModified')"><span tooltip="{{problem.lastModifiedBy.name}} on {{problem.lastModified | date}}" tooltip-placement="left">{{problem.lastModified | date:'MMM d'}}</span></td>
     </tr>
     </tbody>
 </table>

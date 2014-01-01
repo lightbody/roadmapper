@@ -109,6 +109,20 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
         problemService.reverse = !problemService.reverse;
     };
 
+    problemService.shouldShow = function(col) {
+        if (window.innerWidth <= 767) {
+            if (col == 'lastModified' || col == 'feature.name' || col == 'customerName') {
+                return false;
+            }
+        } else if (window.innerWidth <= 979) {
+            if (col == 'lastModified') {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     problemService.selectProblem = function(problem) {
         problemService.selectedProblem = problem;
 
