@@ -5,6 +5,17 @@ Array.prototype.remove = function (from, to) {
     return this.push.apply(this, rest);
 };
 
+function debouncer( func , timeout ) {
+    var timeoutID , timeout = timeout || 200;
+    return function () {
+        var scope = this , args = arguments;
+        clearTimeout( timeoutID );
+        timeoutID = setTimeout( function () {
+            func.apply( scope , Array.prototype.slice.call( args ) );
+        } , timeout );
+    }
+}
+
 var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2", "roadmapper.ui.select2"]);

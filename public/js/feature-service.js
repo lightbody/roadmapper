@@ -2,7 +2,7 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     var featureService = {
         features: [],
         featuresFeatures: [],
-        numPerPage: 10, //Math.floor((window.innerHeight - 218) / 37);
+        numPerPage: Math.floor((window.innerHeight - 218) / 37),
         maxSize: 5,
         selectedFeature: null,
         predicate: "date",
@@ -11,6 +11,11 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
             {id: "state:OPEN", text: "<strong>State</strong>: OPEN"}
         ]
     };
+
+    $(window).resize(debouncer(function() {
+        featureService.numPerPage = Math.floor((window.innerHeight - 218) / 37);
+        featureService.search();
+    }, 1000));
 
     var watchSorter = function() {
         sortFeatures();
@@ -93,6 +98,7 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     featureService.numPages = function () {
+        console.log("!!!!!!!!!!!!!!");
         return Math.ceil(featureService.features.length / featureService.numPerPage);
     };
 

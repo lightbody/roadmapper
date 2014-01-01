@@ -2,7 +2,7 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
     var problemService = {
         problems: [],
         filteredProblems: [],
-        numPerPage: 10,
+        numPerPage: Math.floor((window.innerHeight - 218) / 37),
         maxSize: 5,
         selectedProblem: null,
         predicate: "date",
@@ -11,6 +11,11 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
             {id: "state:OPEN", text: "<strong>State</strong>: OPEN"}
         ]
     };
+
+    $(window).resize(debouncer(function() {
+        featureService.numPerPage = Math.floor((window.innerHeight - 218) / 37);
+        featureService.search();
+    }, 1000));
 
     var watchSorter = function() {
         sortProblems();
