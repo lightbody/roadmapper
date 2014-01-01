@@ -13,8 +13,11 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     $(window).resize(debouncer(function() {
-        featureService.numPerPage = Math.floor((window.innerHeight - 218) / 37);
-        featureService.search();
+        var newNumPages = Math.floor((window.innerHeight - 218) / 37);
+        if (newNumPages != featureService.numPerPage) {
+            featureService.numPerPage = newNumPages;
+            featureService.search();
+        }
     }, 1000));
 
     var watchSorter = function() {
