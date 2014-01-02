@@ -1,8 +1,8 @@
-roadmapper.factory('featureService', function ($http, $location, $parse, $window) {
+roadmapper.factory('featureService', function ($http, $location, $parse, $window, userAgentService) {
     var featureService = {
         features: [],
         featuresFeatures: [],
-        numPerPage: Math.floor(($window.innerHeight - 218) / 37),
+        numPerPage: 10,
         maxSize: 5,
         selectedFeature: null,
         predicate: "date",
@@ -12,13 +12,30 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
         ]
     };
 
-    $(window).resize(debouncer(function() {
+    var calcNumPerPage = function () {
         var newNumPages = Math.floor(($window.innerHeight - 218) / 37);
+
+        // we don't recalculate based on screen size on iOS devices because
+        // it creates a weird experience as you zoom in and out
+        if (userAgentService.iOS) {
+            newNumPages = 10; // default to 10 in either orientation
+
+            // but for iPads we can do better
+            if (userAgentService.iPad) {
+                if (Math.abs(window.orientation) == 90) {
+                    newNumPages = 12;
+                } else {
+                    newNumPages = 18;
+                }
+            }
+        }
+
         if (newNumPages != featureService.numPerPage) {
             featureService.numPerPage = newNumPages;
             featureService.search();
         }
-    }, 1000));
+    };
+    $(window).resize(debouncer(calcNumPerPage, 1000));
 
     var watchSorter = function() {
         sortFeatures();
@@ -177,6 +194,7 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
     };
 
     // force a search the first time
+    calcNumPerPage();
     featureService.search();
 
     return featureService;
