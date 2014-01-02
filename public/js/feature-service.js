@@ -1,8 +1,8 @@
-roadmapper.factory('featureService', function ($http, $location, $parse) {
+roadmapper.factory('featureService', function ($http, $location, $parse, $window) {
     var featureService = {
         features: [],
         featuresFeatures: [],
-        numPerPage: Math.floor((window.innerHeight - 218) / 37),
+        numPerPage: Math.floor(($window.innerHeight - 218) / 37),
         maxSize: 5,
         selectedFeature: null,
         predicate: "date",
@@ -13,7 +13,7 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     $(window).resize(debouncer(function() {
-        var newNumPages = Math.floor((window.innerHeight - 218) / 37);
+        var newNumPages = Math.floor(($window.innerHeight - 218) / 37);
         if (newNumPages != featureService.numPerPage) {
             featureService.numPerPage = newNumPages;
             featureService.search();
@@ -110,11 +110,11 @@ roadmapper.factory('featureService', function ($http, $location, $parse) {
     };
 
     featureService.shouldShow = function(col) {
-        if (window.innerWidth <= 767) {
+        if ($window.innerWidth <= 767) {
             if (col == 'engineeringCost' || col == 'revenueBenefit' || col == 'retentionBenefit' || col == 'positioningBenefit' || col == 'lastModified') {
                 return false;
             }
-        } else if (window.innerWidth <= 979) {
+        } else if ($window.innerWidth <= 979) {
             if (col == 'engineeringCost' || col == 'revenueBenefit' || col == 'retentionBenefit' || col == 'positioningBenefit') {
                 return false;
             }

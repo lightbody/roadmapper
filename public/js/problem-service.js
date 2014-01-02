@@ -1,8 +1,8 @@
-roadmapper.factory('problemService', function ($http, $location, $parse) {
+roadmapper.factory('problemService', function ($http, $location, $parse, $window) {
     var problemService = {
         problems: [],
         filteredProblems: [],
-        numPerPage: Math.floor((window.innerHeight - 218) / 37),
+        numPerPage: Math.floor(($window.innerHeight - 218) / 37),
         maxSize: 5,
         selectedProblem: null,
         predicate: "date",
@@ -13,7 +13,7 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
     };
 
     $(window).resize(debouncer(function() {
-        var newNumPages = Math.floor((window.innerHeight - 218) / 37);
+        var newNumPages = Math.floor(($window.innerHeight - 218) / 37);
         if (newNumPages != problemService.numPerPage) {
             problemService.numPerPage = newNumPages;
             problemService.search();
@@ -110,11 +110,11 @@ roadmapper.factory('problemService', function ($http, $location, $parse) {
     };
 
     problemService.shouldShow = function(col) {
-        if (window.innerWidth <= 767) {
+        if ($window.innerWidth <= 767) {
             if (col == 'lastModified' || col == 'feature.name' || col == 'customerName') {
                 return false;
             }
-        } else if (window.innerWidth <= 979) {
+        } else if ($window.innerWidth <= 979) {
             if (col == 'lastModified') {
                 return false;
             }
