@@ -38,6 +38,27 @@ function NavBarCtrl($scope) {
     $scope.isCollapsed = true;
 }
 
+roadmapper.factory('userAgentService', function ($window) {
+    var service = {
+        iOS: false,
+        iPad: false,
+        iPhone: false,
+        iPod: false
+    };
+
+    var iDevice = ['iPad', 'iPhone', 'iPod'];
+
+    for (var i = 0; i < iDevice.length; i++) {
+        if ($window.navigator.platform === iDevice[i]) {
+            service.iOS = true;
+            service[iDevice[i]] = true;
+            break;
+        }
+    }
+
+    return service;
+});
+
 roadmapper.directive("cmdEnter", function () {
     return function (scope, element, attrs) {
         element.bind("keydown keypress", function (event) {

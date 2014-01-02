@@ -1,4 +1,4 @@
-function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, featureService, problemService) {
+function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, featureService, problemService, userAgentService) {
     $scope.featureService = featureService;
     $scope.problemService = problemService;
     $scope.related = {
@@ -43,6 +43,11 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
                 $scope.showViewFeature = true;
                 $scope.editFeatureForm.$setPristine(true);
                 $rootScope.loading = false;
+
+                // focus the first text field, but not on iOS devices because the keyboard popup is annoying
+                if (!userAgentService.iOS) {
+                    $("#editFeatureFirstInput").focus();
+                }
 
                 featureService.update(featureWithTags);
 

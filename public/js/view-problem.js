@@ -1,4 +1,4 @@
-function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService) {
+function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService, userAgentService) {
     $scope.problemService = problemService;
 
     $scope.editProblem = function(problem) {
@@ -26,6 +26,11 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                 $scope.showViewProblem = true;
                 $scope.editProblemForm.$setPristine(true);
                 $rootScope.loading = false;
+
+                // focus the first text field, but not on iOS devices because the keyboard popup is annoying
+                if (!userAgentService.iOS) {
+                    $("#editProblemFirstInput").focus();
+                }
 
                 problemService.update(problemWithTags);
             });
