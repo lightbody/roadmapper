@@ -9,7 +9,7 @@ import play.mvc.Security;
 
 import java.util.Map;
 
-import static com.avaje.ebean.Expr.like;
+import static com.avaje.ebean.Expr.ilike;
 
 @Security.Authenticated(Secured.class)
 public class UserController extends Controller {
@@ -24,7 +24,7 @@ public class UserController extends Controller {
 
         if (query.containsKey("text")) {
             String text = query.get("text")[0];
-            where.or(like("email", "%" + text + "%"), like("name", "%" + text + "%"));
+            where.or(ilike("email", "%" + text + "%"), ilike("name", "%" + text + "%"));
         }
 
         return ok(Json.toJson(where.findList()));

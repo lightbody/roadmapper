@@ -135,7 +135,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
     $scope.assigneeSelect2Options = {
         allowClear: true,
         query: function (query) {
-            var text = query.text;
+            var text = query.term;
             if (!text) {
                 text = "";
             }
