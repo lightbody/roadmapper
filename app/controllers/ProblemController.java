@@ -63,6 +63,11 @@ public class ProblemController extends Controller {
         } else {
             original.feature = Feature.find.byId(update.feature.id);
         }
+        if (update.assignee == null) {
+            original.assignee = null;
+        } else {
+            original.assignee = User.findByEmail(update.assignee.email);
+        }
 
         original.save();
 
@@ -109,6 +114,8 @@ public class ProblemController extends Controller {
                 where.ilike("customerEmail", "%" + term.substring(6) + "%");
             } else if (term.startsWith("user:")) {
                 where.ilike("customerName", "%" + term.substring(5) + "%");
+            } else if (term.startsWith("assignedTo:")) {
+                where.eq("assignee_email", term.substring(11));
             } else if (term.startsWith("accountId:")) {
                 try {
                     long accountId = Long.parseLong(term.substring(10));

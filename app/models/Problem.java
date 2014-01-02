@@ -26,6 +26,9 @@ public class Problem extends Model {
     @ManyToOne
     public User reporter;
 
+    @ManyToOne
+    public User assignee;
+
     public Timestamp lastModified;
 
     @ManyToOne

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.DashboardStats;
 import models.ProblemState;
 import models.User;
+import models.UserRole;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Application extends Controller {
+    @play.db.ebean.Transactional
     public static Result oauthCallback() {
         String code = request().queryString().get("code")[0];
 
@@ -45,16 +47,22 @@ public class Application extends Controller {
                 .setHeader("Authorization", "Bearer " + accessToken)
                 .get().get();
 
-        String email = response.asJson().get("email").asText();
+        json = response.asJson();
+        String email = json.get("email").asText();
+        String name = json.get("first_name").asText() + " " + json.get("last_name").asText();
 
         User user = User.findByEmail(email);
         if (user == null) {
             // create one
             user = new User();
             user.email = email;
-            user.name = "N/A";
+            user.name = name;
+            user.role = UserRole.USER;
             user.firstLogin = new Date();
             user.save();
+        } else {
+            user.name = name;
+            user.update();
         }
 
         session().put("oauth-access-token", accessToken);

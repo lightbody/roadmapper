@@ -15,6 +15,13 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                     problemWithTags.feature.text = problemWithTags.feature.title;
                 }
 
+                // similarly, if there is an assignee map it over
+                if (problemWithTags.assignee) {
+                    problemWithTags.assignee.id = problemWithTags.assignee.email;
+                    problemWithTags.assignee.text = problemWithTags.assignee.name;
+                }
+
+
                 $scope.selectedProblem = problemWithTags;
                 $scope.showViewProblem = true;
                 $scope.editProblemForm.$setPristine(true);
@@ -67,6 +74,13 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
             delete copy.feature.text;
         }
 
+        // convert assignee over
+        if (copy.assignee) {
+            copy.assignee.email = copy.assignee.id;
+            delete copy.assignee.id;
+            delete copy.assignee.text;
+        }
+
         $scope.saving = true;
 
         $http.put('/problems/' + problem.id, copy)
@@ -111,6 +125,24 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                     if (features) {
                         features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
                     }
+                    query.callback({
+                        results: results
+                    });
+                }).error(LogHandler($scope));
+        }
+    };
+
+    $scope.assigneeSelect2Options = {
+        allowClear: true,
+        query: function (query) {
+            var text = query.text;
+            if (!text) {
+                text = "";
+            }
+            $http.get("/users?role=PM&text=" + text)
+                .success(function (users) {
+                    var results = [];
+                    users.map(function(user) {results.push({id: user.email, text: user.name})});
                     query.callback({
                         results: results
                     });

@@ -4,9 +4,8 @@ import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -24,8 +23,14 @@ public class User extends Model {
     @Constraints.Required
     public String name;
 
+    @Enumerated(EnumType.STRING)
+    public UserRole role;
+
     @Constraints.Required
     public Date firstLogin;
+
+    @Version
+    public Timestamp lastModified;
 
     // -- Queries
 
