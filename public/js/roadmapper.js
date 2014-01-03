@@ -293,7 +293,7 @@ function makeFeatureSelect2Options(scope, http) {
             var term = query.term;
 
             // no term initially? that's cool -- we'll borrow the tags (if any) as a convenience
-            if (term == "") {
+            if (term == "" && scope.problem) {
                 term = scope.problem.tags.map(function(tag) { return tag.id; }).join(" ");
             }
 

@@ -108,6 +108,10 @@
     margin-top: 0;
 }
 
+.bulk-edit-panel {
+    padding-bottom: 20px;
+}
+
 .metadata-label {
     padding-right: 10px;
     vertical-align: top;

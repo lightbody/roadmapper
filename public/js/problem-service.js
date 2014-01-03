@@ -91,14 +91,21 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
         problemService.filteredProblems = problemService.problems.slice(begin, end);
     };
 
-    problemService.anyItemChecked = function() {
+    problemService.bulkChange = function() {
+        var changes = problemService.bulkChanges;
+        //console.log(changes);
+        alert("Just kidding -- need to build this :)")
+    };
+
+    problemService.countItemsChecked = function() {
+        var count = 0;
         for (var i = 0; i < problemService.problems.length; i++) {
             if (problemService.problems[i].checked) {
-                return true;
+                count++;
             }
         }
 
-        return false;
+        return count;
     };
 
     problemService.checkAll = function() {

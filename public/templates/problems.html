@@ -55,9 +55,31 @@
     </tbody>
 </table>
 
-<div class="row" ng-show="problemService.anyItemChecked()">
+<div class="row bulk-edit-panel" ng-show="checkRole('PM') && problemService.countItemsChecked() > 0">
     <div class="span8">
-        TODO: Bulk edit form goes here :)
+        <h3>Bulk Edit</h3>
+
+        <form name="problemBulkEdit" novalidate>
+            <div class="controls controls-row">
+                <input type="text" class="span5" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="problemService.bulkChanges.tags" placeholder="No new tags"/>
+                <select class="span3" ng-model="problemService.bulkChanges.state" ng-options="e for e in enumProblemStates">
+                    <option value="">State unchanged</option>
+                </select>
+            </div>
+            <div class="controls controls-row">
+                <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="problemService.bulkChanges.feature" placeholder="Feature unchanged"/>
+                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="problemService.bulkChanges.assignee" placeholder="PM unchanged"/>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="span4">
+                <button class="btn btn-primary" ng-click="problemService.bulkChange()" type="submit">Change {{problemService.countItemsChecked()}} items</button>
+                <span>
+                    out of {{problemService.problems.length}} total
+                </span>
+            </div>
+        </div>
     </div>
 </div>
 
