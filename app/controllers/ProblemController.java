@@ -4,15 +4,13 @@ import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import models.Feature;
-import models.Problem;
-import models.ProblemState;
-import models.User;
+import models.*;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import javax.persistence.PersistenceException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -46,7 +44,7 @@ public class ProblemController extends Controller {
             return notFound();
         }
 
-        JsonNode json = request().body().asJson();;
+        JsonNode json = request().body().asJson();
         Problem update = Json.fromJson(json, Problem.class);
         original.lastModified = new Timestamp(System.currentTimeMillis());
         original.lastModifiedBy = User.findByEmail(request().username());
@@ -78,6 +76,54 @@ public class ProblemController extends Controller {
         insertTags(update);
 
         return ok(Json.toJson(original));
+    }
+
+    public static Result bulkUpdate() {
+        JsonNode json = request().body().asJson();
+        ProblemBulkChange bulkChange = Json.fromJson(json, ProblemBulkChange.class);
+
+        if (bulkChange.ids == null || bulkChange.ids.size() == 0) {
+            return notFound();
+        }
+
+        if (bulkChange.assignee != null) {
+            Ebean.createSqlUpdate("update problem set assignee_email = :assignee where id in (:ids)")
+                    .setParameter("ids", bulkChange.ids)
+                    .setParameter("assignee", bulkChange.assignee.email)
+                    .execute();
+        }
+
+        if (bulkChange.state != null) {
+            Ebean.createSqlUpdate("update problem set state = :state where id in (:ids)")
+                    .setParameter("state", bulkChange.state)
+                    .setParameter("ids", bulkChange.ids)
+                    .execute();
+        }
+
+        if (bulkChange.feature != null) {
+            Ebean.createSqlUpdate("update problem set feature_id = :feature where id in (:ids)")
+                    .setParameter("feature", bulkChange.feature.id)
+                    .setParameter("ids", bulkChange.ids)
+                    .execute();
+        }
+
+        if (bulkChange.tags != null) {
+            SqlUpdate tagInsert = Ebean.createSqlUpdate("insert into problem_tags (problem_id, tag) values (:id, :tag)");
+            for (String tag : bulkChange.tags) {
+                for (Long id : bulkChange.ids) {
+                    try {
+                        tagInsert.setParameter("id", id).setParameter("tag", tag).execute();
+                    } catch (PersistenceException e) {
+                        // todo: this is lame, we should be smarter but I'm lazy
+                        if (!e.getCause().getMessage().contains("duplicate key")) {
+                            throw e;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ok();
     }
 
     public static Result find() {

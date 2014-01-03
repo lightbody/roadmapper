@@ -39,7 +39,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="problem in problemService.filteredProblems">
-        <td class="list-checkbox" ng-show="checkRole('PM')"><input type="checkbox" ng-model="problem.checked"/></td>
+        <td class="list-checkbox" ng-show="checkRole('PM')"><input type="checkbox" ng-model="problem.checked" ng-click="problemService.check(problem)"/></td>
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
         <td class="flex"><a href="#/problems/{{problem.id}}" ng-click="problemService.selectProblem(problem, $event)">{{problem.description | truncate:200 | minlinks}}</a></td>
         <td ng-show="problemService.shouldShow('state')">{{problem.state}}</td>
@@ -61,7 +61,7 @@
 
         <form name="problemBulkEdit" novalidate>
             <div class="controls controls-row">
-                <input type="text" class="span5" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="problemService.bulkChanges.tags" placeholder="No new tags"/>
+                <input type="text" class="span5" ng-model="problemService.junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="problemService.bulkChanges.tags" placeholder="No new tags"/>
                 <select class="span3" ng-model="problemService.bulkChanges.state" ng-options="e for e in enumProblemStates">
                     <option value="">State unchanged</option>
                 </select>

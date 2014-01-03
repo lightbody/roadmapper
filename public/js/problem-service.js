@@ -2,6 +2,7 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
     var problemService = {
         problems: [],
         filteredProblems: [],
+        bulkChanges: {},
         numPerPage: 10,
         maxSize: 5,
         selectedProblem: null,
@@ -92,9 +93,40 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
     };
 
     problemService.bulkChange = function() {
-        var changes = problemService.bulkChanges;
-        //console.log(changes);
-        alert("Just kidding -- need to build this :)")
+        if (!problemService.bulkChanges) {
+            return;
+        }
+
+        var changes = angular.copy(problemService.bulkChanges);
+
+        changes.ids = problemService.problems.filter(function (p) {
+            return p.checked;
+        }).map(function (p) {
+            return p.id;
+        });
+
+        // convert the tags to a flat string
+        if (changes.tags) {
+            changes.tags = changes.tags.map(function(tag) {
+                return tag.id;
+            });
+        }
+
+        // remove the "text" field from the feature that select2 adds so that it will be well-formed
+        if (changes.feature) {
+            delete changes.feature.text;
+        }
+
+        // convert assignee over
+        if (changes.assignee) {
+            changes.assignee.email = changes.assignee.id;
+            delete changes.assignee.id;
+            delete changes.assignee.text;
+        }
+
+        $http.put("/problems", changes).success(function() {
+            problemService.search();
+        });
     };
 
     problemService.countItemsChecked = function() {
@@ -111,7 +143,14 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
     problemService.checkAll = function() {
         problemService.checkedAll = !problemService.checkedAll;
         for (var i = 0; i < problemService.problems.length; i++) {
-            problemService.problems[i].checked = !problemService.problems[i].checked;
+            problemService.problems[i].checked = problemService.checkedAll;
+        }
+    };
+
+    problemService.check = function(problem) {
+        problem.checked = !problem.checked;
+        if (!problem.checked) {
+            problemService.checkedAll = false;
         }
     };
 
@@ -127,6 +166,9 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
     };
 
     problemService.search = function () {
+        problemService.checkedAll = false;
+        problemService.bulkChanges = {};
+        problemService.junk = [];
         problemService.queryReturned = false;
 
         $http.get('/problems', {
