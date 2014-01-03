@@ -78,8 +78,14 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
             results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
 
-            if (/^[Aa]ss.*/.test(term) || term == "me") {
+            // some smart options around assignment
+            if (term == "me") {
                 results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+            } else if (term.toLowerCase().indexOf("ass") == 0) {
+                results.push({id: "assignedTo:not-null", text: "<strong>Assigned to Anyone</strong>"});
+                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+            } else if (term.toLowerCase().indexOf("un") == 0) {
+                results.push({id: "assignedTo:null", text: "<strong>Unassigned</strong>"});
             } else if (term.length >= 3) {
                 $scope.asigneeChoices.map(function(entry) {
                     if (entry.id.toLowerCase().indexOf(term.toLowerCase()) != -1
