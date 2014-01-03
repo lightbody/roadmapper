@@ -137,24 +137,6 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
         }
     };
 
-    $scope.assigneeSelect2Options = {
-        allowClear: true,
-        query: function (query) {
-            var text = query.term;
-            if (!text) {
-                text = "";
-            }
-            $http.get("/users?role=PM&text=" + text)
-                .success(function (users) {
-                    var results = [];
-                    users.map(function(user) {results.push({id: user.email, text: user.name})});
-                    query.callback({
-                        results: results
-                    });
-                }).error(LogHandler($scope));
-        }
-    };
-
     if (/^\-?\d*$/.test($routeParams.problemId)) {
         $rootScope.loading = true;
         $scope.editProblem({id: $routeParams.problemId});

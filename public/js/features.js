@@ -14,6 +14,8 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     var sortHack = function(tag) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;
+        } else if (tag.indexOf("assignedTo:") == 0) {
+            return "000111" + tag;
         } else if (tag.indexOf("title:") == 0) {
             return "11111" + tag;
         } else if (tag.indexOf("description:") == 0) {
@@ -75,6 +77,12 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
             results.push({id: "title:" + term, text: "<strong>Title</strong>: " + term});
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
             results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
+
+            if (/^[Aa]ss.*/.test(term)) {
+                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+            } else if (term.indexOf("@") != -1) {
+                results.push({id: "assignedTo:" + term, text: "<strong>Assigned To</strong>: " + term});
+            }
 
             // always offer account name matching
             results.push({id: "company:" + term, text: "<strong>Company</strong>: " + term});

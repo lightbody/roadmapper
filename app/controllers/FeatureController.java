@@ -54,6 +54,7 @@ public class FeatureController extends Controller {
 
         JsonNode json = request().body().asJson();
         Feature update = Json.fromJson(json, Feature.class);
+        original.assignee = update.assignee;
         original.lastModified = new Timestamp(System.currentTimeMillis());
         original.lastModifiedBy = User.findByEmail(request().username());
         original.title = update.title;
@@ -116,6 +117,8 @@ public class FeatureController extends Controller {
                 where.ilike("team.name", "%" + term.substring(5) + "%");
             } else if (term.startsWith("quarter:")) {
                 where.eq("quarter", Integer.parseInt(term.substring(8)));
+            } else if (term.startsWith("assignedTo:")) {
+                where.eq("assignee_email", term.substring(11));
             } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();
                 String tsquery = term.substring(4);

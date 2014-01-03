@@ -24,6 +24,9 @@ public class Feature extends Model {
     @ManyToOne
     public User creator;
 
+    @ManyToOne
+    public User assignee;
+
     @Enumerated(EnumType.STRING)
     public FeatureState state;
 

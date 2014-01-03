@@ -230,6 +230,23 @@ roadmapper.run(function ($rootScope, $http, $q) {
         }
     };
 
+    $rootScope.assigneeSelect2Options = {
+        allowClear: true,
+        query: function (query) {
+            var text = query.term;
+            if (!text) {
+                text = "";
+            }
+            $http.get("/users?role=PM&text=" + text)
+                .success(function (users) {
+                    var results = [];
+                    users.map(function(user) {results.push({id: user.email, text: user.name})});
+                    query.callback({
+                        results: results
+                    });
+                }).error(LogHandler($rootScope));
+        }
+    };
 
     // set up i18n bundle
     $rootScope.i18n = i18n;

@@ -50,11 +50,12 @@
             </div>
         
             <div class="controls controls-row">
-                <input type="hidden" class="span3" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Not mapped to a team"/>
+                <input type="hidden" class="span2" ui-select2="teamSelect2Options" ng-model="selectedFeature.team" placeholder="Team"/>
+                <input type="hidden" class="span2" ui-select2="assigneeSelect2Options" ng-model="selectedFeature.assignee" placeholder="Product Manager"/>
                 <select class="span2" ng-model="selectedFeature.quarter" ng-options="q.id as q.label for q in enumActiveQuarters">
                     <option value="">Unscheduled</option>
                 </select>
-                <select class="span3" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates" required>
+                <select class="span2" ng-model="selectedFeature.state" ng-options="e for e in enumFeatureStates" required>
                     <option value="">Status</option>
                 </select>
             </div>

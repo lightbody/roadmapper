@@ -39,6 +39,12 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
                     featureWithTags.team.text = featureWithTags.team.name;
                 }
 
+                // similarly, if there is an assignee map it over
+                if (featureWithTags.assignee) {
+                    featureWithTags.assignee.id = featureWithTags.assignee.email;
+                    featureWithTags.assignee.text = featureWithTags.assignee.name;
+                }
+
                 $scope.selectedFeature = featureWithTags;
                 $scope.showViewFeature = true;
                 $scope.editFeatureForm.$setPristine(true);
@@ -89,6 +95,13 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
         // remove the "text" field from the team that select2 adds so that it will be well-formed
         if (copy.team) {
             delete copy.team.text;
+        }
+
+        // convert assignee over
+        if (copy.assignee) {
+            copy.assignee.email = copy.assignee.id;
+            delete copy.assignee.id;
+            delete copy.assignee.text;
         }
 
         $scope.saving = true;

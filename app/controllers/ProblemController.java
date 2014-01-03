@@ -115,7 +115,10 @@ public class ProblemController extends Controller {
             } else if (term.startsWith("user:")) {
                 where.ilike("customerName", "%" + term.substring(5) + "%");
             } else if (term.startsWith("assignedTo:")) {
-                where.eq("assignee_email", term.substring(11));
+                // todo: this is really ghetto and I'm only doing it because the same column exists with problems
+                // and features and the advice on this thread doesn't seem to be working
+                // https://groups.google.com/forum/#!topic/ebean/Ot9WtPNIhGI
+                where.eq("t0.assignee_email", term.substring(11));
             } else if (term.startsWith("accountId:")) {
                 try {
                     long accountId = Long.parseLong(term.substring(10));
