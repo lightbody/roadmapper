@@ -39,7 +39,7 @@
         <th style="width: 2em" ng-show="featureService.shouldShow('quarter')"><a href="" ng-click="featureService.sort('quarter')">Qtr</a></th>
         <th style="width: 6em" ng-show="featureService.shouldShow('team')"><a href="" ng-click="featureService.sort('team.name')">Team</a></th>
         <th style="width: 3em" ng-show="featureService.shouldShow('lastModified')"><a href="" ng-click="featureService.sort('lastModified')">Mod</a></th>
-        <th style="width: 1em"></th>
+        <th ng-show="checkRole('PM')" style="width: 1em"></th>
     </tr>
     </thead>
     <tbody>
@@ -59,7 +59,7 @@
         <td ng-show="featureService.shouldShow('quarter')"><span tooltip="{{feature.quarter | longQuarter}}">{{feature.quarter | shortQuarter}}</span></td>
         <td ng-show="featureService.shouldShow('team')">{{feature.team.name}}</td>
         <td ng-show="featureService.shouldShow('lastModified')"><span tooltip="{{feature.lastModifiedBy.name}} on {{feature.lastModified | date}}" tooltip-placement="left">{{feature.lastModified | date:'MMM d'}}</span></td>
-        <td><a href="" ng-click="showDeleteFeatureModal(feature)"><i class="icon-trash"></i></a></td>
+        <td ng-show="checkRole('PM')"><a href="" ng-click="showDeleteFeatureModal(feature)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>
 
