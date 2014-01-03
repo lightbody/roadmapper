@@ -4,6 +4,10 @@ function NewProblemCtrl($scope, $http, $location, problemService) {
     $("#newProblemFirstInput").focus();
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+    $scope.assigneeSelect2Options = {
+        allowClear: true,
+        data: $scope.asigneeChoices
+    };
 
     $scope.cmdEnter = function() {
         if ($scope.newProblemForm.$pristine || $scope.newProblemForm.$invalid) {

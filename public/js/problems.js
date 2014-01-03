@@ -78,10 +78,15 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
             results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
 
-            if (/^[Aa]ss.*/.test(term)) {
+            if (/^[Aa]ss.*/.test(term) || term == "me") {
                 results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
-            } else if (term.indexOf("@") != -1) {
-                results.push({id: "assignedTo:" + term, text: "<strong>Assigned To</strong>: " + term});
+            } else if (term.length >= 3) {
+                $scope.asigneeChoices.map(function(entry) {
+                    if (entry.id.toLowerCase().indexOf(term.toLowerCase()) != -1
+                        || entry.text.toLowerCase().indexOf(term.toLowerCase()) != -1) {
+                        results.push({id: "assignedTo:" + entry.id, text: "<strong>Assigned To</strong>: " + entry.text});
+                    }
+                });
             }
 
             // always offer account name matching

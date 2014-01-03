@@ -7,6 +7,11 @@ function NewFeatureCtrl($scope, $http, $location, featureService) {
 
     $scope.createAnother = false;
 
+    $scope.assigneeSelect2Options = {
+        allowClear: true,
+        data: $scope.asigneeChoices
+    };
+
     // set the default assignee to the current user
     $scope.newFeature = {
         assignee: {

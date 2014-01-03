@@ -7,6 +7,11 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
         features: []
     };
 
+    $scope.assigneeSelect2Options = {
+        allowClear: true,
+        data: $scope.asigneeChoices
+    };
+
     var findRelatedFeatures = function() {
         if (!$scope.selectedFeature.tags) {
             return;
