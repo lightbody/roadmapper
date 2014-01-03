@@ -20,6 +20,7 @@ GET         /features                  controllers.FeatureController.find()
 POST        /features                  controllers.FeatureController.create()
 GET         /features/:id              controllers.FeatureController.getFeature(id: Long)
 PUT         /features/:id              controllers.FeatureController.updateFeature(id: Long)
+DELETE      /features/:id              controllers.FeatureController.deleteFeature(id: Long)
 
 GET         /teams                     controllers.TeamController.getAll()
 POST        /teams                     controllers.TeamController.create()
