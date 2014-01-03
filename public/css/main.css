@@ -113,6 +113,7 @@ body {
 
 form .select2-container {
     margin-left: 0;
+    margin-bottom: 10px;
 }
 
 .modal-team {
