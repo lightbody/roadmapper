@@ -1,6 +1,15 @@
 function NewFeatureCtrl($scope, $http, $location, featureService) {
     $scope.createAnother = false;
 
+    // set the default assignee to the current user
+    $scope.newFeature = {
+        assignee: {
+            id: $scope.user.email,
+            text: $scope.user.name
+        },
+        state: $scope.enumFeatureStates[0]
+    };
+
     $scope.cmdEnter = function() {
         if ($scope.newFeatureForm.$pristine || $scope.newFeatureForm.$invalid) {
             return;
@@ -18,6 +27,13 @@ function NewFeatureCtrl($scope, $http, $location, featureService) {
         // remove the "text" field from the team that select2 adds so that it will be well-formed
         if (copy.team) {
             delete copy.team.text;
+        }
+
+        // convert assignee over
+        if (copy.assignee) {
+            copy.assignee.email = copy.assignee.id;
+            delete copy.assignee.id;
+            delete copy.assignee.text;
         }
 
         $scope.saving = true;
