@@ -104,6 +104,10 @@
     width: 100%;
 }
 
+.list-checkbox input {
+    margin-top: 0;
+}
+
 .metadata-label {
     padding-right: 10px;
     vertical-align: top;

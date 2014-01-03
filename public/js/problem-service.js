@@ -91,9 +91,18 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
         problemService.filteredProblems = problemService.problems.slice(begin, end);
     };
 
+    problemService.checkAll = function() {
+        problemService.checkedAll = !problemService.checkedAll;
+        for (var i = 0; i < problemService.problems.length; i++) {
+            problemService.problems[i].checked = !problemService.problems[i].checked;
+        }
+    };
+
     problemService.update = function(problem) {
         for (var i = 0; i < problemService.problems.length; i++) {
             if (problemService.problems[i].id == problem.id) {
+                // carry over the checked state before wiping out the local cache
+                problem.checked = problemService.problems[i].checked;
                 problemService.problems[i] = problem;
                 break;
             }
