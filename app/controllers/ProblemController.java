@@ -115,10 +115,21 @@ public class ProblemController extends Controller {
             } else if (term.startsWith("user:")) {
                 where.ilike("customerName", "%" + term.substring(5) + "%");
             } else if (term.startsWith("assignedTo:")) {
-                // todo: this is really ghetto and I'm only doing it because the same column exists with problems
-                // and features and the advice on this thread doesn't seem to be working
+                // todo: this t0 stuff is really ghetto and I'm only doing it because the same column
+                // exists with problems and features and the advice on this thread doesn't seem to be working
                 // https://groups.google.com/forum/#!topic/ebean/Ot9WtPNIhGI
-                where.eq("t0.assignee_email", term.substring(11));
+                String str = term.substring(11);
+                switch (str) {
+                    case "null":
+                        where.isNull("t0.assignee_email");
+                        break;
+                    case "not-null":
+                        where.isNotNull("t0.assignee_email");
+                        break;
+                    default:
+                        where.eq("t0.assignee_email", str);
+                        break;
+                }
             } else if (term.startsWith("accountId:")) {
                 try {
                     long accountId = Long.parseLong(term.substring(10));
@@ -127,11 +138,23 @@ public class ProblemController extends Controller {
                     // ignore
                 }
             } else if (term.startsWith("featureId:")) {
-                try {
-                    long featureId = Long.parseLong(term.substring(10));
-                    where.eq("feature.id", featureId);
-                } catch (NumberFormatException e) {
-                    // ignore
+                String str = term.substring(10);
+
+                switch (str) {
+                    case "null":
+                        where.isNull("feature.id");
+                        break;
+                    case "not-null":
+                        where.isNotNull("feature.id");
+                        break;
+                    default:
+                        try {
+                            long featureId = Long.parseLong(str);
+                            where.eq("feature.id", featureId);
+                        } catch (NumberFormatException e) {
+                            // ignore
+                        }
+                        break;
                 }
             } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();

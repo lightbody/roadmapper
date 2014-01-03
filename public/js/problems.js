@@ -13,11 +13,11 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
         if (tag.indexOf("state:") == 0) {
             return "00000" + tag;
         } else if (tag.indexOf("assignedTo:") == 0) {
-            return "000111" + tag;
-        } else if (tag.indexOf("accountId:") == 0) {
-            return "11111" + tag;
+            return "00111" + tag;
         } else if (tag.indexOf("featureId:") == 0) {
-            return "11112" + tag;
+            return "11111" + tag;
+        } else if (tag.indexOf("accountId:") == 0) {
+            return "11222" + tag;
         } else if (tag.indexOf("company:") == 0) {
             return "22222" + tag;
         } else if (tag.indexOf("user:") == 0) {
@@ -78,8 +78,14 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
             results.push({id: "description:" + term, text: "<strong>Description</strong>: " + term});
             results.push({id: "text:" + term, text: "<strong>Text</strong>: " + term});
 
-            if (/^[Aa]ss.*/.test(term) || term == "me") {
+            // some smart options around assignment
+            if (term == "me") {
                 results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+            } else if (term.toLowerCase().indexOf("ass") == 0) {
+                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                results.push({id: "assignedTo:not-null", text: "<strong>Assigned to Anyone</strong>"});
+            } else if (term.toLowerCase().indexOf("un") == 0) {
+                results.push({id: "assignedTo:null", text: "<strong>Unassigned</strong>"});
             } else if (term.length >= 3) {
                 $scope.asigneeChoices.map(function(entry) {
                     if (entry.id.toLowerCase().indexOf(term.toLowerCase()) != -1
@@ -104,6 +110,12 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
             if (/^\-?\d*$/.test(term)) {
                 results.push({id: "accountId:" + term, text: "<strong>Account ID</strong>: " + term});
                 results.push({id: "featureId:" + term, text: "<strong>Feature ID</strong>: " + term});
+            }
+
+            // some options for feature mapped and feature not mapped
+            if (term.toLowerCase().indexOf("map") == 0 || term.toLowerCase().indexOf("fea") == 0) {
+                results.push({id: "featureId:null", text: "<strong>Feature Not Mapped</strong>: " + term});
+                results.push({id: "featureId:not-null", text: "<strong>Feature Mapped</strong>: " + term});
             }
 
             // status matching -- only do it when we haven't already selected a state
