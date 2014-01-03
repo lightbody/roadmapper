@@ -160,7 +160,10 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     $scope.deleteFeature = function (feature) {
         $http.delete('/features/' + feature.id)
             .success(function () {
+                // Update the list of features
                 featureService.search();
+                // Update the list of problems
+                problemService.search();
 
                 // close the modal
                 $scope.closeDeleteFeatureModal();
