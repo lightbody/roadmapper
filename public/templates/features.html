@@ -8,7 +8,7 @@
     <div class="span2 list-header-create">
         <div>
             <img src="/img/spinner.gif" width="16" height="16" ng-show="!featureService.queryReturned"/>
-            <a href="#/features/new">Create new feature</a>
+            <a href="#/features/new" ng-show="checkRole('PM')">Create new feature</a>
         </div>
     </div>
 

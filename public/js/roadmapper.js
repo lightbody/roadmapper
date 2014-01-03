@@ -254,7 +254,8 @@ roadmapper.run(function ($rootScope, $http, $q) {
     $rootScope.user = user;
 
     $rootScope.checkRole = function(role) {
-        return role == user.role;
+        return false;
+//        return role == user.role;
     };
 
     // segment.io

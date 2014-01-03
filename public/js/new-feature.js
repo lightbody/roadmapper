@@ -1,4 +1,10 @@
 function NewFeatureCtrl($scope, $http, $location, featureService) {
+    // only PMs can do this
+    if (!$scope.checkRole('PM')) {
+        $location.path("/features");
+        return;
+    }
+
     $scope.createAnother = false;
 
     // set the default assignee to the current user

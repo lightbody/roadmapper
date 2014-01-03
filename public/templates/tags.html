@@ -4,7 +4,7 @@
         <th></th>
         <th colspan="5">Problems</th>
         <th>Features</th>
-        <th></th>
+        <th ng-show="checkRole('PM')"></th>
     </tr>
     <tr>
         <th><a href="" ng-click="predicate = 'tag'; reverse=!reverse">Tag</a></th>
@@ -14,7 +14,7 @@
         <th><a href="" ng-click="predicate = 'unresolvedProblems'; reverse=!reverse">Total</a></th>
         <th><a href="" ng-click="predicate = 'unresolvedArr'; reverse=!reverse">ARR</a></th>
         <th><a href="" ng-click="predicate = 'openFeatures'; reverse=!reverse">Open</a></th>
-        <th></th>
+        <th ng-show="checkRole('PM')"></th>
     </tr>
     </thead>
     <tbody>
@@ -26,7 +26,7 @@
         <td>{{tag.unresolvedProblems}}</td>
         <td>{{tag.unresolvedArr | noFractionCurrency}}</td>
         <td><a href="" ng-click="selectFeaturesByTag(tag, 'OPEN')">{{tag.openFeatures}}</a></td>
-        <td><a href="" ng-click="showEditTagModal(tag)"><i class="icon-edit"></i></a> <a href="" ng-click="showDeleteTagModal(tag)"><i class="icon-trash"></i></a></td>
+        <td ng-show="checkRole('PM')"><a href="" ng-click="showEditTagModal(tag)"><i class="icon-edit"></i></a> <a href="" ng-click="showDeleteTagModal(tag)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>
 </table>

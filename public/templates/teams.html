@@ -1,4 +1,4 @@
-<a ng-click="showNewTeamModal()">Create new team</a>
+<a ng-click="showNewTeamModal()" ng-show="checkRole('PM')">Create new team</a>
 
 <hr/>
 
@@ -13,10 +13,15 @@
     <tbody>
     <tr ng-repeat="team in teams | orderBy:'name'">
         <td>{{team.name}}</td>
-        <td><input ng-change="saveUtilization(team)" ng-model="team.utilization" type="text" class="input-mini" style="width: 20px"/> </td>
+        <td>
+            <span ng-show="!checkRole('PM')">{{team.utilization}}</span>
+            <input ng-show="checkRole('PM')" ng-change="saveUtilization(team)" ng-model="team.utilization" type="text" class="input-mini" style="width: 20px"/>
+        </td>
         <td ng-repeat="quarter in enumActiveQuarters">
             <form class="team-staff-level" ng-submit="saveStaffLevel(team, quarter.id)">
-                <input tooltip="{{team.quarterStaffSummary[quarter.id].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter.id])}}" ng-change="saveStaffLevel(team, quarter.id)" ng-model="team.quarterStaffSummary[quarter.id].staffed"/>
+                <span ng-show="!checkRole('PM')" tooltip="{{team.quarterStaffSummary[quarter.id].scheduled | number:1}} engineers scheduled" class="team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter.id])}}">{{team.quarterStaffSummary[quarter.id].staffed}}</span>
+                <input ng-show="checkRole('PM')" tooltip="{{team.quarterStaffSummary[quarter.id].scheduled | number:1}} engineers scheduled" type="text" class="input-mini team-staff-level-{{checkStaffing(team.quarterStaffSummary[quarter.id])}}" ng-change="saveStaffLevel(team, quarter.id)" ng-model="team.quarterStaffSummary[quarter.id].staffed"/>
+
                 <a href="" class="icon-search" ng-click="findFeatures(team, quarter.id)"></a>
             </form>
         </td>
