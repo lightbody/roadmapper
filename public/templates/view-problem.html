@@ -50,17 +50,17 @@
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span5" ng-model="selectedProblem.url" placeholder="URL (Optional)">
-                <select class="span3" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
-            </div>
-
-            <div class="controls controls-row" style="padding-bottom: 10px">
-                <input type="text" class="span8" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="selectedProblem.tags"/>
+                <input type="text" class="span6" ng-model="selectedProblem.url" placeholder="URL (Optional)">
+                <select class="span2" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
             </div>
 
             <div class="controls controls-row">
                 <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
                 <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="selectedProblem.assignee" placeholder="Not assigned to a PM"/>
+            </div>
+
+            <div class="controls controls-row" style="padding-bottom: 10px">
+                <input type="text" class="span8" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="selectedProblem.tags" placeholder="Tags"/>
             </div>
         </form>
 
