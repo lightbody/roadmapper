@@ -66,10 +66,15 @@
         
         </form>
 
+
         <div class="row">
-            <div class="span4">
+            <div class="span6">
                 <a href="/#/features" class="btn btn-warning cancel">Cancel</a>
-                <button class="btn btn-primary" ng-click="saveFeature(selectedFeature)" ng-disabled="editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save</button>
+                <button class="btn btn-primary" ng-click="saveFeature(selectedFeature)" ng-disabled="!checkRole('PM') || editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save</button>
+
+                <span ng-show="!checkRole('PM')">
+                    Note: only PMs can create/modify features
+                </span>
 
                 <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
 
@@ -77,9 +82,9 @@
                     Saved...
                 </span>
             </div>
-            <div class="span4" style="text-align: right">
+            <div class="span2" style="text-align: right">
                 <div ng-show="featureService.nextFeature">
-                    <button class="btn btn-secondary" ng-click="saveFeatureAndContinue(selectedFeature)" ng-disabled="editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save &raquo;</button>
+                    <button class="btn btn-secondary" ng-click="saveFeatureAndContinue(selectedFeature)" ng-disabled="!checkRole('PM') || editFeatureForm.$invalid || editFeatureForm.$pristine" type="submit">Save &raquo;</button>
                 </div>
             </div>
         </div>

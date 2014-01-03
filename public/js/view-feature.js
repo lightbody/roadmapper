@@ -92,6 +92,15 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
     };
 
     $scope.saveFeature = function(feature, callback) {
+        if (!$scope.checkRole('PM')) {
+            // only PMs can save features, so don't actually save but we can still call the callback b/c we're nice :)
+            if (callback) {
+                callback();
+            }
+            return;
+        }
+
+
         // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(feature);
         copy.tags = [];
