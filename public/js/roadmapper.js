@@ -46,15 +46,20 @@ roadmapper.factory('userAgentService', function ($window) {
         iPod: false
     };
 
-    var iDevice = ['iPad', 'iPhone', 'iPod'];
+    if ($window.navigator.platform) {
+        var platform = $window.navigator.platform.replace(" Simulator", "");
 
-    for (var i = 0; i < iDevice.length; i++) {
-        if ($window.navigator.platform === iDevice[i]) {
-            service.iOS = true;
-            service[iDevice[i]] = true;
-            break;
+        var iDevice = ['iPad', 'iPhone', 'iPod'];
+
+        for (var i = 0; i < iDevice.length; i++) {
+            if (platform === iDevice[i]) {
+                service.iOS = true;
+                service[iDevice[i]] = true;
+                break;
+            }
         }
     }
+
 
     return service;
 });
