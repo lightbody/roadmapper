@@ -48,7 +48,7 @@
     <div class="span5" style="padding-bottom: 20px;">
         <button class="btn btn-warning cancel" ng-click="cancelNewFeature()">Cancel</button>
         <button class="btn btn-primary" ng-click="createFeature(newFeature)" ng-disabled="newFeatureForm.$invalid" type="submit">Create</button>
-        <div class="checkbox" style="display: inline-flex">
+        <div class="checkbox" style="display: inline-block; vertical-align: bottom">
             <label>
                 <input type="checkbox" ng-model="createAnother"> Create another
             </label>
@@ -56,9 +56,9 @@
 
     </div>
     <div class="span2" style="text-align: right">
-                <span ng-show="saved">
-                    Created feature {{saved}}!
-                </span>
+        <span ng-show="saved">
+            Created feature {{saved}}!
+        </span>
 
         <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
     </div>
