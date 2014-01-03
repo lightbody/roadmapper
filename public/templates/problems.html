@@ -28,6 +28,7 @@
     <tr>
         <th style="width: 3em"><a href="" ng-click="problemService.sort('date')">Date</a></th>
         <th><a href="" ng-click="problemService.sort('description')">Description</a></th>
+        <th style="width: 3em" ng-show="problemService.shouldShow('state')"><a href="" ng-click="problemService.sort('state')">State</a></th>
         <th style="width: 7em"><a href="" ng-click="problemService.sort('customerCompany')">Company</a></th>
         <th style="width: 6em; text-align: right"><a href="" ng-click="problemService.sort('annualRevenue')">ARR</a></th>
         <th style="width: 7em" ng-show="problemService.shouldShow('customerName')"><a href="" ng-click="problemService.sort('customerName')">Customer</a></th>
@@ -39,6 +40,7 @@
     <tr ng-repeat="problem in problemService.filteredProblems">
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
         <td class="flex"><a ng-click="problemService.selectProblem(problem)">{{problem.description | truncate:200 | minlinks}}</a></td>
+        <td ng-show="problemService.shouldShow('state')">{{problem.state}}</td>
         <td class="flex">
             <span ng-show="!problem.accountId">{{problem.customerCompany | truncate:15}}</span>
             <a href="https://rpm.newrelic.com/accounts/{{problem.accountId}}" ng-show="problem.accountId" target="_blank">{{problem.customerCompany | truncate:15}}</a>

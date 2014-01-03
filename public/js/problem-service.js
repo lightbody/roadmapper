@@ -137,6 +137,14 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
             }
         }
 
+        if (col == 'state') {
+            for (var i = 0; i < problemService.query.length; i++) {
+                if (problemService.query[i].id.indexOf(col + ":") == 0) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     };
 
