@@ -2,10 +2,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
     $scope.problemService = problemService;
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
-    $scope.assigneeSelect2Options = {
-        allowClear: true,
-        data: $scope.asigneeChoices
-    };
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
 
     $scope.editProblem = function(problem) {
         $scope.problem = problem;

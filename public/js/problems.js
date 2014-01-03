@@ -1,11 +1,8 @@
 function ProblemsCtrl($scope, $http, $q, $location,problemService) {
     problemService.wireUpController($scope);
 
-    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
-    $scope.assigneeSelect2Options = {
-        allowClear: true,
-        data: $scope.asigneeChoices
-    };
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, true);
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
 
     $(window).on("resize.ProblemsCtrl", debouncer(function() {
         $scope.$digest();
@@ -120,8 +117,8 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
 
             // some options for feature mapped and feature not mapped
             if (term.toLowerCase().indexOf("map") == 0 || term.toLowerCase().indexOf("fea") == 0) {
-                results.push({id: "featureId:null", text: "<strong>Feature Not Mapped</strong>: " + term});
-                results.push({id: "featureId:not-null", text: "<strong>Feature Mapped</strong>: " + term});
+                results.push({id: "featureId:null", text: "<strong>Feature Not Mapped</strong>"});
+                results.push({id: "featureId:not-null", text: "<strong>Feature Mapped</strong>"});
             }
 
             // status matching -- only do it when we haven't already selected a state

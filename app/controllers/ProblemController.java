@@ -87,10 +87,16 @@ public class ProblemController extends Controller {
         }
 
         if (bulkChange.assignee != null) {
-            Ebean.createSqlUpdate("update problem set assignee_email = :assignee where id in (:ids)")
-                    .setParameter("ids", bulkChange.ids)
-                    .setParameter("assignee", bulkChange.assignee.email)
-                    .execute();
+            if ("nobody".equals(bulkChange.assignee.email)) {
+                Ebean.createSqlUpdate("update problem set assignee_email = null where id in (:ids)")
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            } else {
+                Ebean.createSqlUpdate("update problem set assignee_email = :assignee where id in (:ids)")
+                        .setParameter("assignee", bulkChange.assignee.email)
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            }
         }
 
         if (bulkChange.state != null) {
@@ -101,10 +107,16 @@ public class ProblemController extends Controller {
         }
 
         if (bulkChange.feature != null) {
-            Ebean.createSqlUpdate("update problem set feature_id = :feature where id in (:ids)")
-                    .setParameter("feature", bulkChange.feature.id)
-                    .setParameter("ids", bulkChange.ids)
-                    .execute();
+            if (bulkChange.feature.id > 0) {
+                Ebean.createSqlUpdate("update problem set feature_id = :feature where id in (:ids)")
+                        .setParameter("feature", bulkChange.feature.id)
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            } else {
+                Ebean.createSqlUpdate("update problem set feature_id = null where id in (:ids)")
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            }
         }
 
         if (bulkChange.tags != null) {

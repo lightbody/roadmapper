@@ -277,7 +277,7 @@ roadmapper.run(function ($rootScope, $http, $q) {
     mixpanel.name_tag(user.name);
 });
 
-function makeFeatureSelect2Options(scope, http) {
+function makeFeatureSelect2Options(scope, http, includeRemove) {
     return {
         allowClear: true,
         sortResults: function(results, container, query) {
@@ -285,9 +285,15 @@ function makeFeatureSelect2Options(scope, http) {
                 if (a.rank == b.rank) {
                     return 0;
                 } else {
-                    return a.rank > b.rank ? -1 : 1;
+                    return a.rank > b.rank ? 1 : -1;
                 }
             });
+        },
+        formatSelection: function(object, container) {
+            return object.text;
+        },
+        formatResult: function(object, container) {
+            return object.text;
         },
         query: function (query) {
             var term = query.term;
@@ -300,6 +306,10 @@ function makeFeatureSelect2Options(scope, http) {
             http.get("/features?limit=20&query=state:OPEN,text:" + term)
                 .success(function (features) {
                     var results = [];
+                    if (includeRemove) {
+                        results.push({id: "-1", text: "<strong>*** Remove feature mapping ***</strong>", rank: 1000});
+                    }
+
                     if (features) {
                         features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
                     }
@@ -308,6 +318,39 @@ function makeFeatureSelect2Options(scope, http) {
                     });
                 }).error(LogHandler(scope));
         }
+    };
+}
+
+function makeAssigneeSelect2Options(scope, includeRemove) {
+    var data = angular.copy(scope.asigneeChoices);
+    if (includeRemove) {
+        data.push({id: "nobody", text: "<strong>*** Remove assignee ***</strong>"});
+    }
+
+    return {
+        allowClear: true,
+        sortResults: function(results, container, query) {
+            return results.sort(function(a, b) {
+                if (a.id == "nobody") {
+                    return -1;
+                } else if (b.id == "nobody") {
+                    return 1;
+                }
+
+                if (a.id == b.id) {
+                    return 0;
+                } else {
+                    return a.id > b.id ? 1 : -1;
+                }
+            });
+        },
+        formatSelection: function(object, container) {
+            return object.text;
+        },
+        formatResult: function(object, container) {
+            return object.text;
+        },
+        data: data
     };
 }
 
