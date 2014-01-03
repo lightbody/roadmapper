@@ -149,8 +149,17 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
         return true;
     };
 
-    problemService.selectProblem = function(problem) {
-        problemService.selectedProblem = problem;
+    problemService.selectProblem = function(problem, event) {
+        // if the feature was selected using cmd/ctrl click, then don't do anything because it'll be opened
+        // correctly in a background tab
+        if (event && (event.metaKey || event.ctrlKey)) {
+            event.stopPropagation();
+            return;
+        }
+
+        // we copy it so that when the form is being edited we're not changing the model in the list, making it look
+        // like we edited it when we didn't really
+        problemService.selectedProblem = angular.copy(problem);
 
         // find the index for this problem
         var index = -1;

@@ -4,11 +4,11 @@
     </div>
 
     <div class="span4 quickNavLinks">
-        <a ng-show="problemService.prevProblem" ng-click="problemService.selectProblem(problemService.prevProblem)">&#8592; {{problemService.prevProblem.description | truncate:200 | minlinks}}</a>
+        <a href="#/problems/{{problemService.prevProblem.id}}" ng-show="problemService.prevProblem" ng-click="problemService.selectProblem(problemService.prevProblem, $event)">&#8592; {{problemService.prevProblem.description | truncate:200 | minlinks}}</a>
     </div>
 
     <div class="span4 quickNavLinks">
-        <a ng-show="problemService.nextProblem" ng-click="problemService.selectProblem(problemService.nextProblem)">&#8594; {{problemService.nextProblem.description | truncate:200 | minlinks}}</a>
+        <a href="#/problems/{{problemService.nextProblem.id}}" ng-show="problemService.nextProblem" ng-click="problemService.selectProblem(problemService.nextProblem, $event)">&#8594; {{problemService.nextProblem.description | truncate:200 | minlinks}}</a>
     </div>
 </div>
 

@@ -39,7 +39,7 @@
     <tbody>
     <tr ng-repeat="problem in problemService.filteredProblems">
         <td><span tooltip="{{problem.reporter.name}} on {{problem.date | date}}" tooltip-placement="right">{{problem.date | date:'MMM d'}}</span></td>
-        <td class="flex"><a ng-click="problemService.selectProblem(problem)">{{problem.description | truncate:200 | minlinks}}</a></td>
+        <td class="flex"><a href="#/problems/{{problem.id}}" ng-click="problemService.selectProblem(problem, $event)">{{problem.description | truncate:200 | minlinks}}</a></td>
         <td ng-show="problemService.shouldShow('state')">{{problem.state}}</td>
         <td class="flex">
             <span ng-show="!problem.accountId">{{problem.customerCompany | truncate:15}}</span>

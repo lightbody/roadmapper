@@ -45,7 +45,7 @@
     <tr ng-repeat="feature in featureService.filteredFeatures">
         <td>{{feature.id}}</td>
         <td class="title">
-            <a ng-click="featureService.selectFeature(feature)">{{feature.title}}</a>
+            <a href="#/features/{{feature.id}}" ng-click="featureService.selectFeature(feature, $event)">{{feature.title}}</a>
         </td>
         <td ng-show="featureService.shouldShow('state')">{{feature.state}}</td>
         <td ng-show="featureService.shouldShow('engineeringCost')">{{feature.engineeringCost | size}}</td>

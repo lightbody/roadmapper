@@ -4,11 +4,11 @@
     </div>
 
     <div class="span4 quickNavLinks">
-        <a ng-show="featureService.prevFeature" ng-click="featureService.selectFeature(featureService.prevFeature)">&#8592; {{featureService.prevFeature.title}}</a>
+        <a href="#/features/{{featureService.prevFeature.id}}" ng-show="featureService.prevFeature" ng-click="featureService.selectFeature(featureService.prevFeature, $event)">&#8592; {{featureService.prevFeature.title}}</a>
     </div>
 
     <div class="span4 quickNavLinks">
-        <a ng-show="featureService.nextFeature" ng-click="featureService.selectFeature(featureService.nextFeature)">&#8594; {{featureService.nextFeature.title}}</a>
+        <a href="#/features/{{featureService.nextFeature.id}}" ng-show="featureService.nextFeature" ng-click="featureService.selectFeature(featureService.nextFeature, $event)">&#8594; {{featureService.nextFeature.title}}</a>
     </div>
 </div>
 
@@ -147,7 +147,7 @@
                 <td>{{feature.id}}</td>
                 <td>{{feature.rank | number:2}}</td>
                 <td class="title">
-                    <a ng-click="featureService.selectFeature(feature)">{{feature.title}}</a>
+                    <a href="#/features/{{feature.id}}" ng-click="featureService.selectFeature(feature, $event)">{{feature.title}}</a>
                 </td>
                 <td class="text-right"><span ng-show="feature.score > 0">{{feature.score}}</span></td>
                 <td class="text-right"><a ng-click="problemService.selectProblems(feature)" ng-show="feature.problemCount > 0">{{feature.problemCount}}</a></td>
