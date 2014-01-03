@@ -258,4 +258,20 @@ public class FeatureController extends Controller {
             }
         }
     }
+
+    @play.db.ebean.Transactional
+    public static Result deleteFeature(Long id) {
+        // Dissociate related problems and tags
+        SqlUpdate dissociateProblems = Ebean.createSqlUpdate("update problem set feature_id = NULL where feature_id = :feature_id");
+        dissociateProblems.setParameter("feature_id", id);
+        dissociateProblems.execute();
+
+        SqlUpdate deleteTags = Ebean.createSqlUpdate("delete from feature_tags where feature_id = :feature_id");
+        deleteTags.setParameter("feature_id", id);
+        deleteTags.execute();
+
+        // Delete the feature
+        Feature.find.ref(id).delete();
+        return ok("{\"id\":" + id + "}");
+    }
 }
