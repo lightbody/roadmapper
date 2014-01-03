@@ -1,3 +1,6 @@
+<div class="row">
+    <div class="span8">
+
         <h3>Record new problem</h3>
 
         <form name="newProblemForm" novalidate cmd-enter="cmdEnter()">
@@ -5,38 +8,40 @@
             <div ng-include="'validation.html'"></div>
 
             <div class="controls">
-                <textarea id="newProblemFirstInput" class="span7" rows="10" ng-model="newProblem.description" autofocus="autofocus" placeholder="Problem Description" required></textarea>
+                <textarea id="newProblemFirstInput" class="span8" rows="10" ng-model="problem.description" placeholder="Problem Description" required></textarea>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span3" ng-model="newProblem.customerName" placeholder="Customer Name" required>
-                <input type="text" class="span4" ng-model="newProblem.customerCompany" placeholder="Customer Company" required>
+                <input type="text" class="span4" ng-model="problem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="problem.customerCompany" placeholder="Customer Company" required>
             </div>
 
             <div class="controls controls-row">
-                <input type="email" class="span3" ng-model="newProblem.customerEmail" placeholder="Customer Email (or your email)" required>
-                <input type="text" class="span2" ng-model="newProblem.accountId" placeholder="Account ID (if known)" integer>
+                <input type="email" class="span4" ng-model="problem.customerEmail" placeholder="Customer Email (or your email)" required>
+                <input type="text" class="span2" ng-model="problem.accountId" placeholder="Account ID (if known)" integer>
 
                 <div class="span2">
                     <div class="controls input-prepend input-append">
                         <span class="add-on">$</span>
-                        <input type="text" class="arr-field" ng-model="newProblem.annualRevenue" placeholder="ARR" integer>
+                        <input type="text" class="arr-field" ng-model="problem.annualRevenue" placeholder="ARR" integer>
                         <span class="add-on">.00</span>
                     </div>
                 </div>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span7" ng-model="newProblem.url" placeholder="URL (Optional)">
+                <input type="text" class="span8" ng-model="problem.url" placeholder="URL (Optional)">
             </div>
 
-            <div class="controls controls-row">
-                <input type="text" class="span7" roadmapper-ui-select2="tagSelect2Options" ng-model="junk" roadmapper-ui-select2-model="newProblem.tags" placeholder="Tags"/>
+            <div class="controls controls-row" ng-show="checkRole('PM')">
+                <input type="text" class="span8" roadmapper-ui-select2="tagSelect2Options" ng-model="junk" roadmapper-ui-select2-model="problem.tags" placeholder="Tags"/>
             </div>
 
-            <div class="controls controls-row">
-
+            <div class="controls controls-row" ng-show="checkRole('PM')">
+                <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="problem.feature" placeholder="Not mapped to a feature"/>
+                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="problem.assignee" placeholder="Not assigned to a PM"/>
             </div>
+
         </form>
 
         <div class="row">
@@ -50,7 +55,7 @@
                 </div>
 
             </div>
-            <div class="span2" style="text-align: right">
+            <div class="span3 text-right">
                 <span ng-show="saved">
                     Created problem {{saved}}!
                 </span>
@@ -59,3 +64,5 @@
             </div>
         </div>
 
+    </div>
+</div>

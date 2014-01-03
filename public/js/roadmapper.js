@@ -253,6 +253,10 @@ roadmapper.run(function ($rootScope, $http, $q) {
 
     $rootScope.user = user;
 
+    $rootScope.checkRole = function(role) {
+        return role == user.role;
+    };
+
     // segment.io
     analytics.identify(user.email, {
         name: user.name,
@@ -274,6 +278,40 @@ roadmapper.run(function ($rootScope, $http, $q) {
     mixpanel.people.increment("Sessions");
     mixpanel.name_tag(user.name);
 });
+
+function makeFeatureSelect2Options(scope, http) {
+    return {
+        allowClear: true,
+        sortResults: function(results, container, query) {
+            return results.sort(function(a, b) {
+                if (a.rank == b.rank) {
+                    return 0;
+                } else {
+                    return a.rank > b.rank ? -1 : 1;
+                }
+            });
+        },
+        query: function (query) {
+            var term = query.term;
+
+            // no term initially? that's cool -- we'll borrow the tags (if any) as a convenience
+            if (term == "") {
+                term = scope.problem.tags.map(function(tag) { return tag.id; }).join(" ");
+            }
+
+            http.get("/features?limit=20&query=state:OPEN,text:" + term)
+                .success(function (features) {
+                    var results = [];
+                    if (features) {
+                        features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
+                    }
+                    query.callback({
+                        results: results
+                    });
+                }).error(LogHandler(scope));
+        }
+    };
+}
 
 function FormErrorHandler($scope) {
     return function (data, status, headers) {

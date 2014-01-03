@@ -1,8 +1,10 @@
 function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService, userAgentService) {
     $scope.problemService = problemService;
 
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+
     $scope.editProblem = function(problem) {
-        $scope.selectedProblem = problem;
+        $scope.problem = problem;
         $http.get('/problems/' + problem.id)
             .success(function(problemWithTags) {
                 // convert tag from simple raw values to select2-compatible object
@@ -22,7 +24,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                 }
 
 
-                $scope.selectedProblem = problemWithTags;
+                $scope.problem = problemWithTags;
                 $scope.showViewProblem = true;
                 $scope.editProblemForm.$setPristine(true);
                 $rootScope.loading = false;
@@ -40,14 +42,14 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
         if (!problemService.nextProblem) {
             // no next problem? ok let's just save and stay put
             if ($scope.editProblemForm.$valid) {
-                $scope.saveProblem($scope.selectedProblem);
+                $scope.saveProblem($scope.problem);
             }
         } else {
             // there is a next problem and the current form hasn't been touched, then just move on without saving
             if ($scope.editProblemForm.$pristine) {
                 problemService.selectProblem(problemService.nextProblem);
             } else if ($scope.editProblemForm.$valid) {
-                $scope.saveProblem($scope.selectedProblem, function() {
+                $scope.saveProblem($scope.problem, function() {
                     problemService.selectProblem(problemService.nextProblem);
                 });
             }
@@ -103,38 +105,6 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
                     $scope.$digest();
                 }, 5000);
             }).error(FormErrorHandler($scope))
-    };
-
-    $scope.featureSelect2Options = {
-        allowClear: true,
-        sortResults: function(results, container, query) {
-            return results.sort(function(a, b) {
-                if (a.rank == b.rank) {
-                    return 0;
-                } else {
-                    return a.rank > b.rank ? -1 : 1;
-                }
-            });
-        },
-        query: function (query) {
-            var term = query.term;
-
-            // no term initially? that's cool -- we'll borrow the tags (if any) as a convenience
-            if (term == "") {
-                term = $scope.selectedProblem.tags.map(function(tag) { return tag.id; }).join(" ");
-            }
-
-            $http.get("/features?limit=20&query=state:OPEN,text:" + term)
-                .success(function (features) {
-                    var results = [];
-                    if (features) {
-                        features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
-                    }
-                    query.callback({
-                        results: results
-                    });
-                }).error(LogHandler($scope));
-        }
     };
 
     if (/^\-?\d*$/.test($routeParams.problemId)) {

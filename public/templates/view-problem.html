@@ -16,7 +16,7 @@
 
 <div class="row">
     <div class="span12">
-        <h3>Problem {{selectedProblem.id}}</h3>
+        <h3>Problem {{problem.id}}</h3>
     </div>
 </div>
 
@@ -28,45 +28,45 @@
             <div ng-include="'validation.html'"></div>
 
             <div class="controls">
-                <textarea id="editProblemFirstInput" class="span8" rows="10" ng-model="selectedProblem.description" placeholder="Problem Description" required></textarea>
+                <textarea id="editProblemFirstInput" class="span8" rows="10" ng-model="problem.description" placeholder="Problem Description" required></textarea>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span4" ng-model="selectedProblem.customerName" placeholder="Customer Name" required>
-                <input type="text" class="span4" ng-model="selectedProblem.customerCompany" placeholder="Customer Company" required>
+                <input type="text" class="span4" ng-model="problem.customerName" placeholder="Customer Name" required>
+                <input type="text" class="span4" ng-model="problem.customerCompany" placeholder="Customer Company" required>
             </div>
 
             <div class="controls controls-row">
-                <input type="email" class="span4" ng-model="selectedProblem.customerEmail" placeholder="Customer Email" required>
-                <input type="text" class="span2" ng-model="selectedProblem.accountId" placeholder="Account ID (if known)" integer>
+                <input type="email" class="span4" ng-model="problem.customerEmail" placeholder="Customer Email" required>
+                <input type="text" class="span2" ng-model="problem.accountId" placeholder="Account ID (if known)" integer>
 
                 <div class="span2">
                     <div class="controls input-prepend input-append">
                         <span class="add-on">$</span>
-                        <input class="arr-field" type="text" ng-model="selectedProblem.annualRevenue" placeholder="ARR" integer>
+                        <input class="arr-field" type="text" ng-model="problem.annualRevenue" placeholder="ARR" integer>
                         <span class="add-on">.00</span>
                     </div>
                 </div>
             </div>
 
             <div class="controls controls-row">
-                <input type="text" class="span6" ng-model="selectedProblem.url" placeholder="URL (Optional)">
-                <select class="span2" ng-model="selectedProblem.state" ng-options="e for e in enumProblemStates"></select>
+                <input type="text" class="span{{checkRole('PM') ? 6 : 8}}" ng-model="problem.url" placeholder="URL (Optional)">
+                <select ng-show="checkRole('PM')" class="span2" ng-model="problem.state" ng-options="e for e in enumProblemStates"></select>
             </div>
 
-            <div class="controls controls-row">
-                <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="selectedProblem.feature" placeholder="Not mapped to a feature"/>
-                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="selectedProblem.assignee" placeholder="Not assigned to a PM"/>
+            <div class="controls controls-row" ng-show="checkRole('PM')">
+                <input type="text" class="span8" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="problem.tags" placeholder="Tags"/>
             </div>
 
-            <div class="controls controls-row" style="padding-bottom: 10px">
-                <input type="text" class="span8" ng-model="junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="selectedProblem.tags" placeholder="Tags"/>
+            <div class="controls controls-row" ng-show="checkRole('PM')">
+                <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="problem.feature" placeholder="Not mapped to a feature"/>
+                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="problem.assignee" placeholder="Not assigned to a PM"/>
             </div>
         </form>
 
         <div class="row">
             <div class="span4">
-                <button class="btn btn-primary" ng-click="saveProblem(selectedProblem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save</button>
+                <button class="btn btn-primary" ng-click="saveProblem(problem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save</button>
 
                 <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>
 
@@ -76,7 +76,7 @@
             </div>
             <div class="span4" style="text-align: right">
                 <div ng-show="problemService.nextProblem">
-                    <button class="btn btn-secondary" ng-click="saveProblemAndContinue(selectedProblem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save &raquo;</button>
+                    <button class="btn btn-secondary" ng-click="saveProblemAndContinue(problem)" ng-disabled="editProblemForm.$invalid || editProblemForm.$pristine" type="submit">Save &raquo;</button>
                 </div>
             </div>
         </div>
@@ -89,15 +89,15 @@
             <tbody>
             <tr>
                 <td class="metadata-label">Submitted On</td>
-                <td>{{selectedProblem.date | date}}</td>
+                <td>{{problem.date | date}}</td>
             </tr>
             <tr>
                 <td class="metadata-label">Reported By</td>
-                <td><a href="mailto:{{selectedProblem.reporter.email}}">{{selectedProblem.reporter.name}}</a></td>
+                <td><a href="mailto:{{problem.reporter.email}}">{{problem.reporter.name}}</a></td>
             </tr>
             <tr>
                 <td class="metadata-label">Last Modified By</td>
-                <td><a href="mailto:{{selectedProblem.lastModifiedBy.email}}">{{selectedProblem.lastModifiedBy.name}}</a><br/>{{selectedProblem.lastModified | date}}</td>
+                <td><a href="mailto:{{problem.lastModifiedBy.email}}">{{problem.lastModifiedBy.name}}</a><br/>{{problem.lastModified | date}}</td>
             </tr>
             </tbody>
         </table>

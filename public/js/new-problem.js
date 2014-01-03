@@ -1,12 +1,16 @@
 function NewProblemCtrl($scope, $http, $location, problemService) {
     $scope.createAnother = true;
 
+    $("#newProblemFirstInput").focus();
+
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+
     $scope.cmdEnter = function() {
         if ($scope.newProblemForm.$pristine || $scope.newProblemForm.$invalid) {
             return;
         }
 
-        $scope.createProblem($scope.newProblem);
+        $scope.createProblem($scope.problem);
     };
 
     $scope.createProblem = function (problem) {
@@ -30,7 +34,7 @@ function NewProblemCtrl($scope, $http, $location, problemService) {
 
                 problemService.search();
                 if ($scope.createAnother) {
-                    $scope.newProblem = {tags: []};
+                    $scope.problem = {tags: []};
                     $scope.junk = []; // todo: ugly hack to clear out tag selector
                     $scope.newProblemForm.$setPristine(true);
                     $("#newProblemFirstInput").focus(); // todo: we should focus back first field in a more Angular-like way, but I have no idea how!
