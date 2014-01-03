@@ -8,7 +8,8 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
         predicate: "date",
         reverse: true,
         query: [
-            {id: "state:OPEN", text: "<strong>State</strong>: OPEN"}
+            {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
+            {id: "assignedTo:null", text: "<strong>Unassigned</strong>"}
         ]
     };
 
