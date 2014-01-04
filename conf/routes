@@ -15,6 +15,7 @@ GET         /problems                  controllers.ProblemController.find()
 POST        /problems                  controllers.ProblemController.create()
 GET         /problems/:id              controllers.ProblemController.getProblem(id: Long)
 PUT         /problems/:id              controllers.ProblemController.updateProblem(id: Long)
+DELETE      /problems/:id              controllers.ProblemController.deleteProblem(id: Long)
 PUT         /problems                  controllers.ProblemController.bulkUpdate()
 
 GET         /features                  controllers.FeatureController.find()

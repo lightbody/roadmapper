@@ -35,6 +35,7 @@
         <th style="width: 7em" ng-show="problemService.shouldShow('customerName')"><a href="" ng-click="problemService.sort('customerName')">Customer</a></th>
         <th style="width: 7em" ng-show="problemService.shouldShow('feature.name')"><a href="" ng-click="problemService.sort('feature.name')">Feature</a></th>
         <th style="width: 3em" ng-show="problemService.shouldShow('lastModified')"><a href="" ng-click="problemService.sort('lastModified')">Mod</a></th>
+        <th ng-show="checkRole('PM')" style="width: 1em"></th>
     </tr>
     </thead>
     <tbody>
@@ -51,6 +52,7 @@
         <td class="flex" ng-show="problemService.shouldShow('customerName')"><a href="mailto:{{problem.customerEmail}}">{{problem.customerName | truncate:15}}</a></td>
         <td class="flex" ng-show="problemService.shouldShow('feature.name')"><a ng-click="selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
         <td ng-show="problemService.shouldShow('lastModified')"><span tooltip="{{problem.lastModifiedBy.name}} on {{problem.lastModified | date}}" tooltip-placement="left">{{problem.lastModified | date:'MMM d'}}</span></td>
+        <td ng-show="checkRole('PM')"><a href="" ng-click="showDeleteProblemModal(problem)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>
 </table>
@@ -83,3 +85,17 @@
     </div>
 </div>
 
+<div modal="deleteProblemModal" close="closeDeleteProblemModal()" options="modalOptions">
+    <div class="modal-header">
+        <h3>Delete problem <em>{{selectedProblem.description | truncate:50 | minlinks}}</em>?</h3>
+    </div>
+    <div class="modal-body">
+
+        <p>Are you sure you want to do this? This operation cannot be undone!</p>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning cancel" ng-click="closeDeleteProblemModal()">Cancel</button>
+        <button class="btn btn-primary" ng-click="deleteProblem(selectedProblem)" type="submit">Confirm</button>
+    </div>
+</div>

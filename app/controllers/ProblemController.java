@@ -317,4 +317,17 @@ public class ProblemController extends Controller {
             }
         }
     }
+
+    @play.db.ebean.Transactional
+    public static Result deleteProblem(Long id) {
+        // Dissociate tags
+        SqlUpdate deleteTags = Ebean.createSqlUpdate("delete from problem_tags where problem_id = :problem_id");
+        deleteTags.setParameter("problem_id", id);
+        deleteTags.execute();
+
+        // Delete the problem
+        Problem.find.ref(id).delete();
+
+        return ok();
+    }
 }

@@ -1,4 +1,4 @@
-function ProblemsCtrl($scope, $http, $q, $location,problemService) {
+function ProblemsCtrl($scope, $http, $q, $location,featureService, problemService) {
     problemService.wireUpController($scope);
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, true);
@@ -156,7 +156,30 @@ function ProblemsCtrl($scope, $http, $q, $location,problemService) {
         }
     };
 
-    $scope.selectFeature = function(feature) {
-        $location.path("/features/" + feature.id);
+    $scope.selectProblem = function(problem) {
+        $location.path("/problems/" + problem.id);
+    };
+
+    $scope.showDeleteProblemModal = function(problem) {
+        $scope.selectedProblem = problem;
+        $scope.deleteProblemModal = true;
+    };
+
+    $scope.deleteProblem = function (problem) {
+        $http.delete('/problems/' + problem.id)
+            .success(function () {
+                // Update the list of features
+                featureService.search();
+                // Update the list of problems
+                problemService.search();
+
+                // close the modal
+                $scope.closeDeleteProblemModal();
+            }).error(LogHandler($scope));
+    };
+
+    $scope.closeDeleteProblemModal = function() {
+        $scope.selectedProblem = null;
+        $scope.deleteProblemModal = false;
     };
 }
