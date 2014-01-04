@@ -144,7 +144,7 @@ public class TeamController extends Controller {
         StaffSummary summary = new StaffSummary(count);
 
         // return a populated StaffSummary object
-        Team teamShell = new Team();
+        Team teamShell = Team.find.byId(teamId);
         teamShell.quarterStaffSummary.put(quarter, summary);
         updateStaffSummary(Collections.singletonMap(teamId, teamShell));
 
