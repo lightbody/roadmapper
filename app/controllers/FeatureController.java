@@ -142,6 +142,22 @@ public class FeatureController extends Controller {
         return ok();
     }
 
+    @play.db.ebean.Transactional
+    public static Result bulkDelete() {
+        JsonNode json = request().body().asJson();
+        FeatureBulkChange bulkChange = Json.fromJson(json, FeatureBulkChange.class);
+
+        if (bulkChange.ids == null || bulkChange.ids.size() == 0) {
+            return notFound();
+        }
+
+        for (Long id : bulkChange.ids) {
+            deleteFeature(id);
+        }
+
+        return ok();
+    }
+
     public static Result find() {
         if (!request().queryString().containsKey("query")) {
             return ok();

@@ -3,6 +3,8 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
         features: [],
         featuresFeatures: [],
         bulkChanges: {},
+        bulkUpdateState: "primary",
+        bulkDeleteState: "secondary",
         numPerPage: 10,
         maxSize: 5,
         selectedFeature: null,
@@ -96,36 +98,60 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
             return;
         }
 
-        var changes = angular.copy(featureService.bulkChanges);
+        if (featureService.bulkUpdateState == "primary") {
+            featureService.bulkUpdateState = "warning";
+        } else if (featureService.bulkUpdateState == "warning") {
+            featureService.bulkUpdateState = "danger";
+        } else if (featureService.bulkUpdateState == "danger") {
+            var changes = angular.copy(featureService.bulkChanges);
 
-        changes.ids = featureService.features.filter(function (f) {
-            return f.checked;
-        }).map(function (f) {
-                return f.id;
+            changes.ids = featureService.features.filter(function (f) {
+                return f.checked;
+            }).map(function (f) {
+                    return f.id;
+                });
+
+            // convert the tags to a flat string
+            if (changes.tags) {
+                changes.tags = changes.tags.map(function(tag) {
+                    return tag.id;
+                });
+            }
+
+            // remove the "text" field from the team that select2 adds so that it will be well-formed
+            if (changes.team) {
+                delete changes.team.text;
+            }
+
+            // convert assignee over
+            if (changes.assignee) {
+                changes.assignee.email = changes.assignee.id;
+                delete changes.assignee.id;
+                delete changes.assignee.text;
+            }
+
+            $http.put("/features", changes).success(function() {
+                featureService.search();
             });
-
-        // convert the tags to a flat string
-        if (changes.tags) {
-            changes.tags = changes.tags.map(function(tag) {
-                return tag.id;
-            });
         }
+    };
 
-        // remove the "text" field from the team that select2 adds so that it will be well-formed
-        if (changes.team) {
-            delete changes.team.text;
+    featureService.bulkDelete = function() {
+        if (featureService.bulkDeleteState == "secondary") {
+            featureService.bulkDeleteState = "warning";
+        } else if (featureService.bulkDeleteState == "warning") {
+            featureService.bulkDeleteState = "danger";
+        } else if (featureService.bulkDeleteState == "danger") {
+            var changes = angular.copy(featureService.bulkChanges);
+
+            changes.ids = featureService.features.filter(function (p) {
+                return p.checked;
+            }).map(function (p) {
+                    return p.id;
+                });
+
+            $http.post("/features/bulk-delete", changes).success(featureService.search);
         }
-
-        // convert assignee over
-        if (changes.assignee) {
-            changes.assignee.email = changes.assignee.id;
-            delete changes.assignee.id;
-            delete changes.assignee.text;
-        }
-
-        $http.put("/features", changes).success(function() {
-            featureService.search();
-        });
     };
 
     featureService.countItemsChecked = function() {
@@ -167,6 +193,8 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
     featureService.search = function () {
         featureService.checkedAll = false;
         featureService.bulkChanges = {};
+        featureService.bulkUpdateState = "primary";
+        featureService.bulkDeleteState = "secondary";
         featureService.junk = [];
         featureService.queryReturned = false;
 

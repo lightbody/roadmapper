@@ -25,6 +25,7 @@ GET         /features/:id              controllers.FeatureController.getFeature(
 PUT         /features/:id              controllers.FeatureController.updateFeature(id: Long)
 DELETE      /features/:id              controllers.FeatureController.deleteFeature(id: Long)
 PUT         /features                  controllers.FeatureController.bulkUpdate()
+POST        /features/bulk-delete      controllers.FeatureController.bulkDelete()
 
 GET         /teams                     controllers.TeamController.getAll()
 POST        /teams                     controllers.TeamController.create()
