@@ -65,8 +65,8 @@ roadmapper.factory('userAgentService', function ($window) {
 });
 
 roadmapper.factory('sorter', function ($parse) {
-    return function(predicate, reverse, tiebreaker) {
-        return function(a, b) {
+    var sorter = function (predicate, reverse, tiebreaker) {
+        return function (a, b) {
             var a1 = $parse(predicate)(a);
 
             if (a1 && a1.toLowerCase) {
@@ -89,7 +89,8 @@ roadmapper.factory('sorter', function ($parse) {
             if (!reverse) {
                 if (a1 == b1) {
                     if (tiebreaker) {
-                        return sorter(a, b, tiebreaker, reverse);
+                        console.log("TIEBREAK");
+                        return sorter(tiebreaker, reverse)(a,b);
                     } else {
                         return 0;
                     }
@@ -99,7 +100,8 @@ roadmapper.factory('sorter', function ($parse) {
             } else {
                 if (a1 == b1 && tiebreaker) {
                     if (tiebreaker) {
-                        return sorter(a, b, tiebreaker, reverse);
+                        console.log("TIEBREAK");
+                        return sorter(tiebreaker, reverse)(a,b);
                     } else {
                         return 0;
                     }
@@ -109,6 +111,8 @@ roadmapper.factory('sorter', function ($parse) {
             }
         }
     };
+
+    return  sorter;
 });
 
 
