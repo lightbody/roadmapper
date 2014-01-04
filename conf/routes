@@ -28,6 +28,7 @@ PUT         /features                  controllers.FeatureController.bulkUpdate(
 GET         /teams                     controllers.TeamController.getAll()
 POST        /teams                     controllers.TeamController.create()
 PUT         /teams/:id                 controllers.TeamController.update(id: Long)
+DELETE      /teams/:id                 controllers.TeamController.delete(id: Long)
 PUT         /teams/:id/:quarter        controllers.TeamController.updateStaffForQuarter(id: Long, quarter: Integer)
 
 GET         /tags                      controllers.TagController.search(query: String)

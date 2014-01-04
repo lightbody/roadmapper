@@ -3,6 +3,13 @@ function TeamsCtrl($scope, $rootScope, $http, $location, featureService, sorter)
         $scope.showNewTeam = true;
     };
 
+    var getTeams = function() {
+        $http.get('/teams?detailed=true')
+            .success(function (teams) {
+                $scope.teams = teams.sort(sorter("name", false, "id"));
+            });
+    };
+
     $scope.createTeam = function (team) {
         $http.post('/teams', team)
             .success(function (returnedTeam) {
@@ -73,8 +80,29 @@ function TeamsCtrl($scope, $rootScope, $http, $location, featureService, sorter)
 
     };
 
-    $http.get('/teams?detailed=true')
-        .success(function (teams) {
-            $scope.teams = teams.sort(sorter("name", false, "id"));
-        });
+    $scope.showDeleteTeamModal = function(team) {
+        $scope.selectedTeam = team;
+        $scope.deleteTeamModal = true;
+    };
+
+    $scope.deleteTeam = function (team) {
+        $http.delete("/teams/" + team.id)
+            .success(function() {
+                // Update the list of features
+                featureService.search();
+
+                // refresh the teams list
+                getTeams();
+
+                // close the modal
+                $scope.closeDeleteTeamModal();
+            });
+    };
+
+    $scope.closeDeleteTeamModal = function() {
+        $scope.selectedTeam = null;
+        $scope.deleteTeamModal = false;
+    };
+
+    getTeams();
 }

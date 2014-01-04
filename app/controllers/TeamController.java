@@ -151,4 +151,12 @@ public class TeamController extends Controller {
         return ok(Json.toJson(summary));
     }
 
+    @play.db.ebean.Transactional
+    public static Result delete(Long id) {
+        Ebean.createSqlUpdate("delete from team_staff_levels where team_id = :team").setParameter("team", id).execute();
+        Ebean.createSqlUpdate("update feature set team_id = null where team_id = :team").setParameter("team", id).execute();
+        Team.find.ref(id).delete();
+
+        return ok();
+    }
 }

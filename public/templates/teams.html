@@ -8,6 +8,7 @@
         <th>Team</th>
         <th>% Util.</th>
         <th ng-repeat="quarter in enumActiveQuarters">{{quarter.label}}</th>
+        <th ng-show="checkRole('PM')" style="width: 1em"></th>
     </tr>
     </thead>
     <tbody>
@@ -28,7 +29,7 @@
                 <a href="" class="icon-search" ng-click="findFeatures(team, quarter.id)"></a>
             </form>
         </td>
-
+        <td ng-show="checkRole('PM')"><a ng-click="showDeleteTeamModal(team)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>
 </table>
@@ -51,5 +52,20 @@
     <div class="modal-footer">
         <button class="btn btn-warning cancel" ng-click="closeNewTeam()">Cancel</button>
         <button class="btn btn-primary" ng-click="createTeam(newTeam)" type="submit">Confirm</button>
+    </div>
+</div>
+
+<div modal="deleteTeamModal" close="closeDeleteTeamModal()" options="modalOptions">
+    <div class="modal-header">
+        <h3>Delete team <em>{{selectedTeam.name}}</em>?</h3>
+    </div>
+    <div class="modal-body">
+
+        <p>Are you sure you want to do this? This operation cannot be undone!</p>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning cancel" ng-click="closeDeleteTeamModal()">Cancel</button>
+        <button class="btn btn-primary" ng-click="deleteTeam(selectedTeam)" type="submit">Confirm</button>
     </div>
 </div>
