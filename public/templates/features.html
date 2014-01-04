@@ -26,6 +26,7 @@
 <table id="feature-list" class="table table-striped table-hover" ng-show="featureService.queryReturned">
     <thead>
     <tr>
+        <th style="width: 1em" class="list-checkbox" ng-show="checkRole('PM')"><input type="checkbox" ng-model="featureService.checkedAll" ng-click="featureService.checkAll()"/></th>
         <th style="width: 2em"><a href="" ng-click="featureService.sort('id')">ID</a></th>
         <th><a href="" ng-click="featureService.sort('title')">Title</a></th>
         <th style="width: 3em" ng-show="featureService.shouldShow('state')"><a href="" ng-click="featureService.sort('state')">State</a></th>
@@ -44,6 +45,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="feature in featureService.filteredFeatures">
+        <td class="list-checkbox" ng-show="checkRole('PM')"><input type="checkbox" ng-model="feature.checked" ng-click="featureService.check(feature)"/></td>
         <td>{{feature.id}}</td>
         <td class="title">
             <a href="#/features/{{feature.id}}" ng-click="featureService.selectFeature(feature, $event)">{{feature.title}}</a>
@@ -64,6 +66,35 @@
     </tbody>
 
 </table>
+
+<div class="row bulk-edit-panel" ng-show="checkRole('PM') && featureService.countItemsChecked() > 0">
+    <div class="span8">
+        <h3>Bulk Edit</h3>
+
+        <form name="featureBulkEdit" novalidate>
+            <div class="controls controls-row">
+                <input type="text" class="span5" ng-model="featureService.junk" roadmapper-ui-select2="tagSelect2Options" roadmapper-ui-select2-model="featureService.bulkChanges.tags" placeholder="No new tags"/>
+                <select class="span3" ng-model="featureService.bulkChanges.state" ng-options="e for e in enumFeatureStates">
+                    <option value="">State unchanged</option>
+                </select>
+            </div>
+            <div class="controls controls-row">
+                <input type="hidden" class="span5" ui-select2="teamSelect2Options" ng-model="featureService.bulkChanges.team" placeholder="Team unchanged"/>
+                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="featureService.bulkChanges.assignee" placeholder="PM unchanged"/>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="span4">
+                <button class="btn btn-primary" ng-click="featureService.bulkChange()" type="submit">Change {{featureService.countItemsChecked()}} items</button>
+                <span>
+                    out of {{featureService.features.length}} total
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div modal="deleteFeatureModal" close="closeDeleteFeatureModal()" options="modalOptions">
     <div class="modal-header">

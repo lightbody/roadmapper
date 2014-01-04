@@ -3,6 +3,9 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     $scope.problemService = problemService;
     featureService.wireUpController($scope);
 
+    $scope.teamSelect2Options = makeTeamSelect2Options($scope, $http, true);
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
+
     $(window).on("resize.FeaturesCtrl", debouncer(function() {
         $scope.$digest();
     }, 1000));

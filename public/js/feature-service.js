@@ -2,6 +2,7 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
     var featureService = {
         features: [],
         featuresFeatures: [],
+        bulkChanges: {},
         numPerPage: 10,
         maxSize: 5,
         selectedFeature: null,
@@ -90,9 +91,73 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
         featureService.filteredFeatures = featureService.features.slice(begin, end);
     };
 
+    featureService.bulkChange = function() {
+        if (!featureService.bulkChanges) {
+            return;
+        }
+
+        var changes = angular.copy(featureService.bulkChanges);
+
+        changes.ids = featureService.features.filter(function (f) {
+            return f.checked;
+        }).map(function (f) {
+                return f.id;
+            });
+
+        // convert the tags to a flat string
+        if (changes.tags) {
+            changes.tags = changes.tags.map(function(tag) {
+                return tag.id;
+            });
+        }
+
+        // remove the "text" field from the team that select2 adds so that it will be well-formed
+        if (changes.team) {
+            delete changes.team.text;
+        }
+
+        // convert assignee over
+        if (changes.assignee) {
+            changes.assignee.email = changes.assignee.id;
+            delete changes.assignee.id;
+            delete changes.assignee.text;
+        }
+
+        $http.put("/features", changes).success(function() {
+            featureService.search();
+        });
+    };
+
+    featureService.countItemsChecked = function() {
+        var count = 0;
+        for (var i = 0; i < featureService.features.length; i++) {
+            if (featureService.features[i].checked) {
+                count++;
+            }
+        }
+
+        return count;
+    };
+
+    featureService.checkAll = function() {
+        featureService.checkedAll = !featureService.checkedAll;
+        for (var i = 0; i < featureService.features.length; i++) {
+            featureService.features[i].checked = featureService.checkedAll;
+        }
+    };
+
+    featureService.check = function(feature) {
+        feature.checked = !feature.checked;
+        if (!feature.checked) {
+            featureService.checkedAll = false;
+        }
+    };
+
     featureService.update = function(feature) {
         for (var i = 0; i < featureService.features.length; i++) {
             if (featureService.features[i].id == feature.id) {
+                // carry over the checked state before wiping out the local cache
+                feature.checked = featureService.features[i].checked;
                 featureService.features[i] = feature;
                 break;
             }
@@ -100,6 +165,9 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
     };
 
     featureService.search = function () {
+        featureService.checkedAll = false;
+        featureService.bulkChanges = {};
+        featureService.junk = [];
         featureService.queryReturned = false;
 
         $http.get('/features', {

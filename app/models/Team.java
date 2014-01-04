@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
+@JsonIgnoreProperties({"rank"})
 public class Team extends Model {
     public static Model.Finder<Long, Team> find = new Model.Finder<>(Long.class, Team.class);
 

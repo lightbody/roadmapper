@@ -10,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import javax.persistence.PersistenceException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -80,6 +81,66 @@ public class FeatureController extends Controller {
         return ok(Json.toJson(dressFeature(original)));
     }
 
+
+    public static Result bulkUpdate() {
+        JsonNode json = request().body().asJson();
+        FeatureBulkChange bulkChange = Json.fromJson(json, FeatureBulkChange.class);
+
+        if (bulkChange.ids == null || bulkChange.ids.size() == 0) {
+            return notFound();
+        }
+
+        if (bulkChange.assignee != null) {
+            if ("nobody".equals(bulkChange.assignee.email)) {
+                Ebean.createSqlUpdate("update feature set assignee_email = null where id in (:ids)")
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            } else {
+                Ebean.createSqlUpdate("update feature set assignee_email = :assignee where id in (:ids)")
+                        .setParameter("assignee", bulkChange.assignee.email)
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            }
+        }
+
+        if (bulkChange.state != null) {
+            Ebean.createSqlUpdate("update feature set state = :state where id in (:ids)")
+                    .setParameter("state", bulkChange.state)
+                    .setParameter("ids", bulkChange.ids)
+                    .execute();
+        }
+
+        if (bulkChange.team != null) {
+            if (bulkChange.team.id > 0) {
+                Ebean.createSqlUpdate("update feature set team_id = :team where id in (:ids)")
+                        .setParameter("team", bulkChange.team.id)
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            } else {
+                Ebean.createSqlUpdate("update feature set team_id = null where id in (:ids)")
+                        .setParameter("ids", bulkChange.ids)
+                        .execute();
+            }
+        }
+
+        if (bulkChange.tags != null) {
+            SqlUpdate tagInsert = Ebean.createSqlUpdate("insert into feature_tags (feature_id, tag) values (:id, :tag)");
+            for (String tag : bulkChange.tags) {
+                for (Long id : bulkChange.ids) {
+                    try {
+                        tagInsert.setParameter("id", id).setParameter("tag", tag).execute();
+                    } catch (PersistenceException e) {
+                        // todo: this is lame, we should be smarter but I'm lazy
+                        if (!e.getCause().getMessage().contains("duplicate key")) {
+                            throw e;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ok();
+    }
 
     public static Result find() {
         if (!request().queryString().containsKey("query")) {

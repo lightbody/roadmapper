@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"rank"})
 public class Feature extends Model {
     public static Model.Finder<Long, Feature> find = new Model.Finder<>(Long.class, Feature.class);
 
