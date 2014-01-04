@@ -22,22 +22,22 @@ function TeamsCtrl($scope, $rootScope, $http, $location, featureService, sorter)
         dialogClass: 'modal modal-team'
     };
 
-    $scope.saveTeam = function(team) {
+    $scope.saveTeam = debouncer(function(team) {
         $http.put('/teams/' + team.id, team)
             .success(function (updatedTeam) {
                 team.name = updatedTeam.name;
                 team.utilization = updatedTeam.utilization;
                 team.quarterStaffSummary = updatedTeam.quarterStaffSummary;
             }).error(LogHandler($scope));
-    };
+    }, 1000);
 
-    $scope.saveStaffLevel = function(team, quarter) {
+    $scope.saveStaffLevel = debouncer(function(team, quarter) {
         var newCount = {count: team.quarterStaffSummary[quarter].staffed};
         $http.put('/teams/' + team.id + '/' + quarter, newCount)
             .success(function (staffSummary) {
                 team.quarterStaffSummary[quarter] = staffSummary;
             }).error(LogHandler($scope));
-    };
+    }, 1000);
 
     $scope.checkStaffing = function(summary) {
         if (summary.scheduled == 0) {
