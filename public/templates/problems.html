@@ -76,10 +76,13 @@
 
         <div class="row">
             <div class="span4">
-                <button class="btn btn-primary" ng-click="problemService.bulkChange()" type="submit">Change {{problemService.countItemsChecked()}} items</button>
+                <button class="btn btn-{{problemService.bulkUpdateState}}" ng-click="problemService.bulkChange()" type="submit">Change {{problemService.countItemsChecked()}} items</button>
                 <span>
                     out of {{problemService.problems.length}} total
                 </span>
+            </div>
+            <div class="span4 text-right">
+                <button class="btn btn-{{problemService.bulkDeleteState}}" ng-click="problemService.bulkDelete()" type="submit">Delete {{problemService.countItemsChecked()}} items</button>
             </div>
         </div>
     </div>

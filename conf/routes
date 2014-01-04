@@ -17,6 +17,7 @@ GET         /problems/:id              controllers.ProblemController.getProblem(
 PUT         /problems/:id              controllers.ProblemController.updateProblem(id: Long)
 DELETE      /problems/:id              controllers.ProblemController.deleteProblem(id: Long)
 PUT         /problems                  controllers.ProblemController.bulkUpdate()
+POST        /problems/bulk-delete      controllers.ProblemController.bulkDelete()
 
 GET         /features                  controllers.FeatureController.find()
 POST        /features                  controllers.FeatureController.create()

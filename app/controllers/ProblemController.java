@@ -78,6 +78,7 @@ public class ProblemController extends Controller {
         return ok(Json.toJson(original));
     }
 
+    @play.db.ebean.Transactional
     public static Result bulkUpdate() {
         JsonNode json = request().body().asJson();
         ProblemBulkChange bulkChange = Json.fromJson(json, ProblemBulkChange.class);
@@ -133,6 +134,22 @@ public class ProblemController extends Controller {
                     }
                 }
             }
+        }
+
+        return ok();
+    }
+
+    @play.db.ebean.Transactional
+    public static Result bulkDelete() {
+        JsonNode json = request().body().asJson();
+        ProblemBulkChange bulkChange = Json.fromJson(json, ProblemBulkChange.class);
+
+        if (bulkChange.ids == null || bulkChange.ids.size() == 0) {
+            return notFound();
+        }
+
+        for (Long id : bulkChange.ids) {
+            deleteProblem(id);
         }
 
         return ok();
