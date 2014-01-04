@@ -64,6 +64,54 @@ roadmapper.factory('userAgentService', function ($window) {
     return service;
 });
 
+roadmapper.factory('sorter', function ($parse) {
+    return function(predicate, reverse, tiebreaker) {
+        return function(a, b) {
+            var a1 = $parse(predicate)(a);
+
+            if (a1 && a1.toLowerCase) {
+                a1 = a1.toLowerCase();
+            }
+
+            var b1 = $parse(predicate)(b);
+            if (b1 && b1.toLowerCase) {
+                b1 = b1.toLowerCase();
+            }
+
+            if (a1 == null) {
+                a1 = "";
+            }
+
+            if (b1 == null) {
+                b1 = "";
+            }
+
+            if (!reverse) {
+                if (a1 == b1) {
+                    if (tiebreaker) {
+                        return sorter(a, b, tiebreaker, reverse);
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return a1 > b1 ? 1 : -1;
+                }
+            } else {
+                if (a1 == b1 && tiebreaker) {
+                    if (tiebreaker) {
+                        return sorter(a, b, tiebreaker, reverse);
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return a1 > b1 ? -1 : 1;
+                }
+            }
+        }
+    };
+});
+
+
 roadmapper.directive("cmdEnter", function () {
     return function (scope, element, attrs) {
         element.bind("keydown keypress", function (event) {

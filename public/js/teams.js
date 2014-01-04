@@ -1,4 +1,4 @@
-function TeamsCtrl($scope, $rootScope, $http, $location, featureService) {
+function TeamsCtrl($scope, $rootScope, $http, $location, featureService, sorter) {
     $scope.showNewTeamModal = function() {
         $scope.showNewTeam = true;
     };
@@ -22,7 +22,7 @@ function TeamsCtrl($scope, $rootScope, $http, $location, featureService) {
         dialogClass: 'modal modal-team'
     };
 
-    $scope.saveUtilization = function(team) {
+    $scope.saveTeam = function(team) {
         $http.put('/teams/' + team.id, team)
             .success(function (updatedTeam) {
                 team.name = updatedTeam.name;
@@ -75,6 +75,6 @@ function TeamsCtrl($scope, $rootScope, $http, $location, featureService) {
 
     $http.get('/teams?detailed=true')
         .success(function (teams) {
-            $scope.teams = teams;
+            $scope.teams = teams.sort(sorter("name", false, "id"));
         });
 }

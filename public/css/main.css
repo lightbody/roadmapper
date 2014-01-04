@@ -122,6 +122,14 @@ form .select2-container {
     margin-bottom: 10px;
 }
 
+.teams-table input {
+    margin-bottom: 0;
+}
+
+.teams-table .input-mini {
+    width: 20px;
+}
+
 .modal-team {
     /* new custom width */
     width: 300px;
@@ -132,11 +140,6 @@ form .select2-container {
 .team-staff-level {
     padding: 0;
     margin: 0;
-}
-
-.team-staff-level input {
-    margin: 0;
-    width: 20px;
 }
 
 .team-staff-level-unscheduled {
