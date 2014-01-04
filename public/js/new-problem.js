@@ -4,7 +4,7 @@ function NewProblemCtrl($scope, $http, $location, problemService) {
     $("#newProblemFirstInput").focus();
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
-    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
     $scope.cmdEnter = function() {
         if ($scope.newProblemForm.$pristine || $scope.newProblemForm.$invalid) {

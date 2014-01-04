@@ -2,7 +2,7 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
     $scope.problemService = problemService;
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
-    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
     $scope.editProblem = function(problem) {
         $scope.problem = problem;

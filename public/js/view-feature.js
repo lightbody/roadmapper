@@ -7,7 +7,8 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
         features: []
     };
 
-    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
+    $scope.teamSelect2Options = makeTeamSelect2Options($scope, $http, false);
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
     var findRelatedFeatures = function() {
         if (!$scope.selectedFeature.tags) {

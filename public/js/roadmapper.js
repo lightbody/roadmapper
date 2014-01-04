@@ -219,22 +219,6 @@ roadmapper.run(function ($rootScope, $http, $q) {
         }
     };
 
-    $rootScope.teamSelect2Options = {
-        allowClear: true,
-        query: function (query) {
-            $http.get("/teams")
-                .success(function (teams) {
-                    var results = [];
-                    teams.map(function (team) {
-                        results.push({id: team.id, text: team.name})
-                    });
-                    query.callback({
-                        results: results
-                    });
-                }).error(LogHandler($rootScope));
-        }
-    };
-
     $rootScope.asigneeChoices = [];
     var updateAssigneeChoices = function() {
         $http.get("/users?role=PM")
@@ -277,6 +261,49 @@ roadmapper.run(function ($rootScope, $http, $q) {
     mixpanel.name_tag(user.name);
 });
 
+function makeTeamSelect2Options(scope, http, includeRemove) {
+    return {
+        allowClear: true,
+        sortResults: function(results, container, query) {
+            return results.sort(function(a, b) {
+                if (a.id == -1) {
+                    return -1;
+                } else if (b.id == -1) {
+                    return 1;
+                }
+
+                if (a.text == b.text) {
+                    return 0;
+                } else {
+                    return a.text > b.text ? 1 : -1;
+                }
+            });
+        },
+        formatSelection: function(object, container) {
+            return object.text;
+        },
+        formatResult: function(object, container) {
+            return object.text;
+        },
+        query: function (query) {
+            http.get("/teams")
+                .success(function (teams) {
+                    var results = [];
+                    if (includeRemove) {
+                        results.push({id: -1, text: "<strong>*** Remove team ***</strong>", rank: 1000});
+                    }
+
+                    teams.map(function (team) {
+                        results.push({id: team.id, text: team.name})
+                    });
+                    query.callback({
+                        results: results
+                    });
+                }).error(LogHandler(scope));
+        }
+    };
+}
+
 function makeFeatureSelect2Options(scope, http, includeRemove) {
     return {
         allowClear: true,
@@ -307,7 +334,7 @@ function makeFeatureSelect2Options(scope, http, includeRemove) {
                 .success(function (features) {
                     var results = [];
                     if (includeRemove) {
-                        results.push({id: "-1", text: "<strong>*** Remove feature mapping ***</strong>", rank: 1000});
+                        results.push({id: -1, text: "<strong>*** Remove feature mapping ***</strong>", rank: 1000});
                     }
 
                     if (features) {
