@@ -226,7 +226,7 @@ roadmapper.filter('longQuarter', function () {
     }
 });
 
-roadmapper.run(function ($rootScope, $http, $q) {
+roadmapper.run(function ($rootScope, $http, $q, sorter) {
     // wire up shared enums
     $rootScope.enumAllQuarters = enumAllQuarters;
     $rootScope.enumActiveQuarters = enumActiveQuarters;
@@ -239,9 +239,12 @@ roadmapper.run(function ($rootScope, $http, $q) {
     $rootScope.tagSelect2Options = {
         multiple: true,
         simple_tags: true,
+        sortResults: function(results, container, query) {
+            return results.sort(sorter("rank", false, "id"));
+        },
         createSearchChoice: function (val) {
             if (val.length > 0) {
-                return {id: val, text: val};
+                return {id: val, text: val, rank: 2};
             } else {
                 return null;
             }
@@ -255,10 +258,18 @@ roadmapper.run(function ($rootScope, $http, $q) {
             canceler = $q.defer();
             $http.get("/tags?query=" + query.term, {timeout: canceler.promise})
                 .success(function (tags) {
-                    var results = [];
-                    tags.map(function (tag) {
-                        results.push({id: tag, text: tag})
+                    console.log(tags);
+
+                    var results = tags.map(function (tag) {
+                        var rank = 3;
+                        if (tag == query.term) {
+                            rank = 1;
+                        }
+                        return {id: tag, text: tag, rank: rank};
                     });
+                    if (results.length) {
+                        results[0].rank = 1;
+                    }
                     query.callback({
                         results: results
                     });
