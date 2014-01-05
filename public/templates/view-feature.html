@@ -4,11 +4,12 @@
     </div>
 
     <div class="span4 quickNavLinks">
-        <a href="#/features/{{featureService.prevFeature.id}}" ng-show="featureService.prevFeature" ng-click="featureService.selectFeature(featureService.prevFeature, $event)">&#8592; {{featureService.prevFeature.title}}</a>
+        <!-- todo: these are disabled for now because it causes double skipping next/prev -->
+        <a _href="#/features/{{featureService.prevFeature.id}}" ng-show="featureService.prevFeature" ng-click="featureService.selectFeature(featureService.prevFeature, $event)">&#8592; {{featureService.prevFeature.title}}</a>
     </div>
 
     <div class="span4 quickNavLinks">
-        <a href="#/features/{{featureService.nextFeature.id}}" ng-show="featureService.nextFeature" ng-click="featureService.selectFeature(featureService.nextFeature, $event)">&#8594; {{featureService.nextFeature.title}}</a>
+        <a _href="#/features/{{featureService.nextFeature.id}}" ng-show="featureService.nextFeature" ng-click="featureService.selectFeature(featureService.nextFeature, $event)">&#8594; {{featureService.nextFeature.title}}</a>
     </div>
 </div>
 
