@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "users")
-@JsonIgnoreProperties({"id"})
+@JsonIgnoreProperties({"id", "text"})
 public class User extends Model {
 
     @Id

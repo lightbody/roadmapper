@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@JsonIgnoreProperties({"rank"})
+@JsonIgnoreProperties({"rank", "text"})
 public class Team extends Model {
     public static Model.Finder<Long, Team> find = new Model.Finder<>(Long.class, Team.class);
 
