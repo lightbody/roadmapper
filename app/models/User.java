@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
@@ -13,6 +14,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"id"})
 public class User extends Model {
 
     @Id
