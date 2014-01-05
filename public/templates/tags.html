@@ -9,7 +9,6 @@
     <tr>
         <th><a href="" ng-click="predicate = 'tag'; reverse=!reverse">Tag</a></th>
         <th><a href="" ng-click="predicate = 'openProblems'; reverse=!reverse">Open</a></th>
-        <th><a href="" ng-click="predicate = 'assignedProblems'; reverse=!reverse">Assigned</a></th>
         <th><a href="" ng-click="predicate = 'reviewedProblems'; reverse=!reverse">Reviewed</a></th>
         <th><a href="" ng-click="predicate = 'unresolvedProblems'; reverse=!reverse">Total</a></th>
         <th><a href="" ng-click="predicate = 'unresolvedArr'; reverse=!reverse">ARR</a></th>
@@ -21,7 +20,6 @@
     <tr ng-repeat="tag in tags | orderBy:predicate:reverse">
         <td>{{tag.tag}}</td>
         <td><a href="" ng-click="selectProblemsByTag(tag, 'OPEN')">{{tag.openProblems}}</a></td>
-        <td><a href="" ng-click="selectProblemsByTag(tag, 'ASSIGNED')">{{tag.assignedProblems}}</a></td>
         <td><a href="" ng-click="selectProblemsByTag(tag, 'REVIEWED')">{{tag.reviewedProblems}}</a></td>
         <td>{{tag.unresolvedProblems}}</td>
         <td>{{tag.unresolvedArr | noFractionCurrency}}</td>

@@ -69,7 +69,7 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
         .success(function (tags) {
             for (var i = 0; i < tags.length; i++) {
                 var tag = tags[i];
-                tag.unresolvedProblems = tag.openProblems + tag.assignedProblems + tag.reviewedProblems;
+                tag.unresolvedProblems = tag.openProblems + tag.reviewedProblems;
                 tag.unresolvedFeatures = tag.openFeatures;
             }
             $scope.tags = tags;

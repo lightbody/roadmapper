@@ -13,8 +13,6 @@ public class TagSummary {
 
     public int openProblems;
 
-    public int assignedProblems;
-
     public int reviewedProblems;
 
     public int openFeatures;

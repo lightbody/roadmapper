@@ -45,9 +45,6 @@ public class TagController extends Controller {
                 case OPEN:
                     summary.openProblems = count;
                     break;
-                case ASSIGNED:
-                    summary.assignedProblems = count;
-                    break;
                 case REVIEWED:
                     summary.reviewedProblems = count;
                     break;
