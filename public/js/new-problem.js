@@ -15,10 +15,13 @@ function NewProblemCtrl($scope, $http, $location, problemService, sorter) {
     };
 
     $scope.createProblem = function (problem) {
-        // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
         var copy = angular.copy(problem);
-        copy.tags = [];
-        problem.tags.map(function(tag) {copy.tags.push(tag.id)});
+
+        // convert tags from select2 {id: ..., text: ...} format to just simple array of raw tag value
+        copy.tags = problem.tags.map(function(tag) {return tag.id});
+
+        // set the assignee email
+        copy.assignee.email = copy.assignee.id;
 
         $scope.saving = true;
         $http.post('/problems', copy)
