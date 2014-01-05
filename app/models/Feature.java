@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
-@JsonIgnoreProperties({"rank", "text", "checked"})
+@JsonIgnoreProperties({"text", "checked"})
 public class Feature extends Model {
     public static Model.Finder<Long, Feature> find = new Model.Finder<>(Long.class, Feature.class);
 
