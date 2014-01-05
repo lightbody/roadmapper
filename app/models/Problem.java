@@ -1,5 +1,6 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"checked"})
 public class Problem extends Model {
     @Id
     public Long id;
