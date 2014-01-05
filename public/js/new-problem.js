@@ -1,9 +1,9 @@
-function NewProblemCtrl($scope, $http, $location, problemService) {
+function NewProblemCtrl($scope, $http, $location, problemService, sorter) {
     $scope.createAnother = true;
 
     $("#newProblemFirstInput").focus();
 
-    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, false, sorter);
     $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
     $scope.cmdEnter = function() {

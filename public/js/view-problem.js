@@ -1,7 +1,7 @@
-function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService, userAgentService) {
+function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootScope, problemService, userAgentService, sorter) {
     $scope.problemService = problemService;
 
-    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, false, sorter);
     $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
     $scope.editProblem = function(problem) {

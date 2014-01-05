@@ -258,8 +258,6 @@ roadmapper.run(function ($rootScope, $http, $q, sorter) {
             canceler = $q.defer();
             $http.get("/tags?query=" + query.term, {timeout: canceler.promise})
                 .success(function (tags) {
-                    console.log(tags);
-
                     var results = tags.map(function (tag) {
                         var rank = 3;
                         if (tag == query.term) {
@@ -365,17 +363,11 @@ function makeTeamSelect2Options(scope, http, includeRemove) {
     };
 }
 
-function makeFeatureSelect2Options(scope, http, includeRemove) {
+function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
     return {
         allowClear: true,
         sortResults: function(results, container, query) {
-            return results.sort(function(a, b) {
-                if (a.rank == b.rank) {
-                    return 0;
-                } else {
-                    return a.rank > b.rank ? 1 : -1;
-                }
-            });
+            return results.sort(sorter("rank", true, "id"));
         },
         formatSelection: function(object, container) {
             return object.text;
@@ -393,14 +385,11 @@ function makeFeatureSelect2Options(scope, http, includeRemove) {
 
             http.get("/features?limit=20&query=state:OPEN,text:" + term)
                 .success(function (features) {
-                    var results = [];
+                    var results = features.map(function(feature) {return {id: feature.id, text: feature.title, rank: feature.rank}});
                     if (includeRemove) {
                         results.push({id: -1, text: "<strong>*** Remove feature mapping ***</strong>", rank: 1000});
                     }
 
-                    if (features) {
-                        features.map(function(feature) {results.push({id: feature.id, text: feature.title, rank: feature.rank})});
-                    }
                     query.callback({
                         results: results
                     });

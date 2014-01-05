@@ -1,7 +1,7 @@
-function ProblemsCtrl($scope, $http, $q, $location,featureService, problemService) {
+function ProblemsCtrl($scope, $http, $q, $location,featureService, problemService, sorter) {
     problemService.wireUpController($scope);
 
-    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, true);
+    $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, true, sorter);
     $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);
 
     $(window).on("resize.ProblemsCtrl", debouncer(function() {
