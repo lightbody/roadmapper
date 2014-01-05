@@ -89,7 +89,6 @@ roadmapper.factory('sorter', function ($parse) {
             if (!reverse) {
                 if (a1 == b1) {
                     if (tiebreaker) {
-                        console.log("TIEBREAK");
                         return sorter(tiebreaker, reverse)(a,b);
                     } else {
                         return 0;
@@ -100,7 +99,6 @@ roadmapper.factory('sorter', function ($parse) {
             } else {
                 if (a1 == b1 && tiebreaker) {
                     if (tiebreaker) {
-                        console.log("TIEBREAK");
                         return sorter(tiebreaker, reverse)(a,b);
                     } else {
                         return 0;
