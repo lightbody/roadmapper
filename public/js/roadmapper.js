@@ -448,7 +448,63 @@ function LogHandler($scope) {
     }
 }
 
-function DashboardCtrl($scope, $http) {
+function DashboardCtrl($scope, $http, problemService, $location) {
+    $scope.unassignedOpenProblems = function() {
+        problemService.query = [
+            {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
+            {id: "assignedTo:null", text: "<strong>Unassigned</strong>"}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
+    $scope.openProblems = function(user) {
+        debugger;
+        problemService.query = [
+            {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
+            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
+    $scope.reviewedProblems = function(user) {
+        problemService.query = [
+            {id: "state:REVIEWED", text: "<strong>State</strong>: REVIEWED"},
+            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
+    $scope.reviewedUnmappedProblems = function(user) {
+        problemService.query = [
+            {id: "state:REVIEWED", text: "<strong>State</strong>: REVIEWED"},
+            {id: "featureId:null", text: "<strong>Feature Not Mapped</strong>"},
+            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
+    $scope.resolvedProblems = function(user) {
+        problemService.query = [
+            {id: "state:RESOLVED", text: "<strong>State</strong>: RESOLVED"},
+            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
+    $scope.notifiedProblems = function(user) {
+        problemService.query = [
+            {id: "state:NOTIFIED", text: "<strong>State</strong>: NOTIFIED"},
+            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+        ];
+        problemService.search();
+        $location.path("/problems");
+    };
+
     $http.get('/dashboard-stats')
         .success(function (stats) {
             $scope.stats = stats;

@@ -1,35 +1,78 @@
-<h1>Global Stats</h1>
+<h3>Problem Statistics</h3>
 
-<table id="global-stats" class="table table-bordered" style="width: 300px;">
-    <tbody>
-    <tr>
-        <td>New problems this week</td>
-        <td>{{stats.newProblemsThisWeek}}</td>
-    </tr>
-    <tr>
-        <td>New problems last week</td>
-        <td>{{stats.newProblemsLastWeek}}</td>
-    </tr>
-    <tr>
-        <td>Open problems from this week</td>
-        <td>{{stats.openProblemsThisWeek}}</td>
-    </tr>
-    <tr>
-        <td>Open problems from last week</td>
-        <td>{{stats.openProblemsLastWeek}}</td>
-    </tr>
-    <tr>
-        <td>Problems modified this week</td>
-        <td>{{stats.modifiedProblemsThisWeek}}</td>
-    </tr>
-    <tr>
-        <td>Problems modified last week</td>
-        <td>{{stats.modifiedProblemsLastWeek}}</td>
-    </tr>
-    </tbody>
-</table>
+<div class="row">
+    <div class="span4">
+        <table id="global-stats" class="table table-bordered">
+            <thead>
+            <tr>
+                <th></th>
+                <th>This week</th>
+                <th>Last week</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>New problems</td>
+                <td>
+                    <span tooltip="{{stats.newProblemsThisWeek.revenue | noFractionCurrency}}">{{stats.newProblemsThisWeek.count | number}}</span>
+                </td>
+                <td>
+                    <span tooltip="{{stats.newProblemsLastWeek.revenue | noFractionCurrency}}">{{stats.newProblemsLastWeek.count | number}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Modified problems</td>
+                <td>
+                    <span tooltip="{{stats.modifiedProblemsThisWeek.revenue | noFractionCurrency}}">{{stats.modifiedProblemsThisWeek.count | number}}</span>
+                </td>
+                <td>
+                    <span tooltip="{{stats.modifiedProblemsLastWeek.revenue | noFractionCurrency}}">{{stats.modifiedProblemsLastWeek.count | number}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-<h1>Recent Updates to Roadmapper</h1>
+        There are <a ng-click="unassignedOpenProblems()" tooltip="{{stats.unassignedOpenProblems.revenue | noFractionCurrency}}">{{stats.unassignedOpenProblems.count | number}}</a> unassigned, open problems.
+    </div>
+    <div class="span8">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Open</th>
+                <th>... this week</th>
+                <th>Reviewed</th>
+                <th>... unmapped</th>
+                <th>Resolved</th>
+                <th>Notified</th>
+            </tr>
+            </thead>
+            <tr ng-repeat="(email, stats) in stats.assigneeStats | orderBy:'email'">
+                <td>{{email}}</td>
+                <td>
+                    <a ng-click="openProblems(email)" tooltip="{{stats.openProblems.revenue | noFractionCurrency}}">{{stats.openProblems.count | number}}</a>
+                </td>
+                <td>
+                    <span tooltip="{{stats.openProblemsThisWeek.revenue | noFractionCurrency}}">{{stats.openProblemsThisWeek.count | number}}</span>
+                </td>
+                <td>
+                    <a ng-click="reviewedProblems(email)" tooltip="{{stats.reviewedProblems.revenue | noFractionCurrency}}">{{stats.reviewedProblems.count | number}}</a>
+                </td>
+                <td>
+                    <a ng-click="reviewedUnmappedProblems(email)" tooltip="{{stats.reviewedUnmappedProblems.revenue | noFractionCurrency}}">{{stats.reviewedUnmappedProblems.count | number}}</a>
+                </td>
+                <td>
+                    <a ng-click="resolvedProblems(email)" tooltip="{{stats.resolvedProblems.revenue | noFractionCurrency}}">{{stats.resolvedProblems.count | number}}</a>
+                </td>
+                <td>
+                    <a ng-click="notifiedProblems(email)" tooltip="{{stats.notifiedProblems.revenue | noFractionCurrency}}">{{stats.notifiedProblems.count | number}}</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<h3>Recent Updates</h3>
 
 <p>
     The following is the changelog for the roadmapper tool. Want to see some more improvements? Open an issue on <a href="http://github.com/lightbody/roadmapper">Github</a>!

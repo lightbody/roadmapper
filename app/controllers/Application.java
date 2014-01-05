@@ -1,11 +1,9 @@
 package controllers;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.SqlRow;
 import com.fasterxml.jackson.databind.JsonNode;
-import models.DashboardStats;
-import models.ProblemState;
-import models.User;
-import models.UserRole;
+import models.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -103,37 +101,74 @@ public class Application extends Controller {
         final DateTime startOfLastWeek = input.withTimeAtStartOfDay().minusWeeks(2).withDayOfWeek(DateTimeConstants.SUNDAY);
         final DateTime endOfLastWeek = input.withTimeAtStartOfDay().minusWeeks(1).withDayOfWeek(DateTimeConstants.SUNDAY);
 
-        stats.newProblemsThisWeek = Ebean.createSqlQuery("select count(*) from problem where date between :start and :end")
+        stats.newProblemsThisWeek = new ProblemCount(Ebean.createSqlQuery("select count(*) as count, sum(annual_revenue) as revenue from problem where date between :start and :end")
                 .setParameter("start", endOfLastWeek)
                 .setParameter("end", input)
-                .findUnique().getInteger("count");
+                .findUnique());
 
-        stats.newProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where date between :start and :end")
+        stats.newProblemsLastWeek = new ProblemCount(Ebean.createSqlQuery("select count(*) as count, sum(annual_revenue) as revenue from problem where date between :start and :end")
                 .setParameter("start", startOfLastWeek)
                 .setParameter("end", endOfLastWeek)
-                .findUnique().getInteger("count");
+                .findUnique());
 
-        stats.openProblemsThisWeek = Ebean.createSqlQuery("select count(*) from problem where state = :state and date between :start and :end")
+        stats.modifiedProblemsThisWeek = new ProblemCount(Ebean.createSqlQuery("select count(*) as count, sum(annual_revenue) as revenue from problem where last_modified != date and last_modified between :start and :end")
+                .setParameter("start", endOfLastWeek)
+                .setParameter("end", input)
+                .findUnique());
+
+        stats.modifiedProblemsLastWeek = new ProblemCount(Ebean.createSqlQuery("select count(*) as count, sum(annual_revenue) as revenue from problem where last_modified != date and last_modified between :start and :end")
+                .setParameter("start", startOfLastWeek)
+                .setParameter("end", endOfLastWeek)
+                .findUnique());
+
+        stats.unassignedOpenProblems = new ProblemCount(Ebean.createSqlQuery("select count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and assignee_email is null")
+                .setParameter("state", ProblemState.OPEN)
+                .findUnique());
+
+        List<SqlRow> rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and assignee_email is not null group by assignee_email ")
+                .setParameter("state", ProblemState.OPEN)
+                .setParameter("me", request().username())
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).openProblems = new ProblemCount(row);
+        }
+
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) from problem where state = :state and date between :start and :end and assignee_email is not null group by assignee_email ")
                 .setParameter("state", ProblemState.OPEN)
                 .setParameter("start", endOfLastWeek)
                 .setParameter("end", input)
-                .findUnique().getInteger("count");
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).openProblemsThisWeek = new ProblemCount(row);
+        }
 
-        stats.openProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where state = :state and date between :start and :end")
-                .setParameter("state", ProblemState.OPEN)
-                .setParameter("start", startOfLastWeek)
-                .setParameter("end", endOfLastWeek)
-                .findUnique().getInteger("count");
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and assignee_email is not null group by assignee_email ")
+                .setParameter("state", ProblemState.REVIEWED)
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).reviewedProblems = new ProblemCount(row);
+        }
 
-        stats.modifiedProblemsThisWeek= Ebean.createSqlQuery("select count(*) from problem where last_modified != date and last_modified between :start and :end")
-                .setParameter("start", endOfLastWeek)
-                .setParameter("end", input)
-                .findUnique().getInteger("count");
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and feature_id is null and assignee_email is not null group by assignee_email ")
+                .setParameter("state", ProblemState.REVIEWED)
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).reviewedUnmappedProblems = new ProblemCount(row);
+        }
 
-        stats.modifiedProblemsLastWeek = Ebean.createSqlQuery("select count(*) from problem where last_modified != date and last_modified between :start and :end")
-                .setParameter("start", startOfLastWeek)
-                .setParameter("end", endOfLastWeek)
-                .findUnique().getInteger("count");
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and feature_id is null and assignee_email is not null group by assignee_email ")
+                .setParameter("state", ProblemState.RESOLVED)
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).resolvedProblems = new ProblemCount(row);
+        }
+
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and feature_id is null and assignee_email is not null group by assignee_email ")
+                .setParameter("state", ProblemState.NOTIFIED)
+                .findList();
+        for (SqlRow row : rows) {
+            stats.getAssignee(row.getString("assignee_email")).notifiedProblems = new ProblemCount(row);
+        }
 
         return ok(Json.toJson(stats));
     }
