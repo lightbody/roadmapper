@@ -48,7 +48,7 @@
             </tr>
             </thead>
             <tr ng-repeat="(email, stats) in stats.assigneeStats | orderBy:'email'">
-                <td>{{email}}</td>
+                <td>{{nameFromEmail(email)}}</td>
                 <td>
                     <a ng-click="openProblems(email)" tooltip="{{stats.openProblems.revenue | noFractionCurrency}}">{{stats.openProblems.count | number}}</a>
                 </td>

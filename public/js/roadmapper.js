@@ -278,16 +278,11 @@ roadmapper.run(function ($rootScope, $http, $q, sorter) {
         }
     };
 
-    $rootScope.asigneeChoices = [];
-    var updateAssigneeChoices = function() {
-        $http.get("/users?role=PM")
-            .success(function (users) {
-                var results = [];
-                users.map(function(user) {results.push({id: user.email, text: user.name})});
-                $rootScope.asigneeChoices = results;
-            }).error(LogHandler($rootScope));
-    };
-    updateAssigneeChoices();
+    $rootScope.productManagers = [];
+    $http.get("/users?role=PM")
+        .success(function (users) {
+            $rootScope.productManagers = users;
+        }).error(LogHandler($rootScope));
 
     // set up i18n bundle
     $rootScope.i18n = i18n;
@@ -399,7 +394,9 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
 }
 
 function makeAssigneeSelect2Options(scope, includeRemove) {
-    var data = angular.copy(scope.asigneeChoices);
+    var data = scope.productManagers.map(function(user) {
+        return {id: user.email, text: user.name};
+    });
     if (includeRemove) {
         data.push({id: "nobody", text: "<strong>*** Remove assignee ***</strong>"});
     }
@@ -449,6 +446,18 @@ function LogHandler($scope) {
 }
 
 function DashboardCtrl($scope, $http, problemService, $location) {
+    var nameFromEmail = function(email) {
+        var match = $scope.productManagers.filter(function(user) {
+            return user.email == email;
+        });
+        if (match.length > 0) {
+            return match[0].name;
+        } else {
+            return email;
+        }
+    };
+    $scope.nameFromEmail = nameFromEmail;
+
     $scope.unassignedOpenProblems = function() {
         problemService.query = [
             {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
@@ -458,48 +467,48 @@ function DashboardCtrl($scope, $http, problemService, $location) {
         $location.path("/problems");
     };
 
-    $scope.openProblems = function(user) {
+    $scope.openProblems = function(email) {
         debugger;
         problemService.query = [
             {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
-            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+            {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
         ];
         problemService.search();
         $location.path("/problems");
     };
 
-    $scope.reviewedProblems = function(user) {
+    $scope.reviewedProblems = function(email) {
         problemService.query = [
             {id: "state:REVIEWED", text: "<strong>State</strong>: REVIEWED"},
-            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+            {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
         ];
         problemService.search();
         $location.path("/problems");
     };
 
-    $scope.reviewedUnmappedProblems = function(user) {
+    $scope.reviewedUnmappedProblems = function(email) {
         problemService.query = [
             {id: "state:REVIEWED", text: "<strong>State</strong>: REVIEWED"},
             {id: "featureId:null", text: "<strong>Feature Not Mapped</strong>"},
-            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+            {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
         ];
         problemService.search();
         $location.path("/problems");
     };
 
-    $scope.resolvedProblems = function(user) {
+    $scope.resolvedProblems = function(email) {
         problemService.query = [
             {id: "state:RESOLVED", text: "<strong>State</strong>: RESOLVED"},
-            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+            {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
         ];
         problemService.search();
         $location.path("/problems");
     };
 
-    $scope.notifiedProblems = function(user) {
+    $scope.notifiedProblems = function(email) {
         problemService.query = [
             {id: "state:NOTIFIED", text: "<strong>State</strong>: NOTIFIED"},
-            {id: "assignedTo:" + user, text: "<strong>Assigned To: </strong>" + user}
+            {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
         ];
         problemService.search();
         $location.path("/problems");

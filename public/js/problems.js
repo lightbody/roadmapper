@@ -90,10 +90,10 @@ function ProblemsCtrl($scope, $http, $q, $location,featureService, problemServic
             } else if (term.toLowerCase().indexOf("un") == 0) {
                 results.push({id: "assignedTo:null", text: "<strong>Unassigned</strong>"});
             } else if (term.length >= 3) {
-                $scope.asigneeChoices.map(function(entry) {
-                    if (entry.id.toLowerCase().indexOf(term.toLowerCase()) != -1
-                        || entry.text.toLowerCase().indexOf(term.toLowerCase()) != -1) {
-                        results.push({id: "assignedTo:" + entry.id, text: "<strong>Assigned To</strong>: " + entry.text});
+                $scope.productManagers.map(function(user) {
+                    if (user.email.toLowerCase().indexOf(term.toLowerCase()) != -1
+                        || user.name.toLowerCase().indexOf(term.toLowerCase()) != -1) {
+                        results.push({id: "assignedTo:" + user.email, text: "<strong>Assigned To</strong>: " + user.name});
                     }
                 });
             }
