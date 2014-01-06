@@ -1,6 +1,8 @@
 package controllers;
 
 import com.newrelic.api.agent.NewRelic;
+import models.User;
+import models.UserRole;
 import play.Configuration;
 import play.Play;
 import play.libs.WS;
@@ -48,5 +50,15 @@ public class Secured extends Security.Authenticator {
     @Override
     public Result onUnauthorized(Http.Context ctx) {
         return redirect(Play.application().configuration().getString("oauth.authorizeUrl"));
+    }
+
+    /**
+     * Checks that the current user has the given `role`.
+     * @param role the role to check the current user for
+     * @return true if the user has the given role, false otherwise.
+     */
+    public static boolean checkRole(UserRole role) {
+        User user = User.findByEmail(Http.Context.current().request().username());
+        return user != null && role == user.role;
     }
 }
