@@ -21,7 +21,9 @@ function NewProblemCtrl($scope, $http, $location, problemService, sorter) {
         copy.tags = problem.tags.map(function(tag) {return tag.id});
 
         // set the assignee email
-        copy.assignee.email = copy.assignee.id;
+        if (copy.assignee) {
+            copy.assignee.email = copy.assignee.id;
+        }
 
         $scope.saving = true;
         $http.post('/problems', copy)
