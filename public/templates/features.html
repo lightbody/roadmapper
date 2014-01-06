@@ -104,11 +104,25 @@
         <h3>Delete feature <em>{{selectedFeature.title}}</em>?</h3>
     </div>
     <div class="modal-body">
-
-        <p>Are you sure you want to do this? This operation cannot be undone!</p>
+        <p>Are you sure you want to delete this feature? This operation cannot be undone!</p>
 
         <p ng-show="selectedFeature.problemCount > 0">If you proceed, the feature will be disassociated from {{selectedFeature.problemCount}} problem<span ng-show="selectedFeature.problemCount > 1">s</span> worth ${{selectedFeature.problemRevenue}} ARR.</p>
 
+        <form ng-show="selectedFeature.problemCount > 0">
+            <h4>Options</h4>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="copyTagsToProblems" /> Copy this feature's tags to all related problems before deleting
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Associate this feature's problems with another feature before deleting:
+                    <input type="hidden" class="span5" ui-select2="featureSelect2Options" ng-model="featureForProblems" placeholder="Not selected"/>
+                </label>
+            </div>
+        </form>
     </div>
     <div class="modal-footer">
         <button class="btn btn-warning cancel" ng-click="closeDeleteFeatureModal()">Cancel</button>

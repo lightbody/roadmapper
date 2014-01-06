@@ -23,7 +23,7 @@ GET         /features                  controllers.FeatureController.find()
 POST        /features                  controllers.FeatureController.create()
 GET         /features/:id              controllers.FeatureController.getFeature(id: Long)
 PUT         /features/:id              controllers.FeatureController.updateFeature(id: Long)
-DELETE      /features/:id              controllers.FeatureController.deleteFeature(id: Long)
+POST        /features/:id              controllers.FeatureController.deleteFeature(id: Long)
 PUT         /features                  controllers.FeatureController.bulkUpdate()
 POST        /features/bulk-delete      controllers.FeatureController.bulkDelete()
 

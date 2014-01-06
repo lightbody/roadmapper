@@ -158,10 +158,17 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     $scope.showDeleteFeatureModal = function(feature) {
         $scope.selectedFeature = feature;
         $scope.deleteFeatureModal = true;
+        $scope.copyTagsToProblems = false;
+        $scope.featureForProblems = null;
+        $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
     };
 
     $scope.deleteFeature = function (feature) {
-        $http.delete('/features/' + feature.id)
+        var options = { copyTagsToProblems: $scope.copyTagsToProblems };
+        if ($scope.featureForProblems != null) {
+            options.featureForProblems = $scope.featureForProblems.id;
+        }
+        $http.post('/features/' + feature.id, options)
             .success(function () {
                 // Update the list of features
                 featureService.search();
@@ -176,5 +183,7 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
     $scope.closeDeleteFeatureModal = function() {
         $scope.selectedFeature = null;
         $scope.deleteFeatureModal = false;
+        $scope.copyTagsToProblems = false;
+        $scope.featureForProblems = null;
     };
 }
