@@ -47,6 +47,11 @@ public class FeatureController extends Controller {
 
     @play.db.ebean.Transactional
     public static Result updateFeature(Long id) {
+        // Only `PM`s can update features
+        if (!Secured.checkRole(UserRole.PM)) {
+            return forbidden();
+        }
+
         Feature original = Feature.find.byId(id);
 
         if (original == null) {
@@ -311,6 +316,11 @@ public class FeatureController extends Controller {
     }
 
     public static Result create() {
+        // Only `PM`s can create features
+        if (!Secured.checkRole(UserRole.PM)) {
+            return forbidden();
+        }
+
         JsonNode json = request().body().asJson();
 
         Feature feature = Json.fromJson(json, Feature.class);
@@ -338,17 +348,60 @@ public class FeatureController extends Controller {
 
     @play.db.ebean.Transactional
     public static Result deleteFeature(Long id) {
-        // Dissociate related problems and tags
-        SqlUpdate dissociateProblems = Ebean.createSqlUpdate("update problem set feature_id = NULL where feature_id = :feature_id");
-        dissociateProblems.setParameter("feature_id", id);
-        dissociateProblems.execute();
+        // Only `PM`s can delete features
+        if (!Secured.checkRole(UserRole.PM)) {
+            return forbidden();
+        }
 
+        Feature feature = Feature.find.ref(id);
+
+        // Make sure the feature exists before doing any updates
+        if (feature == null) {
+            return notFound();
+        }
+
+        // Check the options on the delete
+        JsonNode json = request().body().asJson();
+        if (json != null && json.findPath("copyTagsToProblems").asBoolean()) {
+            String copyFeatureTagsSql = "INSERT INTO problem_tags " +
+                    "SELECT p.id, ft.tag " +
+                    "FROM feature_tags ft, problem p " +
+                    "WHERE ft.feature_id = :feature_id " +
+                    "AND p.feature_id = :feature_id2 " +
+                    "AND ft.tag NOT IN (SELECT tag FROM problem_tags WHERE problem_id = p.id)";
+            SqlUpdate copyTags = Ebean.createSqlUpdate(copyFeatureTagsSql);
+            copyTags.setParameter("feature_id", id);
+            copyTags.setParameter("feature_id2", id);
+            copyTags.execute();
+        }
+        Feature target = null;
+        if (json != null && json.findPath("featureForProblems").asLong(-1) != -1) {
+            // Move related problems to a new feature if the feature exists
+            Long targetId = json.findPath("featureForProblems").asLong();
+            target = Feature.find.ref(targetId);
+        }
+        if (target != null) {
+            // Associate related problems to target
+            SqlUpdate moveProblems = Ebean.createSqlUpdate("update problem set feature_id = :target_id where feature_id = :feature_id");
+            moveProblems.setParameter("feature_id", id);
+            moveProblems.setParameter("target_id", target.id);
+            moveProblems.execute();
+        }
+        else {
+            // Dissociate related problems
+            SqlUpdate dissociateProblems = Ebean.createSqlUpdate("update problem set feature_id = NULL where feature_id = :feature_id");
+            dissociateProblems.setParameter("feature_id", id);
+            dissociateProblems.execute();
+        }
+
+        // Delete the feature's tags
         SqlUpdate deleteTags = Ebean.createSqlUpdate("delete from feature_tags where feature_id = :feature_id");
         deleteTags.setParameter("feature_id", id);
         deleteTags.execute();
 
         // Delete the feature
-        Feature.find.ref(id).delete();
-        return ok("{\"id\":" + id + "}");
+        feature.delete();
+
+        return noContent();
     }
 }
