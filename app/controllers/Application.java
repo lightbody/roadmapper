@@ -156,14 +156,14 @@ public class Application extends Controller {
             stats.getAssignee(row.getString("assignee_email")).reviewedUnmappedProblems = new ProblemCount(row);
         }
 
-        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and feature_id is null and assignee_email is not null group by assignee_email ")
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and assignee_email is not null group by assignee_email ")
                 .setParameter("state", ProblemState.RESOLVED)
                 .findList();
         for (SqlRow row : rows) {
             stats.getAssignee(row.getString("assignee_email")).resolvedProblems = new ProblemCount(row);
         }
 
-        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and feature_id is null and assignee_email is not null group by assignee_email ")
+        rows = Ebean.createSqlQuery("select assignee_email, count(*) as count, sum(annual_revenue) as revenue from problem where state = :state and assignee_email is not null group by assignee_email ")
                 .setParameter("state", ProblemState.NOTIFIED)
                 .findList();
         for (SqlRow row : rows) {
