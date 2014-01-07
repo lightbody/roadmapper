@@ -380,7 +380,13 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
 
             http.get("/features?limit=20&query=state:OPEN,text:" + term)
                 .success(function (features) {
-                    var results = features.map(function(feature) {return {id: feature.id, text: feature.title, rank: feature.rank}});
+                    var results;
+                    if (features) {
+                        results = features.map(function(feature) {return {id: feature.id, text: feature.title, rank: feature.rank}})
+                    } else {
+                        results = [];
+                    }
+
                     if (includeRemove) {
                         results.push({id: -1, text: "<strong>*** Remove feature mapping ***</strong>", rank: 1000});
                     }

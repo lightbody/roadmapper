@@ -1,4 +1,4 @@
-function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootScope) {
+function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootScope, sorter) {
     $scope.featureService = featureService;
     $scope.problemService = problemService;
     featureService.wireUpController($scope);
@@ -160,7 +160,7 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
         $scope.deleteFeatureModal = true;
         $scope.copyTagsToProblems = false;
         $scope.featureForProblems = null;
-        $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http);
+        $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, false, sorter);
     };
 
     $scope.deleteFeature = function (feature) {
