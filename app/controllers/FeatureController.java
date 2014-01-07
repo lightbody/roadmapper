@@ -10,7 +10,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import javax.persistence.PersistenceException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -129,17 +128,17 @@ public class FeatureController extends Controller {
         }
 
         if (bulkChange.tags != null) {
+            // delete the tags in case they already exist...
+            Ebean.createSqlUpdate("delete from feature_tags where feature_id in (:ids) and tag in (:tags)")
+                    .setParameter("ids", bulkChange.ids)
+                    .setParameter("tags", bulkChange.tags)
+                    .execute();
+
+            // .. and now re-insert them
             SqlUpdate tagInsert = Ebean.createSqlUpdate("insert into feature_tags (feature_id, tag) values (:id, :tag)");
             for (String tag : bulkChange.tags) {
                 for (Long id : bulkChange.ids) {
-                    try {
-                        tagInsert.setParameter("id", id).setParameter("tag", tag).execute();
-                    } catch (PersistenceException e) {
-                        // todo: this is lame, we should be smarter but I'm lazy
-                        if (!e.getCause().getMessage().contains("duplicate key")) {
-                            throw e;
-                        }
-                    }
+                    tagInsert.setParameter("id", id).setParameter("tag", tag).execute();
                 }
             }
         }
