@@ -45,8 +45,8 @@ object VersionedAsset {
           case _ => None
         }
       }
-//      modified.map(value.file + "?" + value.versionParam + "=" + _).getOrElse(value.file)
-      value.file
+      modified.map(value.file + "?" + value.versionParam + "=" + _).getOrElse(value.file)
+//      value.file
     }
   }
 
