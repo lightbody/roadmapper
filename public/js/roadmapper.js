@@ -487,7 +487,6 @@ function DashboardCtrl($scope, $http, problemService, $location) {
     };
 
     $scope.openProblems = function(email) {
-        debugger;
         problemService.query = [
             {id: "state:OPEN", text: "<strong>State</strong>: OPEN"},
             {id: "assignedTo:" + email, text: "<strong>Assigned To: </strong>" + nameFromEmail(email)}
