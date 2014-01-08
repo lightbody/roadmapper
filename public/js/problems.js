@@ -18,6 +18,8 @@ function ProblemsCtrl($scope, $http, $q, $location,featureService, problemServic
             return "00000" + tag;
         } else if (tag.indexOf("assignedTo:") == 0) {
             return "00111" + tag;
+        } else if (tag.indexOf("reporter:") == 0) {
+            return "00122" + tag;
         } else if (tag.indexOf("featureId:") == 0) {
             return "11111" + tag;
         } else if (tag.indexOf("accountId:") == 0) {
