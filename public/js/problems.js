@@ -1,5 +1,6 @@
 function ProblemsCtrl($scope, $http, $q, $location,featureService, problemService, sorter) {
     problemService.wireUpController($scope);
+    featureService.wireUpController($scope);
 
     $scope.featureSelect2Options = makeFeatureSelect2Options($scope, $http, true, sorter);
     $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, true);

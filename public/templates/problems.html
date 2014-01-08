@@ -50,7 +50,7 @@
         </td>
         <td style="text-align: right"><span ng-show="problem.annualRevenue > 0">{{problem.annualRevenue | noFractionCurrency}}</span></td>
         <td class="flex" ng-show="problemService.shouldShow('customerName')"><a href="mailto:{{problem.customerEmail}}">{{problem.customerName | truncate:15}}</a></td>
-        <td class="flex" ng-show="problemService.shouldShow('feature.name')"><a ng-click="selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
+        <td class="flex" ng-show="problemService.shouldShow('feature.name')"><a ng-click="featureService.selectFeature(problem.feature)" ng-show="problem.feature">{{problem.feature.title | truncate:30}}</a></td>
         <td ng-show="problemService.shouldShow('lastModified')"><span tooltip="{{problem.lastModifiedBy.name}} on {{problem.lastModified | date}}" tooltip-placement="left">{{problem.lastModified | date:'MMM d'}}</span></td>
         <td ng-show="checkRole('PM')"><a href="" ng-click="showDeleteProblemModal(problem)"><i class="icon-trash"></i></a></td>
     </tr>
