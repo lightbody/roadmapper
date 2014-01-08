@@ -21,9 +21,17 @@ public class TagController extends Controller {
         List<SqlRow> rows;
         Map<String, TagSummary> map = new HashMap<>();
 
+        String assignee = request().getQueryString("assignee");
+
         // get initial set of unresolved tags to start
-        q = Ebean.createSqlQuery("select pt.tag, sum(annual_revenue) from problem_tags pt, problem p where pt.problem_id = p.id and p.state in (:states) group by pt.tag order by count(*) desc");
+        q = Ebean.createSqlQuery("select pt.tag, sum(annual_revenue) from problem_tags pt, problem p " +
+                "where pt.problem_id = p.id and p.state in (:states) " +
+                (assignee != null ? "and p.assignee_email = :assignee " : "") +
+                "group by pt.tag order by count(*) desc");
         q.setParameter("states", ProblemState.unresolvedStates());
+        if (assignee != null) {
+            q.setParameter("assignee", assignee);
+        }
         rows = q.findList();
         for (SqlRow row : rows) {
             String tag = row.getString("tag");
@@ -32,8 +40,15 @@ public class TagController extends Controller {
         }
 
         // now weave in problem counts
-        q = Ebean.createSqlQuery("select pt.tag, p.state, count(*) from problem_tags pt, problem p where pt.problem_id = p.id and p.state in (:states) group by pt.tag, p.state order by count(*) desc");
+        q = Ebean.createSqlQuery("select pt.tag, p.state, count(*) from problem_tags pt, problem p" +
+                " where pt.problem_id = p.id and p.state in (:states)" +
+                (assignee != null ? "and p.assignee_email = :assignee " : "") +
+                " group by pt.tag, p.state" +
+                " order by count(*) desc");
         q.setParameter("states", ProblemState.unresolvedStates());
+        if (assignee != null) {
+            q.setParameter("assignee", assignee);
+        }
         rows = q.findList();
         for (SqlRow row : rows) {
             String tag = row.getString("tag");
@@ -52,8 +67,14 @@ public class TagController extends Controller {
         }
 
         // now weave in feature counts
-        q = Ebean.createSqlQuery("select ft.tag, f.state, count(*) from feature_tags ft, feature f  where ft.feature_id = f.id and f.state not in (:states) group by ft.tag, f.state order by count(*) desc");
+        q = Ebean.createSqlQuery("select ft.tag, f.state, count(*) from feature_tags ft, feature f " +
+                " where ft.feature_id = f.id and f.state not in (:states)" +
+                (assignee != null ? "and f.assignee_email = :assignee " : "") +
+                " group by ft.tag, f.state order by count(*) desc");
         q.setParameter("states", FeatureState.resolvedStates());
+        if (assignee != null) {
+            q.setParameter("assignee", assignee);
+        }
         rows = q.findList();
         for (SqlRow row : rows) {
             String tag = row.getString("tag");

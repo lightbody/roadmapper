@@ -3,14 +3,31 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
     $scope.predicate = "unresolvedArr";
     $scope.reverse = true;
 
+    $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
+
+    $scope.$watch("assignee", function(newValue, oldValue) {
+        newValue = newValue || "";
+        oldValue = oldValue || "";
+
+        if (newValue != oldValue) {
+            getTagSummaries(newValue.id);
+        }
+    });
+
     $scope.selectProblemsByTag = function(tag, state) {
         problemService.query = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        if ($scope.assignee.id) {
+            problemService.query.push({id: "assignedTo:" + $scope.assignee.id, text: "<strong>Assigned To</strong>: " + $scope.assignee.text})
+        }
         problemService.search();
         $location.path("/problems");
     };
 
     $scope.selectFeaturesByTag = function(tag, state) {
         featureService.query = [{id: tag.tag, text: "<strong>Tag</strong>: " + tag.tag}, {id: "state:" + state, text: "<strong>State</strong>: " + state}]
+        if ($scope.assignee.id) {
+            featureService.query.push({id: "assignedTo:" + $scope.assignee.id, text: "<strong>Assigned To</strong>: " + $scope.assignee.text})
+        }
         featureService.search();
         $location.path("/features");
     };
@@ -65,13 +82,18 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
         $scope.deleteTagModal = false;
     };
 
-    $http.get('/tags/summaries')
-        .success(function (tags) {
-            for (var i = 0; i < tags.length; i++) {
-                var tag = tags[i];
-                tag.unresolvedProblems = tag.openProblems + tag.reviewedProblems;
-                tag.unresolvedFeatures = tag.openFeatures;
-            }
-            $scope.tags = tags;
-        });
+    var getTagSummaries = function (assignee) {
+        $scope.tags = [];
+        $http.get('/tags/summaries' + (assignee ? "?assignee=" + assignee : ""))
+            .success(function (tags) {
+                for (var i = 0; i < tags.length; i++) {
+                    var tag = tags[i];
+                    tag.unresolvedProblems = tag.openProblems + tag.reviewedProblems;
+                    tag.unresolvedFeatures = tag.openFeatures;
+                }
+                $scope.tags = tags;
+            });
+    };
+
+    getTagSummaries();
 }

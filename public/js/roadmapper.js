@@ -400,13 +400,6 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
 }
 
 function makeAssigneeSelect2Options(scope, includeRemove) {
-    var data = scope.productManagers.map(function(user) {
-        return {id: user.email, text: user.name};
-    });
-    if (includeRemove) {
-        data.push({id: "nobody", text: "<strong>*** Remove assignee ***</strong>"});
-    }
-
     return {
         allowClear: true,
         sortResults: function(results, container, query) {
@@ -430,7 +423,27 @@ function makeAssigneeSelect2Options(scope, includeRemove) {
         formatResult: function(object, container) {
             return object.text;
         },
-        data: data
+        query: function (query) {
+            var data = scope.productManagers.map(function (user) {
+                return {id: user.email, text: user.name};
+            });
+
+            if (query.term) {
+                var term = query.term.toLowerCase();
+                data = data.filter(function (e) {
+                    return e.id.toLowerCase().indexOf(term) != -1 ||
+                        e.text.toLowerCase().indexOf(term) != -1;
+                });
+            }
+
+            if (includeRemove) {
+                data.push({id: "nobody", text: "<strong>*** Remove assignee ***</strong>"});
+            }
+
+            query.callback({
+                results: data
+            });
+        }
     };
 }
 

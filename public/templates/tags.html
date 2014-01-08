@@ -1,8 +1,18 @@
+<div class="row">
+    <div class="span8">
+        <form name="tagFilterForm" novalidate>
+            <div class="controls controls-row">
+                <input type="hidden" class="span3" ui-select2="assigneeSelect2Options" ng-model="assignee" placeholder="Filter by assignee"/>
+            </div>
+        </form>
+    </div>
+</div>
+
 <table class="table table-striped table-hover">
     <thead>
     <tr>
         <th></th>
-        <th colspan="5">Problems</th>
+        <th colspan="4">Problems</th>
         <th>Features</th>
         <th ng-show="checkRole('PM')"></th>
     </tr>
@@ -13,7 +23,7 @@
         <th><a href="" ng-click="predicate = 'unresolvedProblems'; reverse=!reverse">Total</a></th>
         <th><a href="" ng-click="predicate = 'unresolvedArr'; reverse=!reverse">ARR</a></th>
         <th><a href="" ng-click="predicate = 'openFeatures'; reverse=!reverse">Open</a></th>
-        <th ng-show="checkRole('PM')"></th>
+        <th ng-show="checkRole('PM')" ng-hide="assignee.id"></th>
     </tr>
     </thead>
     <tbody>
@@ -24,7 +34,7 @@
         <td>{{tag.unresolvedProblems}}</td>
         <td>{{tag.unresolvedArr | noFractionCurrency}}</td>
         <td><a href="" ng-click="selectFeaturesByTag(tag, 'OPEN')">{{tag.openFeatures}}</a></td>
-        <td ng-show="checkRole('PM')"><a href="" ng-click="showEditTagModal(tag)"><i class="icon-edit"></i></a> <a href="" ng-click="showDeleteTagModal(tag)"><i class="icon-trash"></i></a></td>
+        <td ng-show="checkRole('PM')" ng-hide="assignee.id"><a href="" ng-click="showEditTagModal(tag)"><i class="icon-edit"></i></a> <a href="" ng-click="showDeleteTagModal(tag)"><i class="icon-trash"></i></a></td>
     </tr>
     </tbody>
 </table>
