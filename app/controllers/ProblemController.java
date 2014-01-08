@@ -260,7 +260,6 @@ public class ProblemController extends Controller {
         }
 
         if (tagsSeen > 0) {
-            System.out.println("tagsSeen = " + tagsSeen);
             Set<Long> problemIds = new HashSet<>();
             for (Long problemId : tagMatchCount.keySet()) {
                 System.out.println("problemId  = " + problemId + "; count = " + tagMatchCount.get(problemId).size());
