@@ -232,8 +232,8 @@ public class ProblemController extends Controller {
                 }
             } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();
-                String tsquery = term.substring(4);
-                tsquery = tsquery.replaceAll("[\\|\\&\\!'\\@\\#\\$\\%\\^\\*\\(\\)\\{\\[\\}\\]\\+\\=\\-\\_\\?\\;\\:\\'\"\\<\\>\\,\\.\\/]", "")
+                String tsquery = term.substring(5);
+                tsquery = tsquery.replaceAll("[\\|\\&\\!\\:']", "-")
                         .replaceAll("[ \t\n\r]", "|");
 
                 SqlQuery searchQuery = Ebean.createSqlQuery("select id, ts_rank_cd(textsearch, query) rank from (select id, setweight(to_tsvector(coalesce((select string_agg(tag, ' ') from problem_tags where problem_id = id),'')), 'A') || setweight(to_tsvector(coalesce(description,'')), 'B') as textsearch from problem) t, to_tsquery(:tsquery) query where textsearch @@ query order by rank desc");
