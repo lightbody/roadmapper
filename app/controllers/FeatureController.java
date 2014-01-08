@@ -202,16 +202,15 @@ public class FeatureController extends Controller {
                 String str = term.substring(11);
                 switch (str) {
                     case "null":
-                        where.isNull("t0.assignee_email");
+                        where.isNull("assignee_email");
                         break;
                     case "not-null":
-                        where.isNotNull("t0.assignee_email");
+                        where.isNotNull("assignee_email");
                         break;
                     default:
-                        where.eq("t0.assignee_email", str);
+                        where.eq("assignee_email", str);
                         break;
                 }
-                where.eq("assignee_email", term.substring(11));
             } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();
                 String tsquery = term.substring(5);
