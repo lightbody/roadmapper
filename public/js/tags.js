@@ -48,7 +48,6 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
         $http.put('/tags/' + tag.tag, {tag: updatedTag})
             .success(function () {
                 // update the tag record
-                // todo: need to account for merge scenarios, etc -- for now requires a reload :(
                 tag.tag = updatedTag;
 
                 // close the modal
@@ -74,6 +73,9 @@ function TagsCtrl($scope, $http, $rootScope, $location, featureService, problemS
 
                 // close the modal
                 $scope.closeDeleteTagModal();
+
+                // reload the data
+                getTagSummaries();
             }).error(LogHandler($scope));
     };
 
