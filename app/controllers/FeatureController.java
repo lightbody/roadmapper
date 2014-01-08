@@ -199,6 +199,18 @@ public class FeatureController extends Controller {
             } else if (term.startsWith("quarter:")) {
                 where.eq("quarter", Integer.parseInt(term.substring(8)));
             } else if (term.startsWith("assignedTo:")) {
+                String str = term.substring(11);
+                switch (str) {
+                    case "null":
+                        where.isNull("t0.assignee_email");
+                        break;
+                    case "not-null":
+                        where.isNotNull("t0.assignee_email");
+                        break;
+                    default:
+                        where.eq("t0.assignee_email", str);
+                        break;
+                }
                 where.eq("assignee_email", term.substring(11));
             } else if (term.startsWith("text:")) {
                 rankings = new HashMap<>();
