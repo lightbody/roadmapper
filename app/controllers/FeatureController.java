@@ -127,7 +127,7 @@ public class FeatureController extends Controller {
             }
         }
 
-        if (bulkChange.tags != null) {
+        if (bulkChange.tags != null && !bulkChange.tags.isEmpty()) {
             // delete the tags in case they already exist...
             Ebean.createSqlUpdate("delete from feature_tags where feature_id in (:ids) and tag in (:tags)")
                     .setParameter("ids", bulkChange.ids)

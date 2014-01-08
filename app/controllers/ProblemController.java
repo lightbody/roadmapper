@@ -119,7 +119,7 @@ public class ProblemController extends Controller {
             }
         }
 
-        if (bulkChange.tags != null) {
+        if (bulkChange.tags != null && !bulkChange.tags.isEmpty()) {
             // delete the tags in case they already exist...
             Ebean.createSqlUpdate("delete from problem_tags where problem_id in (:ids) and tag in (:tags)")
                     .setParameter("ids", bulkChange.ids)
