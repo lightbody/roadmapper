@@ -83,10 +83,15 @@ function FeaturesCtrl($scope, $http, featureService, $q, problemService, $rootSc
 
             // some smart options around assignment
             if (term == "me") {
+                if ($scope.checkRole("PM")) {
+                    results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                }
                 results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
             } else if (term.toLowerCase().indexOf("ass") == 0) {
+                if ($scope.checkRole("PM")) {
+                    results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                }
                 results.push({id: "assignedTo:not-null", text: "<strong>Assigned to Anyone</strong>"});
-                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
             } else if (term.toLowerCase().indexOf("un") == 0) {
                 results.push({id: "assignedTo:null", text: "<strong>Unassigned</strong>"});
             } else if (term.length >= 3) {

@@ -84,9 +84,14 @@ function ProblemsCtrl($scope, $http, $q, $location,featureService, problemServic
 
             // some smart options around assignment
             if (term == "me") {
-                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                if ($scope.checkRole("PM")) {
+                    results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                }
+                results.push({id: "reporter:" + $scope.user.email, text: "<strong>Reported By Me</strong>"});
             } else if (term.toLowerCase().indexOf("ass") == 0) {
-                results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                if ($scope.checkRole("PM")) {
+                    results.push({id: "assignedTo:" + $scope.user.email, text: "<strong>Assigned To Me</strong>"});
+                }
                 results.push({id: "assignedTo:not-null", text: "<strong>Assigned to Anyone</strong>"});
             } else if (term.toLowerCase().indexOf("un") == 0) {
                 results.push({id: "assignedTo:null", text: "<strong>Unassigned</strong>"});

@@ -182,6 +182,8 @@ public class ProblemController extends Controller {
                 where.eq("state", state);
             } else if (term.startsWith("description:")) {
                 where.ilike("description", "%" + term.substring(12) + "%");
+            } else if (term.startsWith("reporter:")) {
+                where.eq("reporter_email", term.substring(9));
             } else if (term.startsWith("company:")) {
                 where.ilike("customerCompany", "%" + term.substring(8) + "%");
             } else if (term.startsWith("email:")) {
