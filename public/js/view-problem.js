@@ -77,9 +77,10 @@ function ViewProblemCtrl($scope, $http, $routeParams, $location, $route, $rootSc
         copy.tags = [];
         problem.tags.map(function(tag) {copy.tags.push(tag.id)});
 
-        // remove the "text" field from the feature that select2 adds so that it will be well-formed
+        // remove the "text" & "team" fields from the feature that select2 adds so that it will be well-formed
         if (copy.feature) {
             delete copy.feature.text;
+            delete copy.feature.team;
         }
 
         // convert assignee over
