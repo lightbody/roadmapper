@@ -350,7 +350,7 @@ function makeTeamSelect2Options(scope, http, includeRemove) {
                     }
 
                     teams.filter(function(team) {
-                        return team.name.indexOf(term) != -1;
+                        return team.name.toLowerCase().indexOf(term) != -1;
                     }).map(function (team) {
                         results.push({id: team.id, text: team.name})
                     });
