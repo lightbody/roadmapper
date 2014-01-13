@@ -342,14 +342,19 @@ function makeTeamSelect2Options(scope, http, includeRemove) {
         query: function (query) {
             http.get("/teams")
                 .success(function (teams) {
+                    var term = query.term || "";
+
                     var results = [];
                     if (includeRemove) {
                         results.push({id: -1, text: "<strong>*** Remove team ***</strong>", rank: 1000});
                     }
 
-                    teams.map(function (team) {
+                    teams.filter(function(team) {
+                        return team.name.indexOf(term) != -1;
+                    }).map(function (team) {
                         results.push({id: team.id, text: team.name})
                     });
+
                     query.callback({
                         results: results
                     });
