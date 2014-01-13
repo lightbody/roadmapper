@@ -373,7 +373,13 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
             return object.text;
         },
         formatResult: function(object, container) {
-            return object.text;
+            var text = "<div><span>" + object.text + "</span>";
+            if (object.team) {
+                text += "<span style='float: right'><i>" + object.team +  "</i></span>";
+            }
+            text += "</div>";
+
+            return text;
         },
         query: function (query) {
             var term = query.term;
@@ -387,7 +393,14 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
                 .success(function (features) {
                     var results;
                     if (features) {
-                        results = features.map(function(feature) {return {id: feature.id, text: feature.title, rank: feature.rank}})
+                        results = features.map(function(feature) {
+                            var result = {id: feature.id, text: feature.title, rank: feature.rank};
+                            if (feature.team) {
+                                result.team = feature.team.name;
+                            }
+
+                            return  result;
+                        });
                     } else {
                         results = [];
                     }
