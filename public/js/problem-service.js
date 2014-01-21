@@ -119,9 +119,10 @@ roadmapper.factory('problemService', function ($http, $location, $parse, $window
                 });
             }
 
-            // remove the "text" field from the feature that select2 adds so that it will be well-formed
+            // remove the extra fields from the team that select2 adds so that it will be well-formed
             if (changes.feature) {
                 delete changes.feature.text;
+                delete changes.feature.team;
             }
 
             // convert assignee over
