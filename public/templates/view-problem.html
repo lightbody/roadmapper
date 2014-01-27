@@ -104,6 +104,34 @@
             </tbody>
         </table>
 
+        <div ng-show="problem.feature" style="padding-top: 25px;">
+            <table>
+                <tbody>
+                <tr>
+                    <td class="metadata-label">Feature</td>
+                    <td><a ng-click="featureService.selectFeature(problem.feature)">{{problem.feature.title}}</a></td>
+                </tr>
+                <tr>
+                    <td class="metadata-label">Team</td>
+                    <td>{{problem.feature.team.name}}</td>
+                </tr>
+                <tr>
+                    <td class="metadata-label">Quarter</td>
+                    <td>{{problem.feature.quarter | longQuarter}}</td>
+                </tr>
+                <tr>
+                    <td class="metadata-label">Problems</td>
+                    <td><a ng-click="problemService.selectProblems(problem.feature)">{{problem.feature.problemCount}}</a></td>
+                </tr>
+                <tr>
+                    <td class="metadata-label">Revenue</td>
+                    <td><a ng-click="problemService.selectProblems(problem.feature)">{{problem.feature.problemRevenue | noFractionCurrency}}</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
     </div>
 
 </div>

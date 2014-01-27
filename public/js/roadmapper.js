@@ -373,11 +373,12 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
             return object.text;
         },
         formatResult: function(object, container) {
-            var text = "<div><span>" + object.text + "</span>";
+            var text = "";
             if (object.team) {
-                text += "<span style='float: right'><i>" + object.team +  "</i></span>";
+                text += "(" + object.team.name +  ") ";
             }
-            text += "</div>";
+
+            text += object.text;
 
             return text;
         },
@@ -394,12 +395,8 @@ function makeFeatureSelect2Options(scope, http, includeRemove, sorter) {
                     var results;
                     if (features) {
                         results = features.map(function(feature) {
-                            var result = {id: feature.id, text: feature.title, rank: feature.rank};
-                            if (feature.team) {
-                                result.team = feature.team.name;
-                            }
-
-                            return  result;
+                            feature.text = feature.title;
+                            return feature;
                         });
                     } else {
                         results = [];
