@@ -5,6 +5,8 @@ Array.prototype.remove = function (from, to) {
     return this.push.apply(this, rest);
 };
 
+ZeroClipboard.config( { moviePath: '/js/ZeroClipboard.swf' } );
+
 function debouncer(func, timeout) {
     var timeoutID , timeout = timeout || 200;
     return function () {

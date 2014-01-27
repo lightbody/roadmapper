@@ -56,8 +56,8 @@
 
             </div>
             <div class="span3 text-right">
-                <span ng-show="saved">
-                    Created problem {{saved}}!
+                <span ng-show="saved" tooltip-placement="top" tooltip="Click the bookmark to copy the URL">
+                    Created problem {{saved}}! <i class="icon-bookmark" style="cursor: pointer" id="copy-problem-button"></i>
                 </span>
 
                 <img src="/img/spinner.gif" width="16" height="16" ng-show="saving"/>

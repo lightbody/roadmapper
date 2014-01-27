@@ -30,10 +30,17 @@ function NewProblemCtrl($scope, $http, $location, problemService, sorter) {
             .success(function (returnedProblem) {
                 $scope.saving = false;
                 $scope.saved = returnedProblem.id;
+                var client = new ZeroClipboard($("#copy-problem-button"));
+
+                client.on( 'dataRequested', function (client, args) {
+                    var href = window.location.href;
+                    client.setText(href.substring(0, href.length - 3) + returnedProblem.id);
+                });
+
                 setTimeout(function() {
                     $scope.saved = null;
                     $scope.$digest();
-                }, 5000);
+                }, 30000);
 
                 mixpanel.people.increment("Problems Recorded");
                 mixpanel.track("Record Problem", returnedProblem);
