@@ -1,5 +1,6 @@
 package controllers;
 
+import com.newrelic.agent.Transaction;
 import com.newrelic.api.agent.NewRelic;
 import models.User;
 import models.UserRole;
@@ -43,6 +44,17 @@ public class Secured extends Security.Authenticator {
         }
 
         NewRelic.addCustomParameter("username", email);
+        try {
+            NewRelic.addCustomParameter("guid-A", Transaction.getTransaction().getCrossProcessTransactionState().getOrCreateGuid());
+            NewRelic.addCustomParameter("guid-B", Transaction.getTransaction().getCrossProcessTransactionState().getGuid());
+            NewRelic.addCustomParameter("guid-C", Transaction.getTransaction().getCrossProcessTransactionState().getClientCrossProcessId());
+            NewRelic.addCustomParameter("guid-D", Transaction.getTransaction().getCrossProcessTransactionState().getTransactionHeaderValue());
+            NewRelic.addCustomParameter("guid-E", Transaction.getTransaction().getCrossProcessTransactionState().getReferrerGuid());
+            NewRelic.addCustomParameter("guid-F", Transaction.getTransaction().getCrossProcessConfig().getCrossProcessId());
+            NewRelic.addCustomParameter("guid-G", Transaction.getTransaction().getCrossProcessConfig().getEncodedCrossProcessId());
+        } catch (Throwable t) {
+            // silently ignore
+        }
 
         return email;
     }

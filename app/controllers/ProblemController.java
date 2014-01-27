@@ -251,6 +251,17 @@ public class ProblemController extends Controller {
                 // no prefix? assume a tag then
                 tagsSeen++;
 
+                // note: this is a back door to cause the transaction to (most likely) show up as a TT in New Relic.
+                if (term.startsWith("force-freeze-")) {
+                    try {
+                        Thread.sleep(Long.parseLong(term.substring(13)));
+                    } catch (InterruptedException e) {
+                        Thread.interrupted();
+                    }
+
+                    continue;
+                }
+
                 SqlQuery tagQuery = Ebean.createSqlQuery("select problem_id from problem_tags where tag = :tag");
                 tagQuery.setParameter("tag", term);
                 List<SqlRow> list = tagQuery.findList();
