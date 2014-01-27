@@ -32,6 +32,11 @@ public class ProblemController extends Controller {
             problem.tags.add(row.getString("tag"));
         }
 
+        // dress the feature if there is one
+        if (problem.feature != null) {
+            FeatureController.dressFeature(problem.feature);
+        }
+
         return ok(Json.toJson(problem));
     }
 
