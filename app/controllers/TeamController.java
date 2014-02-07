@@ -9,16 +9,30 @@ import models.FeatureState;
 import models.Size;
 import models.StaffSummary;
 import models.Team;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import play.Configuration;
+import play.Play;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.Log;
 import util.Qtr;
 
+import javax.json.JsonObject;
+import java.io.IOException;
 import java.util.*;
 
 @Security.Authenticated(Secured.class)
 public class TeamController extends Controller {
+    private static final CloseableHttpClient client = HttpClientBuilder.create().build();
+    private static final Log LOG = new Log();
+
     public static Result getAll() {
         List<Team> teams = Team.find.all();
 
@@ -81,6 +95,7 @@ public class TeamController extends Controller {
 
         Team team = Json.fromJson(json, Team.class);
         team.save();
+        leftronicUtilization(team);
 
         return ok(Json.toJson(team));
     }
@@ -99,6 +114,7 @@ public class TeamController extends Controller {
         original.utilization = update.utilization;
 
         original.save();
+        leftronicUtilization(original);
 
 
         // we need to pull up the team utilization rates
@@ -121,6 +137,32 @@ public class TeamController extends Controller {
         updateStaffSummary(teamMap);
 
         return ok(Json.toJson(original));
+    }
+
+    private static void leftronicUtilization(Team team) {
+        Configuration config = Play.application().configuration();
+        String key = config.getString("leftronic.accessKey");
+        if (key == null) {
+            return;
+        }
+
+        JsonObject json = javax.json.Json.createObjectBuilder()
+                .add("accessKey", key)
+                .add("streamName", team.name)
+                .add("point", team.utilization)
+                .build();
+
+        HttpPost post = new HttpPost("https://www.leftronic.com/customSend/");
+        post.setEntity(new StringEntity(json.toString(), ContentType.APPLICATION_JSON));
+        try {
+            CloseableHttpResponse response = client.execute(post);
+            int code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                LOG.severe("Received {} code when updating Leftronic", code);
+            }
+        } catch (IOException e) {
+            LOG.severe("Possible error updating Leftronic", e);
+        }
     }
 
     public static Result updateStaffForQuarter(Long teamId, Integer quarter) {
