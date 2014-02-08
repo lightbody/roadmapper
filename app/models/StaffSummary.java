@@ -28,6 +28,12 @@ public class StaffSummary {
     }
 
     public void addScheduledFeature(Size cost, int utilization) {
+        if (utilization == 0) {
+            // we can't have NaN or +/- Infinity so just make them equal to 10X team size that quarter (just to force it red)
+            scheduled = staffed * 10;
+            return;
+        }
+
         double pct = utilization / 100.0;
         scheduled += (cost.getCostAsPersonWeeks() / (52 / 4 * pct));
     }
