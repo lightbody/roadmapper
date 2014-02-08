@@ -142,7 +142,9 @@ public class TeamController extends Controller {
         JsonObject json = javax.json.Json.createObjectBuilder()
                 .add("accessKey", key)
                 .add("streamName", team.name)
-                .add("point", team.utilization)
+                .add("point", javax.json.Json.createObjectBuilder()
+                        .add("number", team.utilization)
+                        .add("suffix", "%"))
                 .build();
 
         WS.url("https://www.leftronic.com/customSend/").post(json.toString());
