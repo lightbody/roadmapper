@@ -109,7 +109,7 @@
                 <tbody>
                 <tr>
                     <td class="metadata-label">Feature</td>
-                    <td><a ng-click="featureService.selectFeature(problem.feature)">{{problem.feature.title}}</a></td>
+                    <td><a ng-click="featureService.selectFeature(problem.feature, $event)" href="#/features/{{problem.feature.id}}">{{problem.feature.title}}</a></td>
                 </tr>
                 <tr>
                     <td class="metadata-label">Team</td>
