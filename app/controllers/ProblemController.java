@@ -4,6 +4,7 @@ import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.newrelic.api.agent.NewRelic;
 import models.*;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -78,6 +79,15 @@ public class ProblemController extends Controller {
         delete.setParameter("problem_id", id);
         delete.execute();
         insertTags(update);
+
+        // Custom attributes for Insights
+        NewRelic.addCustomParameter("state", String.valueOf(original.state));
+        NewRelic.addCustomParameter("annualRevenue", String.valueOf(original.annualRevenue));
+        String email = null;
+        if (original.assignee != null) {
+            email = original.assignee.email;
+        }
+        NewRelic.addCustomParameter("assignee", email);
 
         return ok(Json.toJson(original));
     }
