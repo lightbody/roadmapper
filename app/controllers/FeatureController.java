@@ -4,11 +4,13 @@ import com.avaje.ebean.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.newrelic.api.agent.NewRelic;
 import models.*;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.Qtr;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -41,7 +43,10 @@ public class FeatureController extends Controller {
             feature.tags.add(row.getString("tag"));
         }
 
-        return ok(Json.toJson(dressFeature(feature)));
+        dressFeature(feature);
+        captureCustomAttributes(feature);
+
+        return ok(Json.toJson(feature));
     }
 
     @play.db.ebean.Transactional
@@ -82,9 +87,11 @@ public class FeatureController extends Controller {
         delete.execute();
         insertTags(update);
 
-        return ok(Json.toJson(dressFeature(original)));
-    }
+        Feature feature = dressFeature(original);
+        captureCustomAttributes(feature);
 
+        return ok(Json.toJson(feature));
+    }
 
     public static Result bulkUpdate() {
         JsonNode json = request().body().asJson();
@@ -94,7 +101,11 @@ public class FeatureController extends Controller {
             return notFound();
         }
 
+        NewRelic.addCustomParameter("bulk_change_count", bulkChange.ids.size());
+
         if (bulkChange.assignee != null) {
+            NewRelic.addCustomParameter("bulk_change_assignee", bulkChange.assignee.email);
+
             if ("nobody".equals(bulkChange.assignee.email)) {
                 Ebean.createSqlUpdate("update feature set assignee_email = null where id in (:ids)")
                         .setParameter("ids", bulkChange.ids)
@@ -108,6 +119,8 @@ public class FeatureController extends Controller {
         }
 
         if (bulkChange.state != null) {
+            NewRelic.addCustomParameter("bulk_change_state", bulkChange.state.name());
+
             Ebean.createSqlUpdate("update feature set state = :state where id in (:ids)")
                     .setParameter("state", bulkChange.state)
                     .setParameter("ids", bulkChange.ids)
@@ -115,6 +128,11 @@ public class FeatureController extends Controller {
         }
 
         if (bulkChange.team != null) {
+            NewRelic.addCustomParameter("bulk_change_team", bulkChange.team.id);
+            if (bulkChange.team.name != null) {
+                NewRelic.addCustomParameter("bulk_change_team_name", bulkChange.team.name);
+            }
+
             if (bulkChange.team.id > 0) {
                 Ebean.createSqlUpdate("update feature set team_id = :team where id in (:ids)")
                         .setParameter("team", bulkChange.team.id)
@@ -128,6 +146,8 @@ public class FeatureController extends Controller {
         }
 
         if (bulkChange.tags != null && !bulkChange.tags.isEmpty()) {
+            NewRelic.addCustomParameter("bulk_change_tag_count", bulkChange.tags.size());
+
             // delete the tags in case they already exist...
             Ebean.createSqlUpdate("delete from feature_tags where feature_id in (:ids) and tag in (:tags)")
                     .setParameter("ids", bulkChange.ids)
@@ -155,8 +175,10 @@ public class FeatureController extends Controller {
             return notFound();
         }
 
+        NewRelic.addCustomParameter("bulk_change_count", bulkChange.ids.size());
+
         for (Long id : bulkChange.ids) {
-            deleteFeature(id);
+            deleteFeature(id, false);
         }
 
         return ok();
@@ -340,8 +362,11 @@ public class FeatureController extends Controller {
 
         feature.save();
         insertTags(feature);
+        dressFeature(feature);
 
-        return ok(Json.toJson(dressFeature(feature)));
+        captureCustomAttributes(feature);
+
+        return ok(Json.toJson(feature));
     }
 
     private static void insertTags(Feature feature) {
@@ -358,12 +383,19 @@ public class FeatureController extends Controller {
 
     @play.db.ebean.Transactional
     public static Result deleteFeature(Long id) {
+        return deleteFeature(id, true);
+    }
+
+    private static Result deleteFeature(Long id, boolean captureCustomAttributes) {
         // Only `PM`s can delete features
         if (!Secured.checkRole(UserRole.PM)) {
             return forbidden();
         }
 
         Feature feature = Feature.find.ref(id);
+        if (captureCustomAttributes) {
+            captureCustomAttributes(feature);
+        }
 
         // Make sure the feature exists before doing any updates
         if (feature == null) {
@@ -413,5 +445,56 @@ public class FeatureController extends Controller {
         feature.delete();
 
         return noContent();
+    }
+
+    private static void captureCustomAttributes(Feature feature) {
+        NewRelic.addCustomParameter("feature_state", feature.state.name());
+
+        if (feature.id != null) {
+            NewRelic.addCustomParameter("feature", feature.id);
+        }
+
+        if (feature.problemCount != null) {
+            NewRelic.addCustomParameter("feature_problem_count", feature.problemCount);
+        }
+
+        if (feature.problemRevenue != null) {
+            NewRelic.addCustomParameter("feature_problem_arr", feature.problemRevenue);
+        }
+
+        if (feature.title != null) {
+            NewRelic.addCustomParameter("feature_title", feature.title);
+        }
+
+        if (feature.quarter != null) {
+            NewRelic.addCustomParameter("feature_quarter", Qtr.get(feature.quarter).label);
+        }
+
+        if (feature.score != null) {
+            NewRelic.addCustomParameter("feature_score", feature.score);
+        }
+
+        if (feature.team != null) {
+            NewRelic.addCustomParameter("feature_team", feature.team.id);
+            if (feature.team.name != null) {
+                NewRelic.addCustomParameter("feature_team_name", feature.team.name);
+            }
+
+        }
+
+
+        captureCustomUserAttributes("feature_assignee", feature.assignee);
+        captureCustomUserAttributes("feature_creator", feature.creator);
+        captureCustomUserAttributes("feature_modifiedBy", feature.lastModifiedBy);
+
+    }
+
+    private static void captureCustomUserAttributes(String type, User user) {
+        if (user == null) {
+            return;
+        }
+
+        NewRelic.addCustomParameter(type, user.email);
+        NewRelic.addCustomParameter(type + "_name", user.name);
     }
 }

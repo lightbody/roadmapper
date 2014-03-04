@@ -38,6 +38,8 @@ public class ProblemController extends Controller {
             FeatureController.dressFeature(problem.feature);
         }
 
+        captureCustomAttributes(problem);
+
         return ok(Json.toJson(problem));
     }
 
@@ -80,14 +82,7 @@ public class ProblemController extends Controller {
         delete.execute();
         insertTags(update);
 
-        // Custom attributes for Insights
-        NewRelic.addCustomParameter("state", String.valueOf(original.state));
-        NewRelic.addCustomParameter("annualRevenue", String.valueOf(original.annualRevenue));
-        String email = null;
-        if (original.assignee != null) {
-            email = original.assignee.email;
-        }
-        NewRelic.addCustomParameter("assignee", email);
+        captureCustomAttributes(original);
 
         return ok(Json.toJson(original));
     }
@@ -101,7 +96,11 @@ public class ProblemController extends Controller {
             return notFound();
         }
 
+        NewRelic.addCustomParameter("bulk_change_count", bulkChange.ids.size());
+
         if (bulkChange.assignee != null) {
+            NewRelic.addCustomParameter("bulk_change_assignee", bulkChange.assignee.email);
+
             if ("nobody".equals(bulkChange.assignee.email)) {
                 Ebean.createSqlUpdate("update problem set assignee_email = null where id in (:ids)")
                         .setParameter("ids", bulkChange.ids)
@@ -115,6 +114,8 @@ public class ProblemController extends Controller {
         }
 
         if (bulkChange.state != null) {
+            NewRelic.addCustomParameter("bulk_change_state", bulkChange.state.name());
+
             Ebean.createSqlUpdate("update problem set state = :state where id in (:ids)")
                     .setParameter("state", bulkChange.state)
                     .setParameter("ids", bulkChange.ids)
@@ -123,6 +124,11 @@ public class ProblemController extends Controller {
 
         if (bulkChange.feature != null) {
             if (bulkChange.feature.id > 0) {
+                NewRelic.addCustomParameter("bulk_change_feature", bulkChange.feature.id);
+                if (bulkChange.feature.title != null) {
+                    NewRelic.addCustomParameter("bulk_change_feature_title", bulkChange.feature.title);
+                }
+
                 Ebean.createSqlUpdate("update problem set feature_id = :feature where id in (:ids)")
                         .setParameter("feature", bulkChange.feature.id)
                         .setParameter("ids", bulkChange.ids)
@@ -135,6 +141,8 @@ public class ProblemController extends Controller {
         }
 
         if (bulkChange.tags != null && !bulkChange.tags.isEmpty()) {
+            NewRelic.addCustomParameter("bulk_change_tag_count", bulkChange.tags.size());
+
             // delete the tags in case they already exist...
             Ebean.createSqlUpdate("delete from problem_tags where problem_id in (:ids) and tag in (:tags)")
                     .setParameter("ids", bulkChange.ids)
@@ -162,8 +170,10 @@ public class ProblemController extends Controller {
             return notFound();
         }
 
+        NewRelic.addCustomParameter("bulk_change_count", bulkChange.ids.size());
+
         for (Long id : bulkChange.ids) {
-            deleteProblem(id);
+            deleteProblem(id, false);
         }
 
         return ok();
@@ -345,6 +355,7 @@ public class ProblemController extends Controller {
         problem.save();
         insertTags(problem);
 
+        captureCustomAttributes(problem);
 
         return ok(Json.toJson(problem));
     }
@@ -363,14 +374,64 @@ public class ProblemController extends Controller {
 
     @play.db.ebean.Transactional
     public static Result deleteProblem(Long id) {
+        return deleteProblem(id, true);
+    }
+
+    private static Result deleteProblem(Long id, boolean captureCustomAttributes) {
+        Problem problem = Problem.find.ref(id);
+        if (captureCustomAttributes) {
+            captureCustomAttributes(problem);
+        }
+
         // Dissociate tags
         SqlUpdate deleteTags = Ebean.createSqlUpdate("delete from problem_tags where problem_id = :problem_id");
         deleteTags.setParameter("problem_id", id);
         deleteTags.execute();
 
-        // Delete the problem
-        Problem.find.ref(id).delete();
+        // and delete it
+        problem.delete();
 
         return ok();
+    }
+
+    private static void captureCustomAttributes(Problem problem) {
+        NewRelic.addCustomParameter("problem_state", problem.state.name());
+
+        if (problem.id != null) {
+            NewRelic.addCustomParameter("problem", problem.id);
+        }
+
+        if (problem.annualRevenue != null) {
+            NewRelic.addCustomParameter("problem_arr", problem.annualRevenue);
+        }
+
+        if (problem.accountId != null) {
+            NewRelic.addCustomParameter("problem_account", problem.accountId);
+        }
+
+        if (problem.customerEmail != null) {
+            NewRelic.addCustomParameter("problem_customer", problem.customerEmail);
+        }
+
+        if (problem.customerCompany != null) {
+            NewRelic.addCustomParameter("problem_customer_company", problem.customerCompany);
+        }
+
+        if (problem.customerName != null) {
+            NewRelic.addCustomParameter("problem_customer_name", problem.customerName);
+        }
+
+        captureCustomUserAttributes("problem_assignee", problem.assignee);
+        captureCustomUserAttributes("problem_reporter", problem.reporter);
+        captureCustomUserAttributes("problem_modifiedBy", problem.lastModifiedBy);
+    }
+
+    private static void captureCustomUserAttributes(String type, User user) {
+        if (user == null) {
+            return;
+        }
+
+        NewRelic.addCustomParameter(type, user.email);
+        NewRelic.addCustomParameter(type + "_name", user.name);
     }
 }
