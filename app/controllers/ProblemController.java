@@ -6,10 +6,12 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.newrelic.api.agent.NewRelic;
 import models.*;
+import play.Play;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.Mail;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -46,15 +48,18 @@ public class ProblemController extends Controller {
     @play.db.ebean.Transactional
     public static Result updateProblem(Long id) {
         Problem original = Problem.find.byId(id);
+        User user = User.findByEmail(request().username());
 
         if (original == null) {
             return notFound();
         }
 
+        boolean assigneeChanged = false;
+
         JsonNode json = request().body().asJson();
         Problem update = Json.fromJson(json, Problem.class);
         original.lastModified = new Timestamp(System.currentTimeMillis());
-        original.lastModifiedBy = User.findByEmail(request().username());
+        original.lastModifiedBy = user;
         original.description = update.description;
         original.customerName = update.customerName;
         original.customerEmail = update.customerEmail;
@@ -71,6 +76,7 @@ public class ProblemController extends Controller {
         if (update.assignee == null) {
             original.assignee = null;
         } else {
+            assigneeChanged = original.assignee == null || !update.assignee.email.equals(original.assignee.email);
             original.assignee = User.findByEmail(update.assignee.email);
         }
 
@@ -83,6 +89,10 @@ public class ProblemController extends Controller {
         insertTags(update);
 
         captureCustomAttributes(original);
+
+        if (assigneeChanged) {
+            notifyAssignee(user, original);
+        }
 
         return ok(Json.toJson(original));
     }
@@ -344,18 +354,24 @@ public class ProblemController extends Controller {
 
     @play.db.ebean.Transactional
     public static Result create() {
+        User user = User.findByEmail(request().username());
+
         JsonNode json = request().body().asJson();
 
         Problem problem = Json.fromJson(json, Problem.class);
         problem.date = new Date();
         problem.lastModified = new Timestamp(problem.date.getTime());
-        problem.reporter = problem.lastModifiedBy = User.findByEmail(request().username());
+        problem.reporter = problem.lastModifiedBy = user;
         problem.state = ProblemState.OPEN;
 
         problem.save();
         insertTags(problem);
 
         captureCustomAttributes(problem);
+
+        if (problem.assignee != null) {
+            notifyAssignee(user, problem);
+        }
 
         return ok(Json.toJson(problem));
     }
@@ -434,4 +450,44 @@ public class ProblemController extends Controller {
         NewRelic.addCustomParameter(type, user.email);
         NewRelic.addCustomParameter(type + "_name", user.name);
     }
+
+    private static void notifyAssignee(User user, Problem problem) {
+        StringBuilder body = new StringBuilder();
+
+        String root = Play.application().configuration().getString("root.url");
+        body.append(root).append("#/problems/").append(problem.id).append("\n");
+        body.append("\n");
+
+        body.append("Customer: ").append(problem.customerName).append(" <").append(problem.customerEmail).append("> / ").append(problem.customerCompany).append("\n");
+        if (problem.accountId != null) {
+            body.append("Account ID: ").append(problem.accountId).append("\n");
+        }
+        if (problem.annualRevenue != null) {
+            body.append("ARR: ").append(problem.annualRevenue).append("\n");
+        }
+        body.append("State: ").append(problem.state).append("\n");
+        if (problem.url != null) {
+            body.append("URL: ").append(problem.url).append("\n");
+        }
+        body.append("Reporter: ").append(problem.reporter.name).append(" <").append(problem.reporter.email).append(">\n");
+        if (problem.tags != null) {
+            body.append("Tags: ");
+            for (String tag : problem.tags) {
+                body.append(tag).append(" ");
+            }
+            body.append("\n");
+        }
+
+        if (problem.feature != null) {
+            body.append("Feature: ").append(problem.feature.title).append("\n");
+            body.append(root).append("#/features/").append(problem.feature.id).append("\n");
+
+        }
+
+        body.append("\n");
+        body.append(problem.description);
+
+        Mail.send(user, problem.assignee, "[Roadmapper] Problem " + problem.id + " Assigned", body.toString());
+    }
+
 }

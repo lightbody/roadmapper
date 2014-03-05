@@ -15,7 +15,8 @@ object ApplicationBuild extends Build {
         "javax.json" % "javax.json-api" % "1.0",
         "org.glassfish" % "javax.json" % "1.0",
         "com.newrelic.agent.java" % "newrelic-api" % "3.4.2",
-        "com.newrelic.agent.java" % "newrelic-agent" % "3.4.2"
+        "com.newrelic.agent.java" % "newrelic-agent" % "3.4.2",
+        "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2"
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(
