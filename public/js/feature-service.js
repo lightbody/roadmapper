@@ -121,7 +121,6 @@ roadmapper.factory('featureService', function ($http, $location, $parse, $window
             // remove the extra fields from the team that select2 adds so that it will be well-formed
             if (changes.team) {
                 delete changes.team.text;
-                delete changes.feature.team;
             }
 
             // convert assignee over
