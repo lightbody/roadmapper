@@ -6,10 +6,12 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.newrelic.api.agent.NewRelic;
 import models.*;
+import play.Play;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import util.Mail;
 import util.Qtr;
 
 import java.sql.Timestamp;
@@ -445,6 +447,74 @@ public class FeatureController extends Controller {
         feature.delete();
 
         return noContent();
+    }
+
+    public static Result getComments(Long id) {
+        List<FeatureComment> comments = FeatureComment.find.where().eq("feature_id", id).findList();
+
+        return ok(Json.toJson(comments));
+    }
+
+    public static Result createComment(Long id) {
+        JsonNode json = request().body().asJson();
+
+        FeatureComment comment = Json.fromJson(json, FeatureComment.class);
+        comment.date = new Timestamp(System.currentTimeMillis());
+        comment.user = User.findByEmail(request().username());
+        comment.featureId = id;
+
+        comment.save();
+
+        // if the feature is assigned, email the assignee
+        Feature feature = Feature.find.byId(id);
+        if (feature.assignee != null) {
+            String subject = "[Roadmapper] New Comment - " + feature.title;
+
+            StringBuilder body = new StringBuilder();
+            String root = Play.application().configuration().getString("root.url");
+            body.append(root).append("#/features/").append(id).append("\n");
+            body.append("\n");
+            body.append(comment.comment);
+
+            Mail.send(comment.user, feature.assignee, subject, body.toString());
+        }
+
+        return ok();
+    }
+
+    public static Result deleteComment(Long featureId, Long commentId) {
+        FeatureComment comment = FeatureComment.find.byId(commentId);
+        if (!comment.featureId.equals(featureId)) {
+            return notFound();
+        }
+
+        if (!request().username().equals(comment.user.email)) {
+            return forbidden();
+        }
+
+        comment.delete();
+
+        return ok();
+    }
+
+    public static Result updateComment(Long featureId, Long commentId) {
+        JsonNode json = request().body().asJson();
+
+        FeatureComment newComment = Json.fromJson(json, FeatureComment.class);
+
+        FeatureComment comment = FeatureComment.find.byId(commentId);
+        if (!comment.featureId.equals(featureId)) {
+            return notFound();
+        }
+
+        if (!request().username().equals(comment.user.email)) {
+            return forbidden();
+        }
+
+        comment.comment = newComment.comment;
+        comment.save();
+
+        return ok();
     }
 
     private static void captureCustomAttributes(Feature feature) {

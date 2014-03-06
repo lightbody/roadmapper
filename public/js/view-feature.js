@@ -10,6 +10,13 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
     $scope.teamSelect2Options = makeTeamSelect2Options($scope, $http, false);
     $scope.assigneeSelect2Options = makeAssigneeSelect2Options($scope, false);
 
+    var findComments = function() {
+        $http.get("/features/" + $routeParams.featureId + "/comments")
+            .success(function (comments) {
+                $scope.comments = comments;
+            }).error(LogHandler($scope));
+    };
+
     var findRelatedFeatures = function() {
         if (!$scope.selectedFeature.tags) {
             return;
@@ -22,6 +29,30 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
             }).error(LogHandler($scope));
     };
     $scope.$watch("selectedFeature.tags", findRelatedFeatures);
+
+    $scope.saveComment = function(comment) {
+        $http.post("/features/" + $routeParams.featureId + "/comments", comment)
+            .success(function() {
+                delete comment.comment;
+                findComments();
+            }).error(LogHandler($scope));
+    };
+
+    $scope.updateComment = function(comment) {
+        $http.put("/features/" + $routeParams.featureId + "/comments/" + comment.id, comment)
+            .success(function() {
+                findComments();
+            }).error(LogHandler($scope));
+    };
+
+    $scope.deleteComment = function(comment) {
+        if (confirm("Are you sure?")) {
+            $http.delete("/features/" + $routeParams.featureId + "/comments/" + comment.id)
+                .success(function() {
+                    findComments();
+                }).error(LogHandler($scope));
+        }
+    };
 
     $scope.sortRelated = function(predicate) {
         $scope.related.predicate = predicate;
@@ -59,6 +90,9 @@ function ViewFeatureCtrl($scope, $http, $routeParams, $location, $rootScope, fea
                 }
 
                 featureService.update(featureWithTags);
+
+                // get the comments
+                findComments();
 
                 // get a list of related features
                 findRelatedFeatures();

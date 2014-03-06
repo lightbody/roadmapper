@@ -26,6 +26,10 @@ POST        /features/bulk-delete      controllers.FeatureController.bulkDelete(
 GET         /features/:id              controllers.FeatureController.getFeature(id: Long)
 PUT         /features/:id              controllers.FeatureController.updateFeature(id: Long)
 POST        /features/:id              controllers.FeatureController.deleteFeature(id: Long)
+GET         /features/:id/comments     controllers.FeatureController.getComments(id: Long)
+POST        /features/:id/comments     controllers.FeatureController.createComment(id: Long)
+PUT         /features/:id/comments/:commentId     controllers.FeatureController.updateComment(id: Long, commentId: Long)
+DELETE      /features/:id/comments/:commentId     controllers.FeatureController.deleteComment(id: Long, commentId: Long)
 
 GET         /teams                     controllers.TeamController.getAll()
 POST        /teams                     controllers.TeamController.create()

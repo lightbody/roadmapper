@@ -20,7 +20,7 @@ function debouncer(func, timeout) {
 
 var LINK_EXPRESSION = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
-var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2", "roadmapper.ui.select2"]);
+var roadmapper = angular.module('roadmapper', ["ngRoute", "ngCookies", "ui.bootstrap", "ui.select2", "roadmapper.ui.select2", "btford.markdown"]);
 
 roadmapper.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
@@ -293,6 +293,10 @@ roadmapper.run(function ($rootScope, $http, $q, sorter) {
 
     $rootScope.checkRole = function(role) {
         return role == user.role;
+    };
+
+    $rootScope.checkEmail = function(email) {
+        return email == user.email;
     };
 
     // segment.io

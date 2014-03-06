@@ -122,6 +122,34 @@
 <hr/>
 
 <div class="row">
+    <div class="span8">
+        <h3>Comments</h3>
+
+        <form name="newCommentForm" novalidate cmd-enter="saveComment(newComment)">
+            <div class="controls controls-row">
+                <textarea class="span8" rows="3" ng-model="newComment.comment" placeholder="Have something to say?"></textarea>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="span8">
+        <button class="btn btn-primary" ng-click="saveComment(newComment)" ng-disabled="newCommentForm.$invalid || newCommentForm.$pristine" type="submit">Save</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span12">
+        <div ng-repeat="comment in comments | orderBy:date">
+            <div class="comment-header"><i class="icon-comment"/> {{comment.user.name}} - {{comment.date | date}} <i class="icon-trash cursor" ng-show="checkEmail(comment.user.email)" ng-click="deleteComment(comment)"></i></div>
+            <div class="comment-body" btf-markdown="comment.comment"/>
+        </div>
+    </div>
+</div>
+
+<div class="row">
     <div class="span12">
         <h3>Related Features</h3>
 

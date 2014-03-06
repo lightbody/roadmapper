@@ -104,6 +104,15 @@
     width: 100%;
 }
 
+.comment-header {
+    margin-top: 10px;
+}
+
+.comment-body {
+    border-bottom: 1px solid #c0c0c0;
+    padding-left: 18px;
+}
+
 .list-checkbox input {
     margin-top: 0;
 }
@@ -175,6 +184,10 @@ td.text-right, th.text-right {
 }
 
 a.ng-binding {
+    cursor: pointer;
+}
+
+.cursor {
     cursor: pointer;
 }
 
