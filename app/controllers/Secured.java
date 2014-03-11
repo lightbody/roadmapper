@@ -11,7 +11,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 public class Secured extends Security.Authenticator {
-    public final static String OAUTH_BASE = "https://dev--auth-newrelic-com-rzk4pe3f3jxn.runscope.net";
     public final static long OAUTH_TIMEOUT = 15000;
 
     @Override
