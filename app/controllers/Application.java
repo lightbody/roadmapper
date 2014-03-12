@@ -21,6 +21,7 @@ import views.html.index;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Application extends Controller {
     @play.db.ebean.Transactional
@@ -35,15 +36,17 @@ public class Application extends Controller {
                 .setQueryParameter("redirect_uri", config.getString("oauth.redirectUrl"))
                 .setQueryParameter("client_id", config.getString("oauth.clientId"))
                 .setQueryParameter("client_secret", config.getString("oauth.clientSecret"))
-                .post("").get();
+                .post("").get(15, TimeUnit.SECONDS);
 
         JsonNode json = response.asJson();
 
         String accessToken = json.get("access_token").asText();
+        String refreshToken = json.get("refresh_token").asText();
+        long expiresIn = DateTime.parse(json.get("expires_in").asText()).toDate().getTime();
 
         response = WS.url(config.getString("oauth.userDetailUrl"))
                 .setHeader("Authorization", "Bearer " + accessToken)
-                .get().get();
+                .get().get(15, TimeUnit.SECONDS);
 
         json = response.asJson();
         String email = json.get("email").asText();
@@ -64,8 +67,9 @@ public class Application extends Controller {
         }
 
         session().put("oauth-access-token", accessToken);
+        session().put("oauth-refresh-token", refreshToken);
+        session().put("oauth-expires-in", String.valueOf(expiresIn));
         session().put("oauth-email", email);
-        session().put("oauth-last-check", String.valueOf(System.currentTimeMillis()));
 
         return redirect("/");
     }
