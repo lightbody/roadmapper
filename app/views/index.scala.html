@@ -28,6 +28,14 @@
         </div>
     </script>
 
+    <script type="text/ng-template" id="banner-add-feature-request.html">
+        <div class="alert alert-info" ng-hide="checkRole('PM')">
+            <h4>Adding a feature request?</h4>
+            Describe the problem the customer would like to solve in a <strong><a href="#problems/new" class="alert-link">new Problem</a></strong>.
+            The product managers will associate it with the right feature to build up the case for getting it onto the roadmap.
+        </div>
+    </script>
+
     <script type="text/javascript">
         var templateUrls = {
             dashboard: "@routes.VersionedAssets.at("templates/dashboard.html")",
